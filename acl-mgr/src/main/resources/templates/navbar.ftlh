@@ -10,7 +10,7 @@
         <a class="nav-link" href="/home"><@spring.message "navbar.button.home"/></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/rules"><@spring.message "navbar.button.rules"/></a>
+        <a class="nav-link" href="/acls"><@spring.message "navbar.button.acls"/></a>
       </li>
     </ul>
   </div>
