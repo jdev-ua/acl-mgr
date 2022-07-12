@@ -23,7 +23,7 @@ public class AccessControlListDAO {
 		AccessControlList acl2 = new AccessControlList();
 		acl2.setName("bnk_committee_acl");
 		acl2.setDescription("Credit committee ACL");
-		acl1.addObjType("bnk_committee");
+		acl2.addObjType("bnk_committee");
 		create(acl2);
 
 		AccessControlList acl3 = new AccessControlList();
@@ -31,6 +31,24 @@ public class AccessControlListDAO {
 		acl3.setDescription("Group of related companies ACL");
 		acl3.addObjType("bnk_grc_acl");
 		create(acl3);
+		
+		AccessControlList acl4 = new AccessControlList();
+		acl4.setName("bnk_concl_ps_acl");
+		acl4.setDescription("Pledge service conclusion ACL");
+		acl4.addObjType("bnk_conclusion");
+		acl4.addStatus("PS_S_CO_APPROVE");
+		acl4.addStatus("PS_S_CO_ASSIGN");
+		acl4.addStatus("PS_S_CO_CONCL");
+		acl4.addStatus("PS_S_CO_DONE");
+		acl4.addStatus("PS_S_CO_REJECT");
+		acl4.addStatus("PS_S_CO_REV");
+		acl4.addStatus("PS_S_RD_APPROVE");
+		acl4.addStatus("PS_S_RD_ASSIGN");
+		acl4.addStatus("PS_S_RD_CONCL");
+		acl4.addStatus("PS_S_RD_DONE");
+		acl4.addStatus("PS_S_RD_REJECT");
+		acl4.addStatus("PS_S_RD_REV");
+		create(acl4);
 	}
 
 	public List<AccessControlList> readAll() {
