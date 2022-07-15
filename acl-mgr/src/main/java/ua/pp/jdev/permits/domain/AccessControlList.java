@@ -8,8 +8,6 @@ import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
 import lombok.Data;
-import lombok.Setter;
-import lombok.AccessLevel;
 
 @Data
 public class AccessControlList {
@@ -22,10 +20,8 @@ public class AccessControlList {
 	@Length(max = 128, message = "{validation.length.description}")
 	private String description = "";
 
-	@Setter(AccessLevel.NONE)
 	private Set<String> objTypes = new HashSet<>();
 
-	@Setter(AccessLevel.NONE)
 	private Set<String> statuses = new HashSet<>();
 
 	public void addStatus(String status) {
