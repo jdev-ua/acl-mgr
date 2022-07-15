@@ -1,6 +1,8 @@
 package ua.pp.jdev.permits.controller;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -21,6 +23,9 @@ import org.springframework.web.bind.support.SessionStatus;
 import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.dao.AccessControlListDAO;
 import ua.pp.jdev.permits.domain.AccessControlList;
+import ua.pp.jdev.permits.domain.Accessor;
+import ua.pp.jdev.permits.enums.OrgLevel;
+import ua.pp.jdev.permits.enums.XPermit;
 import ua.pp.jdev.permits.service.DictionaryService;
 
 @Controller
@@ -40,22 +45,22 @@ public class AccessControlListController {
 	private void setDictionaryServiceControlListDAO(DictionaryService dictService) {
 		this.dictService = dictService;
 	}
-	
+
 	@ModelAttribute("acl")
 	private AccessControlList name() {
 		return new AccessControlList();
 	}
-	
+
 	@ModelAttribute("dictObjTypes")
-	private Map<String,String> getDictObjTypes() {
+	private Map<String, String> getDictObjTypes() {
 		return dictService.getObjTypes();
 	}
 
 	@ModelAttribute("dictStatuses")
-	private Map<String,String> getDictStatuses() {
+	private Map<String, String> getDictStatuses() {
 		return dictService.getStatuses();
 	}
-	
+
 	@GetMapping
 	public String acls(Model model, SessionStatus sessionStatus) {
 		model.addAttribute("acls", aclDAO.readAll());
@@ -78,6 +83,26 @@ public class AccessControlListController {
 		return "viewACL";
 	}
 
+	@GetMapping("/{id}/{accessor}")
+	public String viewAccessor(@PathVariable("id") String id, @PathVariable("accessor") String accessorName, Model model) {
+		AccessControlList acl = aclDAO.read(id);
+		if (acl == null) {
+			// TODO Implement it!
+		}
+
+		Optional<Accessor> result = acl.getAccessors().stream().filter(a -> a.getName().equals(accessorName)).findFirst();
+		if (result.isEmpty()) {
+			// TODO Implement it!
+		}
+		
+		model.addAttribute("acl", acl);
+		model.addAttribute("accessor", result.get());
+		model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
+		model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
+
+		return "viewAccessor";
+	}
+
 	@GetMapping("/{id}/edit")
 	public String editACL(@PathVariable("id") String id, Model model) {
 		model.addAttribute("acl", aclDAO.read(id));
@@ -88,10 +113,10 @@ public class AccessControlListController {
 	@DeleteMapping("/{id}")
 	public String deleteACL(@PathVariable("id") String id, Model model) {
 		log.debug("Starting delete ACL with ID=" + id);
-		
+
 		AccessControlList acl = aclDAO.delete(id);
 		log.info("Deleted ACL: " + acl);
-		
+
 		return "redirect:/acls";
 	}
 
