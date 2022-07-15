@@ -65,6 +65,7 @@
                                     <th scope="col"><@spring.message "label.svc"/></th>
                                     <th scope="col"><@spring.message "label.orglevels"/></th>
                                     <th scope="col"><@spring.message "label.xpermits"/></th>
+                                    <th scope="col"></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -97,6 +98,13 @@
                                                 ${XPermit}<#if XPermit_has_next><br></#if>
                                             </#list>
                                             <!--</span>-->
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-link" type="button"
+                                                    title="<@spring.message "button.details"/>"
+                                                    onClick="location.href='/acls/${acl.id}/${accessor.name}'">
+                                                <nobr><@spring.message "button.details"/></nobr>
+                                            </button>
                                         </td>
                                     </tr>
                                 </#list>
