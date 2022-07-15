@@ -20,7 +20,6 @@ public class AccessControlListDAO {
 		scaner.setPermit(3);
 		scaner.setAlias(true);
 		scaner.setSvc(false);
-		scaner.setOrgLevels(Set.of("co","vr","mr","rd"));
 		
 		Accessor bAdmin = new Accessor();
 		bAdmin.setName("bnk_business_admin");
@@ -55,14 +54,14 @@ public class AccessControlListDAO {
 		legalPerf.setPermit(3);
 		legalPerf.setAlias(true);
 		legalPerf.setSvc(true);
-		legalPerf.setOrgLevels(Set.of("co","vr","mr","rd"));
+		legalPerf.setOrgLevels(Set.of("CO","VR","MR","RD"));
 		
 		Accessor legalLM = new Accessor();
 		legalLM.setName("bnk-ls-lm");
 		legalLM.setPermit(3);
 		legalLM.setAlias(true);
 		legalLM.setSvc(true);
-		legalLM.setOrgLevels(Set.of("co","vr","mr","rd"));
+		legalLM.setOrgLevels(Set.of("CO","VR","MR","RD"));
 		
 		// Client ACL
 		AccessControlList aclClient = new AccessControlList();
