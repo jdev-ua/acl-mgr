@@ -33,7 +33,7 @@
         <!-- Latest compiled and minified Bootstrap-select JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
-        <title><@spring.message "container.title"/></title>
+        <title><@spring.message "title.container"/></title>
     </head>
     <body>
     <#include "navbar.ftlh"/>
