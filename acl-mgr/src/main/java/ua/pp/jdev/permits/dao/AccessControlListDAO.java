@@ -1,7 +1,7 @@
 package ua.pp.jdev.permits.dao;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,56 +20,56 @@ public class AccessControlListDAO {
 		scaner.setPermit(3);
 		scaner.setAlias(true);
 		scaner.setSvc(false);
-		
+
 		Accessor bAdmin = new Accessor();
 		bAdmin.setName("bnk_business_admin");
 		bAdmin.setPermit(6);
 		bAdmin.setAlias(false);
 		bAdmin.setSvc(false);
 		bAdmin.setXPermits(Set.of("EXECUTE_PROC", "CHANGE_LOCATION"));
-		
+
 		Accessor tAdmin = new Accessor();
 		tAdmin.setName("bnk_tech_admin");
 		tAdmin.setPermit(7);
 		tAdmin.setAlias(false);
 		tAdmin.setSvc(false);
 		tAdmin.setXPermits(Set.of("EXECUTE_PROC", "CHANGE_LOCATION"));
-		
+
 		Accessor pam1 = new Accessor();
 		pam1.setName("bnk_grc_pam1");
 		pam1.setPermit(3);
 		pam1.setAlias(true);
 		pam1.setSvc(false);
 		pam1.setXPermits(Set.of("EXECUTE_PROC"));
-		
+
 		Accessor pam2 = new Accessor();
 		pam2.setName("bnk_grc_pam2");
 		pam2.setPermit(3);
 		pam2.setAlias(true);
 		pam2.setSvc(false);
 		pam2.setXPermits(Set.of("EXECUTE_PROC"));
-		
+
 		Accessor legalPerf = new Accessor();
 		legalPerf.setName("bnk-ls-perf");
 		legalPerf.setPermit(3);
 		legalPerf.setAlias(true);
 		legalPerf.setSvc(true);
-		legalPerf.setOrgLevels(Set.of("CO","VR","MR","RD"));
-		
+		legalPerf.setOrgLevels(Set.of("CO", "VR", "MR", "RD"));
+
 		Accessor legalLM = new Accessor();
 		legalLM.setName("bnk-ls-lm");
 		legalLM.setPermit(3);
 		legalLM.setAlias(true);
 		legalLM.setSvc(true);
-		legalLM.setOrgLevels(Set.of("CO","VR","MR","RD"));
-		
+		legalLM.setOrgLevels(Set.of("CO", "VR", "MR", "RD"));
+
 		// Client ACL
 		AccessControlList aclClient = new AccessControlList();
 		aclClient.setName("bnk_client_acl");
 		aclClient.setDescription("Client ACL");
 		aclClient.addObjType("bnk_client");
 		aclClient.addObjType("bnk_not_client");
-		aclClient.setAccessors(List.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
+		aclClient.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
 		create(aclClient);
 
 		// Committee ACL
@@ -77,7 +77,7 @@ public class AccessControlListDAO {
 		aclCommittee.setName("bnk_committee_acl");
 		aclCommittee.setDescription("Credit committee ACL");
 		aclCommittee.addObjType("bnk_committee");
-		aclCommittee.setAccessors(List.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
+		aclCommittee.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
 		create(aclCommittee);
 
 		// GRL ACL
@@ -85,9 +85,9 @@ public class AccessControlListDAO {
 		aclGRC.setName("bnk_grc_acl");
 		aclGRC.setDescription("Group of related companies ACL");
 		aclGRC.addObjType("bnk_grc_acl");
-		aclGRC.setAccessors(List.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
+		aclGRC.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
 		create(aclGRC);
-		
+
 		// PS Conclusion ACL
 		AccessControlList aclConclPS = new AccessControlList();
 		aclConclPS.setName("bnk_concl_ps_acl");
@@ -105,12 +105,12 @@ public class AccessControlListDAO {
 		aclConclPS.addStatus("PS_S_RD_DONE");
 		aclConclPS.addStatus("PS_S_RD_REJECT");
 		aclConclPS.addStatus("PS_S_RD_REV");
-		aclConclPS.setAccessors(List.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
+		aclConclPS.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
 		create(aclConclPS);
 	}
 
-	public List<AccessControlList> readAll() {
-		return List.copyOf(storage.values());
+	public Collection<AccessControlList> readAll() {
+		return storage.values();
 	}
 
 	public AccessControlList read(String id) {
