@@ -6,6 +6,14 @@
         <h5 class="card-header"><@spring.message "title.viewaccessor"/> : ${accessor.name}</h5>
         <div class="card-body">
             <div class="form-group row">
+                <label for="id"
+                       class="col-sm-2 col-form-label font-weight">ID</label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control" id="id"
+                           value="<#if accessor.id??>${accessor.id}<#else>null</#if>">
+                </div>
+            </div>
+            <div class="form-group row">
                 <label for="name"
                        class="col-sm-2 col-form-label font-weight"><@spring.message "label.name"/></label>
                 <div class="col-sm-4">
@@ -78,13 +86,11 @@
         </div>
     </div>
     <div class="d-flex">
-        <div class="p-2"><input class="btn btn-primary mr-2" name="ok"
-                                value="<@spring.message "button.ok"/>"
-                                title="<@spring.message "button.ok"/>" type="button"
-                                onClick="location.href='/acls/${acl.id}'"/></div>
-        <div class="p-2"><input class="btn btn-primary mr-2" name="edit"
-                                value="<@spring.message "button.edit"/>"
-                                title="<@spring.message "button.edit"/>" type="button"
-                                onClick="location.href='/acls/${acl.id}/edit/${accessor.name}'"/></div>
+        <div class="p-2">
+            <input class="btn btn-primary mr-2" name="ok"
+                   value="<@spring.message "button.ok"/>"
+                   title="<@spring.message "button.ok"/>" type="button"
+                   onClick="location.href='/acls/${acl.id}'"/>
+        </div>
     </div>
 </@c.container>

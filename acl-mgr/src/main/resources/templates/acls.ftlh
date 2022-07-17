@@ -5,9 +5,9 @@
         <h5 class="card-header"><@spring.message "title.acls"/></h5>
         <div class="card-body">
             <div class="form-group row">
-                <div class="col-sm-10">
+                <div class="col-sm-12">
                     <#if acls?has_content>
-                        <div style="overflow: auto; width:800px; height:320px;border-style: solid; border-width: thin; border-color: lightgray">
+                        <div style="overflow: auto; height:320px">
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
@@ -24,10 +24,10 @@
                                         <td>${acl.name}</td>
                                         <td>${acl.description}</td>
                                         <td>
-                                            <button class="btn btn-link" type="button"
-                                                    title="<@spring.message "button.details"/>"
+                                            <button class="btn btn-outline-primary btn-sm" type="button"
+                                                    title="<@spring.message "tooltip.details"/>"
                                                     onClick="location.href='/acls/${acl.id}'">
-                                                <nobr><@spring.message "button.details"/></nobr>
+                                                <nobr><span class="fas fa-eye"></span>&nbsp;<@spring.message "button.view"/></nobr>
                                             </button>
                                         </td>
                                     </tr>
@@ -41,10 +41,12 @@
                 </div>
             </div>
             <div class="form-group row">
-                <div class="col-sm-10">
-                    <input class="btn btn-primary mr-2" name="add" value="<@spring.message "button.newacl"/>"
-                           title="<@spring.message "button.newacl"/>" type="button"
-                           onClick="location.href='/acls/new'"/>
+                <div class="col-sm-12">
+                    <button class="btn btn-outline-primary btn-sm" type="button"
+                            title="<@spring.message "tooltip.newacl"/>"
+                            onClick="location.href='/acls/new'">
+                        <nobr><span class="fas fa-plus"></span>&nbsp;<@spring.message "button.add"/></nobr>
+                    </button>
                 </div>
             </div>
         </div>

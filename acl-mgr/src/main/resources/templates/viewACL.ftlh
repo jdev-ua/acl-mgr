@@ -33,10 +33,10 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="objtypes"
+                        <label for="objTypes"
                                class="col-sm-2 col-form-label font-weight"><@spring.message "label.objtypes"/></label>
                         <div class="col-sm-4">
-                            <select multiple readonly class="form-control" id="objtypes">
+                            <select multiple readonly class="form-control" id="objTypes">
                                 <#list acl.objTypes as objType>
                                     <option>${objType}</option></#list>
                             </select>
@@ -59,6 +59,7 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
+                                    <th scope="col">ID</th>
                                     <th scope="col"><@spring.message "label.name"/></th>
                                     <th scope="col"><@spring.message "label.permit"/></th>
                                     <th scope="col"><@spring.message "label.alias"/></th>
@@ -71,6 +72,7 @@
                                 <tbody>
                                 <#list acl.accessors as accessor>
                                     <tr>
+                                        <td><#if accessor.id??>${accessor.id}<#else>null</#if></td>
                                         <td>${accessor.name}</td>
                                         <td>${accessor.permit}</td>
                                         <td>
@@ -93,17 +95,17 @@
                                             </#list>
                                         </td>
                                         <td>
-                                            <!--<span class="d-inline-block text-truncate" style="max-width: 150px;">-->
                                             <#list accessor.XPermits as XPermit>
                                                 ${XPermit}<#if XPermit_has_next><br></#if>
                                             </#list>
-                                            <!--</span>-->
                                         </td>
                                         <td>
-                                            <button class="btn btn-link" type="button"
-                                                    title="<@spring.message "button.details"/>"
-                                                    onClick="location.href='/acls/${acl.id}/${accessor.name}'">
-                                                <nobr><@spring.message "button.details"/></nobr>
+                                            <button class="btn btn-outline-primary btn-sm" type="button"
+                                                    title="<@spring.message "tooltip.details"/>"
+                                                    onClick="location.href='/acls/${acl.id}?accessorName=${accessor.name}'">
+                                                <nobr>
+                                                    <span class="fas fa-eye"></span>&nbsp;<@spring.message "button.view"/>
+                                                </nobr>
                                             </button>
                                         </td>
                                     </tr>
@@ -122,10 +124,12 @@
         <div class="p-2"><input class="btn btn-primary mr-2" name="ok"
                                 value="<@spring.message "button.ok"/>"
                                 title="<@spring.message "button.ok"/>" type="button"
-                                onClick="location.href='/acls'"/></div>
+                                onClick="location.href='/acls'"/>
+        </div>
         <div class="p-2"><input class="btn btn-primary mr-2" name="edit"
                                 value="<@spring.message "button.edit"/>"
                                 title="<@spring.message "button.edit"/>" type="button"
-                                onClick="location.href='/acls/${acl.id}/edit'"/></div>
+                                onClick="location.href='/acls/${acl.id}/edit'"/>
+        </div>
     </div>
 </@c.container>
