@@ -1,8 +1,9 @@
 package ua.pp.jdev.permits.domain;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
@@ -10,10 +11,11 @@ import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
 import lombok.Data;
+import ua.pp.jdev.permits.dao.IDGenerator;
 
 @Data
 public class AccessControlList {
-	private String id;
+	private String id = IDGenerator.NULL_ID;
 
 	@NotBlank(message = "{validation.notblank.name}")
 	@Length(max = 32, message = "{validation.length.name}")
@@ -26,13 +28,13 @@ public class AccessControlList {
 
 	private Set<String> statuses = new HashSet<>();
 
-	private List<Accessor> accessors = new ArrayList<>();
+	private Map<String, Accessor> accessors = new HashMap<>();
 
 	public AccessControlList() {
 		// Add dm_owner with default setting
-		accessors.add(create("dm_owner", false, false, 7));
+		addAccessor(create("dm_owner", false, false, 7));
 		// Add dm_world with default setting
-		accessors.add(create("dm_world", false, false, 3));
+		addAccessor(create("dm_world", false, false, 3));
 	}
 
 	private Accessor create(String name, boolean alias, boolean svc, int permit) {
@@ -44,43 +46,47 @@ public class AccessControlList {
 		return result;
 	}
 
-	public void setAccessors(List<Accessor> newAccessors) {
-		if(newAccessors == null) {
-			// Clear actual list
-			accessors.clear();
+	public Collection<Accessor> getAccessors() {
+		return accessors.values();
+	}
+
+	public void setAccessors(Set<Accessor> newAccessors) {
+		// Clear actual list
+		accessors.clear();
+
+		if (newAccessors == null) {
 			// Add dm_owner with default setting
-			accessors.add(create("dm_owner", false, false, 7));
+			addAccessor(create("dm_owner", false, false, 7));
 			// Add dm_world with default setting
-			accessors.add(create("dm_world", false, false, 3));
+			addAccessor(create("dm_world", false, false, 3));
 		} else {
-			boolean containsOwner = false;
-			boolean containsWorld = false;
-			
-			// Check whether list of new values contains dm_world and dm_owner
-			for(Accessor accessor: newAccessors) {
-				if("dm_owner".equalsIgnoreCase(accessor.getName())) {
-					containsOwner = true;
-				}
-				if("dm_world".equalsIgnoreCase(accessor.getName())) {
-					containsWorld = true;
-				}
-			};
-			
-			// Clear actual list
-			accessors.clear();
-			// Extend list with new accessors
-			accessors.addAll(newAccessors);
+			// Add new accessors
+			newAccessors.forEach(t -> addAccessor(t));
+
 			// Add dm_owner with default setting if it is necessary
-			if(!containsOwner) {
-				accessors.add(create("dm_owner", false, false, 7));
+			if (!hasAccessor("dm_owner")) {
+				addAccessor(create("dm_owner", false, false, 7));
 			}
-			// Add dm_world with default setting if it is necessary
-			if(!containsWorld) {
-				accessors.add(create("dm_world", false, false, 3));
+
+			// Add dm_owner with default setting if it is necessary
+			if (!hasAccessor("dm_world")) {
+				addAccessor(create("dm_world", false, false, 3));
 			}
 		}
 	}
-	
+
+	public void addAccessor(Accessor accessor) {
+		accessors.put(accessor.getName(), accessor);
+	}
+
+	public boolean hasAccessor(String accessorName) {
+		return accessors.containsKey(accessorName);
+	}
+
+	public void removeAccessor(String accessorName) {
+		accessors.remove(accessorName);
+	}
+
 	public void addStatus(String status) {
 		statuses.add(status);
 	}
