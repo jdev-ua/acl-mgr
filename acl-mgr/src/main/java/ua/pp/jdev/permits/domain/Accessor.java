@@ -8,17 +8,21 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Setter;
+import ua.pp.jdev.permits.dao.IDGenerator;
 
 @Data
 public class Accessor {
-	private String id;
+	@Setter(AccessLevel.NONE)
+	private String id = IDGenerator.NULL_ID;
 	
 	@NotBlank(message = "{validation.notblank.name}")
     private String name;
-    private Boolean alias;
-    private Boolean svc;
+    private boolean alias;
+    private boolean svc;
     @Min(1) @Max(7)
-    private Integer permit;
+    private int permit;
     
     private Set<String> xPermits = new HashSet<>();
     private Set<String> orgLevels = new HashSet<>();
