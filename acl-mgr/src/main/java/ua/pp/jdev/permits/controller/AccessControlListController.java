@@ -17,14 +17,17 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.dao.AccessControlListDAO;
+import ua.pp.jdev.permits.dao.IDGenerator;
 import ua.pp.jdev.permits.domain.AccessControlList;
 import ua.pp.jdev.permits.domain.Accessor;
 import ua.pp.jdev.permits.enums.OrgLevel;
+import ua.pp.jdev.permits.enums.Permit;
 import ua.pp.jdev.permits.enums.XPermit;
 import ua.pp.jdev.permits.service.DictionaryService;
 
@@ -62,7 +65,7 @@ public class AccessControlListController {
 	}
 
 	@GetMapping
-	public String acls(Model model, SessionStatus sessionStatus) {
+	public String viewAllForm(Model model, SessionStatus sessionStatus) {
 		model.addAttribute("acls", aclDAO.readAll());
 
 		// Clear previous session data
@@ -72,46 +75,87 @@ public class AccessControlListController {
 	}
 
 	@GetMapping("/new")
-	public String newACL() {
-		return "newACL";
+	public String newForm(Model model) {
+		model.addAttribute("httpMethod", "post");
+		return "editACL";
 	}
 
 	@GetMapping("/{id}")
-	public String viewACL(@PathVariable("id") String id, Model model) {
-		model.addAttribute("acl", aclDAO.read(id));
-
-		return "viewACL";
-	}
-
-	@GetMapping("/{id}/{accessor}")
-	public String viewAccessor(@PathVariable("id") String id, @PathVariable("accessor") String accessorName, Model model) {
+	public String viewForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
+			Model model) {
 		AccessControlList acl = aclDAO.read(id);
 		if (acl == null) {
 			// TODO Implement it!
 		}
-
-		Optional<Accessor> result = acl.getAccessors().stream().filter(a -> a.getName().equals(accessorName)).findFirst();
-		if (result.isEmpty()) {
-			// TODO Implement it!
-		}
-		
 		model.addAttribute("acl", acl);
-		model.addAttribute("accessor", result.get());
-		model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
-		model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
 
-		return "viewAccessor";
+		if (accessorName != null && accessorName.length() > 0) {
+			Optional<Accessor> result = acl.getAccessors().stream().filter(a -> a.getName().equals(accessorName))
+					.findFirst();
+			if (result.isEmpty()) {
+				// TODO Implement it!
+			}
+
+			model.addAttribute("accessor", result.get());
+			model.addAttribute("dictPermits", Arrays.asList(Permit.values()));
+			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
+			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
+
+			return "viewAccessor";
+		}
+
+		return "viewACL";
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editACL(@PathVariable("id") String id, Model model) {
-		model.addAttribute("acl", aclDAO.read(id));
+	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
+			@RequestParam(required = false) boolean addAccessor, Model model) {
+		if (!IDGenerator.NULL_ID.equalsIgnoreCase(id)) {
+			model.addAttribute("acl", aclDAO.read(id));
+		}
+
+		if (addAccessor || (accessorName != null && accessorName.length() > 0)) {
+			if (!addAccessor) {
+				AccessControlList acl = (AccessControlList) model.getAttribute("acl");
+
+				Optional<Accessor> result = acl.getAccessors().stream().filter(a -> a.getName().equals(accessorName))
+						.findFirst();
+				if (result.isEmpty()) {
+					// TODO Implement it!
+				}
+
+				model.addAttribute("accessor", result.get());
+			} else {
+				Accessor dummy = new Accessor();
+				dummy.setName("");
+				model.addAttribute("accessor", dummy);
+			}
+
+			model.addAttribute("dictPermits", Arrays.asList(Permit.values()));
+			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
+			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
+
+			return "editAccessor";
+		}
 
 		return "editACL";
 	}
 
 	@DeleteMapping("/{id}")
-	public String deleteACL(@PathVariable("id") String id, Model model) {
+	public String delete(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
+			Model model) {
+		if (accessorName != null && accessorName.length() > 0) {
+			log.debug(String.format("Starting delete accessor '%s' from ACL with ID=%s", accessorName, id));
+
+			AccessControlList acl = (AccessControlList) model.getAttribute("acl");
+			if (acl.hasAccessor(accessorName)) {
+				acl.removeAccessor(accessorName);
+			}
+			log.info(String.format("Deleted accessor '%s' from ACL: %s", accessorName, acl));
+
+			return String.format("redirect:/acls/%s/edit", acl.getId());
+		}
+
 		log.debug("Starting delete ACL with ID=" + id);
 
 		AccessControlList acl = aclDAO.delete(id);
@@ -121,13 +165,19 @@ public class AccessControlListController {
 	}
 
 	@PostMapping()
-	public String submitNewACL(@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors,
-			SessionStatus sessionStatus) {
+	public String create(@RequestParam(required = false) boolean addAccessor,
+			@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors, Model model) {
 		log.debug("Starting create new ACL " + acl);
+
+		if (addAccessor) {
+			model.addAttribute("accessor", new Accessor());
+			return "redirect:/acls";
+		}
 
 		if (errors.hasErrors()) {
 			log.debug("Failed to create new ACL " + acl + " due to validation errors " + errors.toString());
-			return "newACL";
+			model.addAttribute("httpMethod", "post");
+			return "editACL";
 		}
 
 		aclDAO.create(acl);
@@ -137,8 +187,7 @@ public class AccessControlListController {
 	}
 
 	@PatchMapping
-	public String submitEditACL(@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors,
-			SessionStatus sessionStatus) {
+	public String updateACL(@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors) {
 		log.debug("Starting update ACL " + acl);
 
 		if (errors.hasErrors()) {
@@ -150,5 +199,28 @@ public class AccessControlListController {
 		log.info("Updated ACL: " + acl);
 
 		return "redirect:/acls";
+	}
+
+	@PatchMapping("/{id}")
+	public String updateAccessor(@RequestParam boolean refresh, @RequestParam String accessorName,
+			@Valid @ModelAttribute("accessor") Accessor accessor, BindingResult errors, Model model) {
+		log.debug("Starting update Accessor " + accessor);
+
+		if (errors.hasErrors() || refresh) {
+			if (errors.hasErrors()) {
+				log.debug("Failed to update Accessor " + accessor + " due to validation errors " + errors.toString());
+			}
+
+			model.addAttribute("dictPermits", Arrays.asList(Permit.values()));
+			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
+			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
+			return "editAccessor";
+		}
+
+		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
+		acl.addAccessor(accessor);
+		log.info("Updated Accessor: " + accessor);
+
+		return String.format("redirect:/acls/%s/edit", acl.getId());
 	}
 }
