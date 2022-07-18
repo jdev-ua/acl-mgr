@@ -7,13 +7,13 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
-import lombok.Data;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Setter;
 import ua.pp.jdev.permits.dao.IDGenerator;
 
 @Data
-public class Accessor {
+public class Accessor implements Cloneable {
 	@Setter(AccessLevel.NONE)
 	private String id = IDGenerator.NULL_ID;
 	
@@ -26,4 +26,12 @@ public class Accessor {
     
     private Set<String> xPermits = new HashSet<>();
     private Set<String> orgLevels = new HashSet<>();
+    
+    @Override
+	public Accessor clone() throws CloneNotSupportedException {
+		Accessor clone = (Accessor) super.clone();
+		clone.xPermits = new HashSet<>(getXPermits());
+		clone.orgLevels = new HashSet<>(getOrgLevels());
+		return clone;
+	}
 }

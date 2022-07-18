@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
 
@@ -14,7 +15,7 @@ import lombok.Data;
 import ua.pp.jdev.permits.dao.IDGenerator;
 
 @Data
-public class AccessControlList {
+public class AccessControlList implements Cloneable {
 	private String id = IDGenerator.NULL_ID;
 
 	@NotBlank(message = "{validation.notblank.name}")
@@ -44,6 +45,24 @@ public class AccessControlList {
 		result.setSvc(svc);
 		result.setPermit(permit);
 		return result;
+	}
+
+	@Override
+	public AccessControlList clone() throws CloneNotSupportedException {
+		AccessControlList clone = (AccessControlList) super.clone();
+		clone.objTypes = new HashSet<>(getObjTypes());
+		clone.statuses = new HashSet<>(getStatuses());
+		clone.accessors = new HashMap<>();
+		// Deep clone contained accessors
+		clone.setAccessors(getAccessors().stream().map(accessor -> {
+			try {
+				return accessor.clone();
+			} catch (CloneNotSupportedException e) {
+				throw new RuntimeException(e);
+			}
+		}).collect(Collectors.toSet()));
+
+		return clone;
 	}
 
 	public Collection<Accessor> getAccessors() {
