@@ -36,7 +36,7 @@
                             </table>
                         </div>
                     <#else>
-                        <p><@spring.message "acls.list.empty"/></p>
+                        <p><@spring.message "list.empty"/></p>
                     </#if>
                 </div>
             </div>
