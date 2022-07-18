@@ -1,12 +1,14 @@
 package ua.pp.jdev.permits.controller;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.dao.AccessControlListDAO;
-import ua.pp.jdev.permits.dao.IDGenerator;
 import ua.pp.jdev.permits.domain.AccessControlList;
 import ua.pp.jdev.permits.domain.Accessor;
 import ua.pp.jdev.permits.enums.OrgLevel;
@@ -40,6 +41,7 @@ public class AccessControlListController {
 	private DictionaryService dictService;
 
 	@Autowired
+	@Qualifier("simpleAclDAO")
 	private void setAccessControlListDAO(AccessControlListDAO aclDAO) {
 		this.aclDAO = aclDAO;
 	}
@@ -88,7 +90,7 @@ public class AccessControlListController {
 			// TODO Implement it!
 		}
 		model.addAttribute("acl", acl);
-
+		
 		if (accessorName != null && accessorName.length() > 0) {
 			Optional<Accessor> result = acl.getAccessors().stream().filter(a -> a.getName().equals(accessorName))
 					.findFirst();
@@ -110,10 +112,6 @@ public class AccessControlListController {
 	@GetMapping("/{id}/edit")
 	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
 			@RequestParam(required = false) boolean addAccessor, Model model) {
-		if (!IDGenerator.NULL_ID.equalsIgnoreCase(id)) {
-			model.addAttribute("acl", aclDAO.read(id));
-		}
-
 		if (addAccessor || (accessorName != null && accessorName.length() > 0)) {
 			if (!addAccessor) {
 				AccessControlList acl = (AccessControlList) model.getAttribute("acl");
