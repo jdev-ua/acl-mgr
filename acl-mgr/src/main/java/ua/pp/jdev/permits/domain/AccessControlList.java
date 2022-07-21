@@ -12,11 +12,10 @@ import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
 import lombok.Data;
-import ua.pp.jdev.permits.dao.IDGenerator;
 
 @Data
 public class AccessControlList implements Cloneable {
-	private String id = IDGenerator.NULL_ID;
+	private Long id = Long.valueOf(0);
 
 	@NotBlank(message = "{validation.notblank.name}")
 	@Length(max = 32, message = "{validation.length.name}")
