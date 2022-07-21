@@ -30,6 +30,14 @@
                     <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
                         <div class="form-group row"></div>
                         <div class="form-group row">
+                            <label for="id"
+                                   class="col-sm-2 col-form-label font-weight">ID</label>
+                            <div class="col-sm-4">
+                                <input type="text" readonly class="form-control-plaintext" id="id"
+                                       value="<#if acl.id??>${acl.id?c}<#else>null</#if>">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label"><@spring.message "label.name"/></label>
                             <div class="col-sm-4">
                                 <@spring.bind "acl.name"/>
@@ -85,7 +93,7 @@
                                     <tbody>
                                     <#list acl.accessors as accessor>
                                         <tr>
-                                            <td><#if accessor.id??>${accessor.id}<#else>null</#if></td>
+                                            <td><#if accessor.id??>${accessor.id?c}<#else>null</#if></td>
                                             <td>${accessor.name}</td>
                                             <td>${accessor.permit}</td>
                                             <td>
@@ -115,7 +123,7 @@
                                             <td>
                                                 <button class="btn btn-outline-primary btn-sm" type="button"
                                                         title="<@spring.message "tooltip.edit"/>"
-                                                        onClick="location.href='/acls/${acl.id}/edit?accessorName=${accessor.name}'">
+                                                        onClick="location.href='/acls/${acl.id?c}/edit?accessorName=${accessor.name}'">
                                                     <nobr>
                                                         <span class="fas fa-edit"></span>&nbsp;<@spring.message "button.edit"/>
                                                     </nobr>
@@ -148,7 +156,7 @@
             <div class="p-2">
                 <input class="btn btn-primary mr-2" name="delete"
                        value="<@spring.message "button.delete"/>" type="button"
-                       title="<@spring.message "button.delete"/>" onClick="onDelete('${acl.id}')"/>
+                       title="<@spring.message "button.delete"/>" onClick="onDelete('${acl.id?c}')"/>
             </div>
             <div class="p-2">
                 <input class="btn btn-primary mr-2" name="apply"

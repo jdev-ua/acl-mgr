@@ -18,6 +18,14 @@
                 <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
                     <div class="form-group row"></div>
                     <div class="form-group row">
+                        <label for="id"
+                               class="col-sm-2 col-form-label font-weight">ID</label>
+                        <div class="col-sm-4">
+                            <input type="text" readonly class="form-control-plaintext" id="id"
+                                   value="<#if acl.id??>${acl.id?c}<#else>null</#if>">
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="name"
                                class="col-sm-2 col-form-label font-weight"><@spring.message "label.name"/></label>
                         <div class="col-sm-4">
@@ -102,7 +110,7 @@
                                         <td>
                                             <button class="btn btn-outline-primary btn-sm" type="button"
                                                     title="<@spring.message "tooltip.details"/>"
-                                                    onClick="location.href='/acls/${acl.id}?accessorName=${accessor.name}'">
+                                                    onClick="location.href='/acls/${acl.id?c}?accessorName=${accessor.name}'">
                                                 <nobr>
                                                     <span class="fas fa-eye"></span>&nbsp;<@spring.message "button.view"/>
                                                 </nobr>
@@ -129,7 +137,7 @@
         <div class="p-2"><input class="btn btn-primary mr-2" name="edit"
                                 value="<@spring.message "button.edit"/>"
                                 title="<@spring.message "button.edit"/>" type="button"
-                                onClick="location.href='/acls/${acl.id}/edit'"/>
+                                onClick="location.href='/acls/${acl.id?c}/edit'"/>
         </div>
     </div>
 </@c.container>

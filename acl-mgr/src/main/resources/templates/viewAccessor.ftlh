@@ -9,7 +9,7 @@
                 <label for="id"
                        class="col-sm-2 col-form-label font-weight">ID</label>
                 <div class="col-sm-4">
-                    <input type="text" readonly class="form-control" id="id"
+                    <input type="text" readonly class="form-control-plaintext" id="id"
                            value="<#if accessor.id??>${accessor.id}<#else>null</#if>">
                 </div>
             </div>
@@ -90,7 +90,7 @@
             <input class="btn btn-primary mr-2" name="ok"
                    value="<@spring.message "button.ok"/>"
                    title="<@spring.message "button.ok"/>" type="button"
-                   onClick="location.href='/acls/${acl.id}'"/>
+                   onClick="location.href='/acls/${acl.id?c}'"/>
         </div>
     </div>
 </@c.container>

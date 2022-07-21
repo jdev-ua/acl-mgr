@@ -20,13 +20,13 @@
                                 <tbody>
                                 <#list acls as acl>
                                     <tr>
-                                        <td>${acl.id}</td>
+                                        <td>${acl.id?c}</td>
                                         <td>${acl.name}</td>
                                         <td>${acl.description}</td>
                                         <td>
                                             <button class="btn btn-outline-primary btn-sm" type="button"
                                                     title="<@spring.message "tooltip.details"/>"
-                                                    onClick="location.href='/acls/${acl.id}'">
+                                                    onClick="location.href='/acls/${acl.id?c}'">
                                                 <nobr><span class="fas fa-eye"></span>&nbsp;<@spring.message "button.view"/></nobr>
                                             </button>
                                         </td>

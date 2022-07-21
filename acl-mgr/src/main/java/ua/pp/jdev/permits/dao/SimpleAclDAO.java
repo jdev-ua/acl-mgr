@@ -117,13 +117,13 @@ public class SimpleAclDAO implements AccessControlListDAO {
 	public Collection<AccessControlList> readAll() {
 		// disable direct access to stored data by getting every single ACL by
 		// appropriate read method
-		return storage.values().stream().map(acl -> read(acl.getId())).collect(Collectors.toList());
+		return storage.values().stream().map(acl -> read(String.valueOf(acl.getId()))).collect(Collectors.toList());
 	}
 
 	@Override
 	public AccessControlList read(String id) {
 		AccessControlList result = null;
-
+		
 		AccessControlList acl = storage.get(id);
 		if (acl != null) {
 			try {
@@ -140,13 +140,13 @@ public class SimpleAclDAO implements AccessControlListDAO {
 
 	@Override
 	public void create(AccessControlList acl) {
-		acl.setId(IDGenerator.generateID("P%07d"));
-		storage.put(acl.getId(), acl);
+		acl.setId(IDGenerator.generateID());
+		storage.put(String.valueOf(acl.getId()), acl);
 	}
 
 	@Override
 	public void update(AccessControlList acl) {
-		storage.put(acl.getId(), acl);
+		storage.put(String.valueOf(acl.getId()), acl);
 	}
 
 	@Override
