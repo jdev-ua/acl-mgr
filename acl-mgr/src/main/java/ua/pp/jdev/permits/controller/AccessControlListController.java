@@ -1,7 +1,6 @@
 package ua.pp.jdev.permits.controller;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
