@@ -14,7 +14,7 @@
             document.getElementById("editAccessor").submit();
         }
     </script>
-    <form id="editAccessor" action="/acls/${acl.id}?accessorName=${accessor.name}" method="post"
+    <form id="editAccessor" action="/acls/${acl.id?c}?accessorName=${accessor.name}" method="post"
           modelAttribute="accessor">
         <input type="hidden" id="refresh" name="refresh" value="false"/>
         <input type="hidden" id="_method" name="_method" value="patch"/>
@@ -25,8 +25,8 @@
                     <label for="id"
                            class="col-sm-2 col-form-label font-weight">ID</label>
                     <div class="col-sm-4">
-                        <input type="text" readonly class="form-control" id="id"
-                               value="<#if accessor.id??>${accessor.id}<#else>null</#if>">
+                        <input type="text" readonly class="form-control-plaintext" id="id"
+                               value="<#if accessor.id??>${accessor.id?c}<#else>null</#if>">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -134,7 +134,7 @@
                 <input class="btn btn-primary mr-2" name="cancel"
                        value="<@spring.message "button.cancel"/>"
                        title="<@spring.message "button.cancel"/>" type="button"
-                       onClick="location.href='/acls/${acl.id}/edit'"/>
+                       onClick="location.href='/acls/${acl.id?c}/edit'"/>
             </div>
         </div>
     </form>
