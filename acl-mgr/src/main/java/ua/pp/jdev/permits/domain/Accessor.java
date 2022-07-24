@@ -8,6 +8,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+import lombok.Setter;
+import lombok.AccessLevel;
 
 @Data
 public class Accessor implements Cloneable {
@@ -20,6 +22,9 @@ public class Accessor implements Cloneable {
 	@Min(1)
 	@Max(7)
 	private int permit;
+	
+	@Setter(AccessLevel.PROTECTED)
+	private String state = "new";
 
 	private Set<String> xPermits = new HashSet<>();
 	private Set<String> orgLevels = new HashSet<>();
@@ -30,5 +35,17 @@ public class Accessor implements Cloneable {
 		clone.xPermits = new HashSet<>(getXPermits());
 		clone.orgLevels = new HashSet<>(getOrgLevels());
 		return clone;
+	}
+	
+	public void markDeleted() {
+		setState("deleted");
+	}
+	
+	public void markDirty() {
+		setState("dirty");
+	}
+	
+	public void markOk() {
+		setState("ok");
 	}
 }
