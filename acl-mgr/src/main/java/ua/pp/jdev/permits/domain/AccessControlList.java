@@ -94,13 +94,19 @@ public class AccessControlList implements Cloneable {
 	}
 
 	public void addAccessor(Accessor accessor) {
-		accessors.put(accessor.getName(), accessor);
+		if(accessor != null) {
+			accessors.put(accessor.getName(), accessor);
+		}
 	}
 
 	public boolean hasAccessor(String accessorName) {
 		return accessors.containsKey(accessorName);
 	}
 
+	public Accessor getAccessor(String accessorName) {
+		return accessors.get(accessorName);
+	}
+	
 	public void removeAccessor(String accessorName) {
 		accessors.remove(accessorName);
 	}
