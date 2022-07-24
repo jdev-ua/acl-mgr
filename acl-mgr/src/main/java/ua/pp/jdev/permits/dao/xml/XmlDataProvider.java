@@ -54,7 +54,7 @@ public class XmlDataProvider {
 	static final String REDUNDANT_XML_SYMBOLS = "[\t\n]*";
 	
 	static final String BACKUP_PREFIX_FORMAT_PATTERN = "%s/%s-%s.%s.bak";
-	static final String BACKUP_SUFFIX_DATE_PATTERN = "yyyyMMdd_hhmmSS";
+	static final String BACKUP_SUFFIX_DATE_PATTERN = "yyyyMMdd_hhmmssSSS";
 
 	private File file;
 
@@ -261,6 +261,8 @@ public class XmlDataProvider {
 				accessor.setSvc(Boolean.parseBoolean(svc));
 			}
 		}
+		
+		accessor.markOk();
 
 		return accessor;
 	}
