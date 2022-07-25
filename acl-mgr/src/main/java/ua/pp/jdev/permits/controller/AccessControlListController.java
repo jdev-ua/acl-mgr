@@ -84,20 +84,22 @@ public class AccessControlListController {
 	@GetMapping("/{id}")
 	public String viewForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
 			Model model) {
-		AccessControlList acl = aclDAO.read(id);
-		if (acl == null) {
+
+		Optional<AccessControlList> optionalAcl = aclDAO.read(id);
+		if (optionalAcl.isEmpty()) {
 			// TODO Implement it!
 		}
+		AccessControlList acl = optionalAcl.get();
 		model.addAttribute("acl", acl);
-		
+
 		if (accessorName != null && accessorName.length() > 0) {
-			Optional<Accessor> result = acl.getAccessors().stream().filter(a -> a.getName().equals(accessorName))
-					.findFirst();
-			if (result.isEmpty()) {
+			Optional<Accessor> optionalAccessor = acl.getAccessors().stream()
+					.filter(a -> a.getName().equals(accessorName)).findFirst();
+			if (optionalAccessor.isEmpty()) {
 				// TODO Implement it!
 			}
 
-			model.addAttribute("accessor", result.get());
+			model.addAttribute("accessor", optionalAccessor.get());
 			model.addAttribute("dictPermits", Arrays.asList(Permit.values()));
 			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
 			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
@@ -111,10 +113,10 @@ public class AccessControlListController {
 	@GetMapping("/{id}/edit")
 	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
 			@RequestParam(required = false) boolean addAccessor, Model model) {
+		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
+
 		if (addAccessor || (accessorName != null && accessorName.length() > 0)) {
 			if (!addAccessor) {
-				AccessControlList acl = (AccessControlList) model.getAttribute("acl");
-
 				Optional<Accessor> result = acl.getAccessors().stream().filter(a -> a.getName().equals(accessorName))
 						.findFirst();
 				if (result.isEmpty()) {
@@ -135,6 +137,10 @@ public class AccessControlListController {
 			return "editAccessor";
 		}
 
+		if (acl.getId() == 0) {
+			model.addAttribute("httpMethod", "post");
+		}
+
 		return "editACL";
 	}
 
@@ -142,21 +148,21 @@ public class AccessControlListController {
 	public String delete(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
 			Model model) {
 		if (accessorName != null && accessorName.length() > 0) {
-			log.debug(String.format("Starting delete accessor '%s' from ACL with ID=%s", accessorName, id));
+			log.debug("Starting delete accessor '{}' from ACL with ID={}", accessorName, id);
 
 			AccessControlList acl = (AccessControlList) model.getAttribute("acl");
 			if (acl.hasAccessor(accessorName)) {
-				acl.removeAccessor(accessorName);
+				acl.getAccessor(accessorName).markDeleted();
 			}
-			log.info(String.format("Deleted accessor '%s' from ACL: %s", accessorName, acl));
+			log.info("Deleted accessor '{}' from ACL: {}", accessorName, acl);
 
 			return String.format("redirect:/acls/%s/edit", acl.getId());
 		}
 
-		log.debug("Starting delete ACL with ID=" + id);
+		log.debug("Starting delete ACL with ID={}", id);
 
-		AccessControlList acl = aclDAO.delete(id);
-		log.info("Deleted ACL: " + acl);
+		Optional<AccessControlList> result = aclDAO.delete(id);
+		log.info("Deleted ACL: {}", result.isPresent() ? result.get() : ("ID=" + id));
 
 		return "redirect:/acls";
 	}
@@ -201,11 +207,11 @@ public class AccessControlListController {
 	@PatchMapping("/{id}")
 	public String updateAccessor(@RequestParam boolean refresh, @RequestParam String accessorName,
 			@Valid @ModelAttribute("accessor") Accessor accessor, BindingResult errors, Model model) {
-		log.debug("Starting update Accessor " + accessor);
+		log.debug("Starting update Accessor {}", accessor);
 
 		if (errors.hasErrors() || refresh) {
 			if (errors.hasErrors()) {
-				log.debug("Failed to update Accessor " + accessor + " due to validation errors " + errors.toString());
+				log.debug("Failed to update Accessor {} due to validation errors {}", accessor, errors.toString());
 			}
 
 			model.addAttribute("dictPermits", Arrays.asList(Permit.values()));
@@ -216,7 +222,7 @@ public class AccessControlListController {
 
 		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
 		acl.addAccessor(accessor);
-		log.info("Updated Accessor: " + accessor);
+		log.info("Updated Accessor: {}", accessor);
 
 		return String.format("redirect:/acls/%s/edit", acl.getId());
 	}
