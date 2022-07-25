@@ -3,6 +3,7 @@ package ua.pp.jdev.permits.dao;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -124,21 +125,23 @@ public class SimpleAclDAO implements AccessControlListDAO {
 	public Collection<AccessControlList> readAll() {
 		// disable direct access to stored data by getting every single ACL by
 		// appropriate read method
-		return storage.values().stream().map(acl -> read(String.valueOf(acl.getId()))).collect(Collectors.toList());
+		return storage.values().stream().map(acl -> read(String.valueOf(acl.getId())).get()).collect(Collectors.toList());
 	}
 
 	@Override
-	public AccessControlList read(String id) {
-		AccessControlList result = null;
+	public Optional<AccessControlList> read(String id) {
+		Optional<AccessControlList> result;
 
 		AccessControlList acl = storage.get(id);
 		if (acl != null) {
 			try {
 				// Create a clone of current ACL to avoid unwanted changes by consumer
-				result = acl.clone();
+				result = Optional.of(acl.clone());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+		} else {
+			result = Optional.empty();
 		}
 
 		return result;
@@ -172,7 +175,7 @@ public class SimpleAclDAO implements AccessControlListDAO {
 	}
 
 	@Override
-	public AccessControlList delete(String id) {
-		return storage.remove(id);
+	public Optional<AccessControlList> delete(String id) {
+		return Optional.ofNullable(storage.remove(id));
 	}
 }
