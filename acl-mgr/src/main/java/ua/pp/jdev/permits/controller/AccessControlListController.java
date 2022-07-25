@@ -40,7 +40,7 @@ public class AccessControlListController {
 	private DictionaryService dictService;
 
 	@Autowired
-	@Qualifier("xmlAclDAO")
+	@Qualifier("jdbcAclDAO")
 	private void setAccessControlListDAO(AccessControlListDAO aclDAO) {
 		this.aclDAO = aclDAO;
 	}
