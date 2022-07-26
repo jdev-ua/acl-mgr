@@ -12,7 +12,7 @@
         }
     </script>
     <form id="editACL" action="/acls" method="post" modelAttribute="acl">
-        <input type="hidden" id="_method" name="_method" value="<#if httpMethod??>${acl.name}<#else>patch</#if>"/>
+        <input type="hidden" id="_method" name="_method" value="<#if httpMethod??>${httpMethod}<#else>patch</#if>"/>
         <div class="card">
             <h5 class="card-header"><@spring.message "title.editacl"/> : ${acl.name}</h5>
             <div class="card-body">
@@ -63,7 +63,7 @@
                             <label for="objTypes"
                                    class="col-sm-2 col-form-label font-weight"><@spring.message "label.objtypes"/></label>
                             <div class="col-sm-4">
-                                <@spring.formMultiSelect "acl.objTypes" dictObjTypes 'class="form-control" id="objTypes"'/>
+                                <@spring.formMultiSelect "acl.objTypes" dictObjTypes 'class="form-control"'/>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -80,7 +80,8 @@
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
-                                        <th scope="col">ID</th>
+                                        <th scope="col">-ID-</th>
+                                        <th scope="col">-STATE-</th>
                                         <th scope="col"><@spring.message "label.name"/></th>
                                         <th scope="col"><@spring.message "label.permit"/></th>
                                         <th scope="col"><@spring.message "label.alias"/></th>
@@ -94,6 +95,7 @@
                                     <#list acl.accessors as accessor>
                                         <tr>
                                             <td><#if accessor.id??>${accessor.id?c}<#else>null</#if></td>
+                                            <td>${accessor.state}</td>
                                             <td>${accessor.name}</td>
                                             <td>${accessor.permit}</td>
                                             <td>
