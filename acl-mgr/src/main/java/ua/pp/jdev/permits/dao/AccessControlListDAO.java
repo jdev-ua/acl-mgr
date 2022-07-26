@@ -14,5 +14,5 @@ public interface AccessControlListDAO {
 
 	void update(AccessControlList acl);
 
-	Optional<AccessControlList> delete(String id);
+	boolean delete(String id);
 }
