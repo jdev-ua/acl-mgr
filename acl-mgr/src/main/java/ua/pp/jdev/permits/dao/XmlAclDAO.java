@@ -1,7 +1,6 @@
 package ua.pp.jdev.permits.dao;
 
 import java.io.FileNotFoundException;
-import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -48,8 +47,8 @@ public class XmlAclDAO extends SimpleAclDAO {
 	}
 
 	@Override
-	public Optional<AccessControlList> delete(String id) {
-		Optional<AccessControlList> result = super.delete(id);
+	public boolean delete(String id) {
+		boolean result = super.delete(id);
 
 		// save changes to XML data source
 		saveToXml();
