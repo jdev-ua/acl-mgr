@@ -28,6 +28,7 @@ import ua.pp.jdev.permits.domain.AccessControlList;
 import ua.pp.jdev.permits.domain.Accessor;
 import ua.pp.jdev.permits.enums.OrgLevel;
 import ua.pp.jdev.permits.enums.Permit;
+import ua.pp.jdev.permits.enums.State;
 import ua.pp.jdev.permits.enums.XPermit;
 import ua.pp.jdev.permits.service.DictionaryService;
 
@@ -125,7 +126,7 @@ public class AccessControlListController {
 
 				model.addAttribute("accessor", result.get());
 			} else {
-				Accessor dummy = new Accessor();
+				Accessor dummy = new Accessor(State.NEW);
 				dummy.setName("");
 				model.addAttribute("accessor", dummy);
 			}
@@ -152,7 +153,7 @@ public class AccessControlListController {
 
 			AccessControlList acl = (AccessControlList) model.getAttribute("acl");
 			if (acl.hasAccessor(accessorName)) {
-				acl.getAccessor(accessorName).markDeleted();
+				acl.getAccessor(accessorName).setState(State.VOID);
 			}
 			log.info("Deleted accessor '{}' from ACL: {}", accessorName, acl);
 
@@ -161,8 +162,11 @@ public class AccessControlListController {
 
 		log.debug("Starting delete ACL with ID={}", id);
 
-		Optional<AccessControlList> result = aclDAO.delete(id);
-		log.info("Deleted ACL: {}", result.isPresent() ? result.get() : ("ID=" + id));
+		if (aclDAO.delete(id)) {
+			log.info("ACL with ID={} successfully deleted", id);
+		} else {
+			log.warn("ACL with ID={} was not deleted", id);
+		}
 
 		return "redirect:/acls";
 	}
@@ -173,7 +177,7 @@ public class AccessControlListController {
 		log.debug("Starting create new ACL " + acl);
 
 		if (addAccessor) {
-			model.addAttribute("accessor", new Accessor());
+			model.addAttribute("accessor", new Accessor(State.NEW));
 			return "redirect:/acls";
 		}
 
@@ -218,6 +222,10 @@ public class AccessControlListController {
 			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
 			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
 			return "editAccessor";
+		}
+
+		if (State.PURE.equals(accessor.getState())) {
+			accessor.setState(State.DIRTY);
 		}
 
 		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
