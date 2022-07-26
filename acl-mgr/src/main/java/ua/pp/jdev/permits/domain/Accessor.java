@@ -26,20 +26,20 @@ public class Accessor implements Cloneable {
 	@Min(1)
 	@Max(7)
 	private int permit;
-	
+
 	private State state;
 
 	private Set<String> xPermits = new HashSet<>();
 	private Set<String> orgLevels = new HashSet<>();
-	
+
 	public Accessor() {
-		state = State.PURE;
+		this(State.PURE);
 	}
 
 	public Accessor(State state) {
 		this.state = state;
 	}
-	
+
 	@Override
 	public Accessor clone() throws CloneNotSupportedException {
 		Accessor clone = (Accessor) super.clone();
