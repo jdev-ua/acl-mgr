@@ -9,7 +9,6 @@ import java.util.Set;
 import org.springframework.jdbc.core.RowMapper;
 
 import ua.pp.jdev.permits.domain.Accessor;
-import ua.pp.jdev.permits.enums.State;
 
 class AccessorRowMapper implements RowMapper<Accessor> {
 	private Map<Long, Accessor> cache = new HashMap<>();
@@ -44,7 +43,6 @@ class AccessorRowMapper implements RowMapper<Accessor> {
 			xPermits.add(xPermit);
 			accessor.setXPermits(xPermits);
 		}
-		accessor.setState(State.PURE);
 
 		cache.putIfAbsent(id, accessor);
 
