@@ -8,10 +8,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 
 import lombok.Data;
+import ua.pp.jdev.permits.enums.State;
 
 @Data
 public class AccessControlList implements Cloneable {
@@ -19,6 +21,7 @@ public class AccessControlList implements Cloneable {
 
 	@NotBlank(message = "{validation.notblank.name}")
 	@Length(max = 32, message = "{validation.length.name}")
+	@Pattern(regexp = "^[a-zA-Z0-9_]*$", message = "{validation.pattern.name}")
 	private String name = "";
 
 	@Length(max = 128, message = "{validation.length.description}")
@@ -38,7 +41,7 @@ public class AccessControlList implements Cloneable {
 	}
 
 	private Accessor create(String name, boolean alias, boolean svc, int permit) {
-		Accessor result = new Accessor();
+		Accessor result = new Accessor(State.NEW);
 		result.setName(name);
 		result.setAlias(alias);
 		result.setSvc(svc);
@@ -69,32 +72,13 @@ public class AccessControlList implements Cloneable {
 	}
 
 	public void setAccessors(Set<Accessor> newAccessors) {
-		// Clear actual list
-		accessors.clear();
-
-		if (newAccessors == null) {
-			// Add dm_owner with default setting
-			addAccessor(create("dm_owner", false, false, 7));
-			// Add dm_world with default setting
-			addAccessor(create("dm_world", false, false, 3));
-		} else {
-			// Add new accessors
-			newAccessors.forEach(t -> addAccessor(t));
-
-			// Add dm_owner with default setting if it is necessary
-			if (!hasAccessor("dm_owner")) {
-				addAccessor(create("dm_owner", false, false, 7));
-			}
-
-			// Add dm_owner with default setting if it is necessary
-			if (!hasAccessor("dm_world")) {
-				addAccessor(create("dm_world", false, false, 3));
-			}
+		if (newAccessors != null) {
+			newAccessors.forEach(accessor -> addAccessor(accessor));
 		}
 	}
 
 	public void addAccessor(Accessor accessor) {
-		if(accessor != null) {
+		if (accessor != null) {
 			accessors.put(accessor.getName(), accessor);
 		}
 	}
@@ -106,7 +90,7 @@ public class AccessControlList implements Cloneable {
 	public Accessor getAccessor(String accessorName) {
 		return accessors.get(accessorName);
 	}
-	
+
 	public void removeAccessor(String accessorName) {
 		accessors.remove(accessorName);
 	}
