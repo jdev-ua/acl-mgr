@@ -73,8 +73,7 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		AccessControlList aclClient = new AccessControlList();
 		aclClient.setName("bnk_client_acl");
 		aclClient.setDescription("Client ACL");
-		aclClient.addObjType("bnk_client");
-		aclClient.addObjType("bnk_not_client");
+		aclClient.setObjTypes(Set.of("bnk_client", "bnk_not_client"));
 		aclClient.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
 		create(aclClient);
 
@@ -82,7 +81,7 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		AccessControlList aclCommittee = new AccessControlList();
 		aclCommittee.setName("bnk_committee_acl");
 		aclCommittee.setDescription("Credit committee ACL");
-		aclCommittee.addObjType("bnk_committee");
+		aclCommittee.setObjTypes(Set.of("bnk_committee"));
 		aclCommittee.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
 		create(aclCommittee);
 
@@ -90,7 +89,7 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		AccessControlList aclGRC = new AccessControlList();
 		aclGRC.setName("bnk_grc_acl");
 		aclGRC.setDescription("Group of related companies ACL");
-		aclGRC.addObjType("bnk_grc_acl");
+		aclGRC.setObjTypes(Set.of("bnk_grc_acl"));
 		aclGRC.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
 		create(aclGRC);
 
@@ -98,19 +97,10 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		AccessControlList aclConclPS = new AccessControlList();
 		aclConclPS.setName("bnk_concl_ps_acl");
 		aclConclPS.setDescription("Pledge service conclusion ACL");
-		aclConclPS.addObjType("bnk_conclusion");
-		aclConclPS.addStatus("PS_S_CO_APPROVE");
-		aclConclPS.addStatus("PS_S_CO_ASSIGN");
-		aclConclPS.addStatus("PS_S_CO_CONCL");
-		aclConclPS.addStatus("PS_S_CO_DONE");
-		aclConclPS.addStatus("PS_S_CO_REJECT");
-		aclConclPS.addStatus("PS_S_CO_REV");
-		aclConclPS.addStatus("PS_S_RD_APPROVE");
-		aclConclPS.addStatus("PS_S_RD_ASSIGN");
-		aclConclPS.addStatus("PS_S_RD_CONCL");
-		aclConclPS.addStatus("PS_S_RD_DONE");
-		aclConclPS.addStatus("PS_S_RD_REJECT");
-		aclConclPS.addStatus("PS_S_RD_REV");
+		aclConclPS.setObjTypes(Set.of("bnk_conclusion"));
+		aclConclPS.setStatuses(Set.of("PS_S_CO_APPROVE", "PS_S_CO_ASSIGN", "PS_S_CO_CONCL", "PS_S_CO_DONE",
+				"PS_S_CO_REJECT", "PS_S_CO_REV", "PS_S_RD_APPROVE", "PS_S_RD_ASSIGN", "PS_S_RD_CONCL", "PS_S_RD_DONE",
+				"PS_S_RD_REJECT", "PS_S_RD_REV"));
 		aclConclPS.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
 		create(aclConclPS);
 	}
