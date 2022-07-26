@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import ua.pp.jdev.permits.domain.AccessControlList;
 import ua.pp.jdev.permits.domain.Accessor;
+import ua.pp.jdev.permits.enums.State;
 
 @Component
 public class SimpleAclDAO implements AccessControlListDAO {
@@ -25,7 +26,6 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		scaner.setPermit(3);
 		scaner.setAlias(true);
 		scaner.setSvc(false);
-		scaner.markOk();
 
 		Accessor bAdmin = new Accessor();
 		bAdmin.setName("bnk_business_admin");
@@ -33,7 +33,6 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		bAdmin.setAlias(false);
 		bAdmin.setSvc(false);
 		bAdmin.setXPermits(Set.of("EXECUTE_PROC", "CHANGE_LOCATION"));
-		scaner.markOk();
 
 		Accessor tAdmin = new Accessor();
 		tAdmin.setName("bnk_tech_admin");
@@ -41,7 +40,6 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		tAdmin.setAlias(false);
 		tAdmin.setSvc(false);
 		tAdmin.setXPermits(Set.of("EXECUTE_PROC", "CHANGE_LOCATION"));
-		tAdmin.markOk();
 
 		Accessor pam1 = new Accessor();
 		pam1.setName("bnk_grc_pam1");
@@ -49,7 +47,6 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		pam1.setAlias(true);
 		pam1.setSvc(false);
 		pam1.setXPermits(Set.of("EXECUTE_PROC"));
-		pam1.markOk();
 
 		Accessor pam2 = new Accessor();
 		pam2.setName("bnk_grc_pam2");
@@ -57,7 +54,6 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		pam2.setAlias(true);
 		pam2.setSvc(false);
 		pam2.setXPermits(Set.of("EXECUTE_PROC"));
-		pam2.markOk();
 
 		Accessor legalPerf = new Accessor();
 		legalPerf.setName("bnk-ls-perf");
@@ -65,7 +61,6 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		legalPerf.setAlias(true);
 		legalPerf.setSvc(true);
 		legalPerf.setOrgLevels(Set.of("CO", "VR", "MR", "RD"));
-		legalPerf.markOk();
 
 		Accessor legalLM = new Accessor();
 		legalLM.setName("bnk-ls-lm");
@@ -73,7 +68,6 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		legalLM.setAlias(true);
 		legalLM.setSvc(true);
 		legalLM.setOrgLevels(Set.of("CO", "VR", "MR", "RD"));
-		legalPerf.markOk();
 
 		// Client ACL
 		AccessControlList aclClient = new AccessControlList();
@@ -125,7 +119,8 @@ public class SimpleAclDAO implements AccessControlListDAO {
 	public Collection<AccessControlList> readAll() {
 		// disable direct access to stored data by getting every single ACL by
 		// appropriate read method
-		return storage.values().stream().map(acl -> read(String.valueOf(acl.getId())).get()).collect(Collectors.toList());
+		return storage.values().stream().map(acl -> read(String.valueOf(acl.getId())).get())
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -170,12 +165,12 @@ public class SimpleAclDAO implements AccessControlListDAO {
 	}
 
 	private Set<Accessor> normilizeAccessors(Collection<Accessor> source) {
-		return source.stream().filter(accessor -> !"deleted".equalsIgnoreCase(accessor.getState()))
-				.peek(Accessor::markOk).collect(Collectors.toSet());
+		return source.stream().filter(accessor -> !State.VOID.equals(accessor.getState()))
+				.peek(accessor -> accessor.setState(State.PURE)).collect(Collectors.toSet());
 	}
 
 	@Override
-	public Optional<AccessControlList> delete(String id) {
-		return Optional.ofNullable(storage.remove(id));
+	public boolean delete(String id) {
+		return (storage.remove(id) != null);
 	}
 }
