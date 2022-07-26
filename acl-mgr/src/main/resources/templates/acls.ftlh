@@ -11,7 +11,7 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th scope="col">ID</th>
+                                    <th scope="col">-ID-</th>
                                     <th scope="col"><@spring.message "label.name"/></th>
                                     <th scope="col"><@spring.message "label.description"/></th>
                                     <th scope="col"></th>

@@ -67,7 +67,8 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th scope="col">ID</th>
+                                    <th scope="col">-ID-</th>
+                                    <th scope="col">-STATE-</th>
                                     <th scope="col"><@spring.message "label.name"/></th>
                                     <th scope="col"><@spring.message "label.permit"/></th>
                                     <th scope="col"><@spring.message "label.alias"/></th>
@@ -81,6 +82,7 @@
                                 <#list acl.accessors as accessor>
                                     <tr>
                                         <td><#if accessor.id??>${accessor.id}<#else>null</#if></td>
+                                        <td>${accessor.state}</td>
                                         <td>${accessor.name}</td>
                                         <td>${accessor.permit}</td>
                                         <td>

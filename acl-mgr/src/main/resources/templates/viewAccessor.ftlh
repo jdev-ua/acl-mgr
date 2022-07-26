@@ -7,10 +7,18 @@
         <div class="card-body">
             <div class="form-group row">
                 <label for="id"
-                       class="col-sm-2 col-form-label font-weight">ID</label>
+                       class="col-sm-2 col-form-label font-weight">-ID-</label>
                 <div class="col-sm-4">
                     <input type="text" readonly class="form-control-plaintext" id="id"
                            value="<#if accessor.id??>${accessor.id}<#else>null</#if>">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="id"
+                       class="col-sm-2 col-form-label font-weight">-STATE-</label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control-plaintext" id="state"
+                           value="<#if accessor.state??>${accessor.state}<#else>null</#if>">
                 </div>
             </div>
             <div class="form-group row">
