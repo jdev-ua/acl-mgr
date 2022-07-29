@@ -25,8 +25,10 @@ public class DictionaryService {
     	dictObjTypes.put("bnk_covenant","bnk_covenant");
     	dictObjTypes.put("bnk_document","bnk_document");
     	dictObjTypes.put("bnk_grc","bnk_grc");
+    	dictObjTypes.put("rba_aps_limit","rba_aps_limit");
     	dictObjTypes.put("bnk_not_client","bnk_not_client");
     	dictObjTypes.put("bnk_report","bnk_report");
+    	
     }
 
 	private void initDictStatuses() {
@@ -44,6 +46,9 @@ public class DictionaryService {
 		dictStatuses.put("COV_S_CLOSED","COV_S_CLOSED");
 		dictStatuses.put("COV_S_INACTIVE","COV_S_INACTIVE");
 		dictStatuses.put("COV_S_ACTIVE","COV_S_ACTIVE");
+		dictStatuses.put("LIM_S_CLOSED","LIM_S_CLOSED");
+		dictStatuses.put("LIM_S_INACTIVE","LIM_S_INACTIVE");
+		dictStatuses.put("LIM_S_ACTIVE","LIM_S_ACTIVE");
 	}
 	
 	public Map<String, String> getObjTypes() {
