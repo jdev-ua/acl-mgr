@@ -10,7 +10,7 @@
                        class="col-sm-2 col-form-label font-weight">-ID-</label>
                 <div class="col-sm-4">
                     <input type="text" readonly class="form-control-plaintext" id="id"
-                           value="<#if accessor.id??>${accessor.id}<#else>null</#if>">
+                           value="<#if accessor.id??>${accessor.id?c}<#else>null</#if>">
                 </div>
             </div>
             <div class="form-group row">

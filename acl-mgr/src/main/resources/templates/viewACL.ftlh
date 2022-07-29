@@ -81,7 +81,7 @@
                                 <tbody>
                                 <#list acl.accessors as accessor>
                                     <tr>
-                                        <td><#if accessor.id??>${accessor.id}<#else>null</#if></td>
+                                        <td><#if accessor.id??>${accessor.id?c}<#else>null</#if></td>
                                         <td>${accessor.state}</td>
                                         <td>${accessor.name}</td>
                                         <td>${accessor.permit}</td>
