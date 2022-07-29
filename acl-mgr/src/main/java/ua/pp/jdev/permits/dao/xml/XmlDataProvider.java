@@ -36,7 +36,6 @@ import com.google.common.io.Files;
 
 import ua.pp.jdev.permits.domain.AccessControlList;
 import ua.pp.jdev.permits.domain.Accessor;
-import ua.pp.jdev.permits.enums.State;
 
 public class XmlDataProvider {
 	static final String ACL = "acl";
