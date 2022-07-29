@@ -12,6 +12,7 @@
                                 <thead>
                                 <tr>
                                     <th scope="col">-ID-</th>
+                                    <th scope="col">-STATE-</th>
                                     <th scope="col"><@spring.message "label.name"/></th>
                                     <th scope="col"><@spring.message "label.description"/></th>
                                     <th scope="col"></th>
@@ -21,6 +22,7 @@
                                 <#list acls as acl>
                                     <tr>
                                         <td>${acl.id?c}</td>
+                                        <td>${acl.state}</td>
                                         <td>${acl.name}</td>
                                         <td>${acl.description}</td>
                                         <td>
