@@ -19,7 +19,8 @@
         <input type="hidden" id="refresh" name="refresh" value="false"/>
         <input type="hidden" id="_method" name="_method" value="patch"/>
         <input type="hidden" id="state" name="state" value="${accessor.state}"/>
-        <input type="hidden" id="id" name="id" value="${accessor.id}"/>
+        <input type="hidden" id="id" name="id" value="<#if accessor.id??>${accessor.id?c}</#if>"/>
+        <input type="hidden" id="aclId" name="aclId" value="<#if accessor.aclId??>${accessor.aclId?c}</#if>"/>
         <div class="card w-75">
             <h5 class="card-header"><@spring.message "title.editaccessor"/> : ${accessor.name}</h5>
             <div class="card-body">
@@ -28,7 +29,7 @@
                            class="col-sm-2 col-form-label font-weight">-ID-</label>
                     <div class="col-sm-4">
                         <input type="text" readonly class="form-control-plaintext" id="id"
-                               value="${accessor.id?c}">
+                               value="<#if accessor.id??>${accessor.id?c}</#if>">
                     </div>
                 </div>
                 <div class="form-group row">
