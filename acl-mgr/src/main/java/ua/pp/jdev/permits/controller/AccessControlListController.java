@@ -41,7 +41,7 @@ public class AccessControlListController {
 	private DictionaryService dictService;
 
 	@Autowired
-	@Qualifier("jdbcAclDAO")
+	@Qualifier("springDataJdbcAclDAO")
 	private void setAccessControlListDAO(AccessControlListDAO aclDAO) {
 		this.aclDAO = aclDAO;
 	}
@@ -53,7 +53,7 @@ public class AccessControlListController {
 
 	@ModelAttribute("acl")
 	private AccessControlList name() {
-		return new AccessControlList();
+		return new AccessControlList(State.NEW);
 	}
 
 	@ModelAttribute("dictObjTypes")
@@ -152,8 +152,9 @@ public class AccessControlListController {
 			log.debug("Starting delete accessor '{}' from ACL with ID={}", accessorName, id);
 
 			AccessControlList acl = (AccessControlList) model.getAttribute("acl");
-			if (acl.hasAccessor(accessorName)) {
-				acl.getAccessor(accessorName).setState(State.VOID);
+			Optional<Accessor> optional = acl.getAccessor(accessorName);
+			if(optional.isPresent()) {
+				optional.get().setState(State.VOID);
 			}
 			log.info("Deleted accessor '{}' from ACL: {}", accessorName, acl);
 
