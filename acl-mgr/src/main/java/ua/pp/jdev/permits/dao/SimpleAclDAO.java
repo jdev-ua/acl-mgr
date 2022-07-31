@@ -9,15 +9,27 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.domain.AccessControlList;
 import ua.pp.jdev.permits.domain.Accessor;
 import ua.pp.jdev.permits.enums.State;
 
+@Slf4j
 @Component
+@Profile("simple")
 public class SimpleAclDAO implements AccessControlListDAO {
 	private Map<String, AccessControlList> storage = new HashMap<>();
+	
+	public SimpleAclDAO() {
+		log.info(getInitMessage());
+	}
+	
+	protected String getInitMessage() {
+		return "Initializing simple ACL datasource storing data in memory";
+	}
 
 	@PostConstruct
 	protected void populate() {
