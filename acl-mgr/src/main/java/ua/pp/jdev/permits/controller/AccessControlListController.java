@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,7 +40,6 @@ public class AccessControlListController {
 	private DictionaryService dictService;
 
 	@Autowired
-	@Qualifier("springDataJdbcAclDAO")
 	private void setAccessControlListDAO(AccessControlListDAO aclDAO) {
 		this.aclDAO = aclDAO;
 	}
@@ -153,7 +151,7 @@ public class AccessControlListController {
 
 			AccessControlList acl = (AccessControlList) model.getAttribute("acl");
 			Optional<Accessor> optional = acl.getAccessor(accessorName);
-			if(optional.isPresent()) {
+			if (optional.isPresent()) {
 				optional.get().setState(State.VOID);
 			}
 			log.info("Deleted accessor '{}' from ACL: {}", accessorName, acl);
