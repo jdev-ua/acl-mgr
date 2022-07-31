@@ -33,6 +33,8 @@ public class Accessor implements Cloneable, Serializable, Persistable<Long> {
 	@Id
 	private Long id;
 
+	@Setter(AccessLevel.PACKAGE)
+	@Getter(AccessLevel.PACKAGE)
 	private Long aclId;
 
 	@NotBlank(message = "{validation.notblank.name}")
@@ -71,7 +73,7 @@ public class Accessor implements Cloneable, Serializable, Persistable<Long> {
 	}
 
 	@PersistenceCreator
-	public Accessor(Long id, Long aclId, String name, int permit, boolean alias, boolean svc, Set<OrgLevel> rawOrgLevels,
+	protected Accessor(Long id, Long aclId, String name, int permit, boolean alias, boolean svc, Set<OrgLevel> rawOrgLevels,
 			Set<XPermit> rawXPermits) {
 		setName(name);
 		setId(id);
@@ -107,6 +109,7 @@ public class Accessor implements Cloneable, Serializable, Persistable<Long> {
 	}
 
 	public void setOrgLevels(Set<String> orgLevels) {
+		// Apply new not-null set of Org.Levels or clear current otherwise
 		if (orgLevels != null) {
 			// Convert new Org.Levels from String to internal data type 
 			Set<OrgLevel> prepared = orgLevels.stream().map(t -> {
@@ -128,6 +131,7 @@ public class Accessor implements Cloneable, Serializable, Persistable<Long> {
 	}
 
 	public void setXPermits(Set<String> xPermits) {
+		// Apply new not-null set of XPermits or clear current otherwise
 		if (xPermits != null) {
 			// Convert new XPermits from String to internal data type
 			Set<XPermit> prepared = xPermits.stream().map(t -> {
