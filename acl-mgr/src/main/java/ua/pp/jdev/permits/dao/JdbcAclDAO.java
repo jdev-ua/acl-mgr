@@ -7,21 +7,27 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.domain.AccessControlList;
 import ua.pp.jdev.permits.domain.Accessor;
 import ua.pp.jdev.permits.enums.State;
 
+@Slf4j
 @Component
+@Profile("jdbc")
 public class JdbcAclDAO implements AccessControlListDAO {
 	private JdbcOperations jdbcOperations;
 
 	public JdbcAclDAO(JdbcOperations jdbcOperations) {
+		log.info("Initializing ACL datasource persisting data in embedded H2 database by JdbcTemplate");
+		
 		this.jdbcOperations = jdbcOperations;
 	}
 
