@@ -63,14 +63,32 @@
                             <label for="objTypes"
                                    class="col-sm-2 col-form-label font-weight"><@spring.message "label.objtypes"/></label>
                             <div class="col-sm-4">
-                                <@spring.formMultiSelect "acl.objTypes" dictObjTypes 'class="form-control"'/>
+                                <#if dictObjTypes?has_content>
+                                    <select class="selectpicker" id="objTypes" name="objTypes" multiple>
+                                        <#list dictObjTypes?keys as dictKey>
+                                                    <option value="${dictKey}"
+                                            <#if acl.objTypes?seq_contains(dictKey)>selected</#if>>${dictObjTypes[dictKey]}</option>
+                                        </#list>
+                                    </select>
+                                <#else>
+                                    <span><@spring.message "label.notavailable"/></span>
+                                </#if>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="statuses"
                                    class="col-sm-2 col-form-label font-weight"><@spring.message "label.statuses"/></label>
                             <div class="col-sm-4">
-                                <@spring.formMultiSelect "acl.statuses" dictStatuses 'class="form-control"'/>
+                                <#if dictStatuses?has_content>
+                                    <select class="selectpicker" id="statuses" name="statuses" multiple>
+                                        <#list dictStatuses?keys as dictKey>
+                                                    <option value="${dictKey}"
+                                            <#if acl.statuses?seq_contains(dictKey)>selected</#if>>${dictStatuses[dictKey]}</option>
+                                        </#list>
+                                    </select>
+                                <#else>
+                                    <span><@spring.message "label.notavailable"/></span>
+                                </#if>
                             </div>
                         </div>
                     </div>
