@@ -52,7 +52,7 @@ public class XmlDataProvider {
 	static final String ACCESSOR_SVC = "svc";
 	static final String ROOT = "security-config";
 	static final String REDUNDANT_XML_SYMBOLS = "[\t\n]*";
-	
+
 	static final String BACKUP_PREFIX_FORMAT_PATTERN = "%s/%s-%s.%s.bak";
 	static final String BACKUP_SUFFIX_DATE_PATTERN = "yyyyMMdd_hhmmssSSS";
 
@@ -61,7 +61,7 @@ public class XmlDataProvider {
 	public XmlDataProvider(String dataSource) throws FileNotFoundException {
 		this(Paths.get(dataSource).toUri());
 	}
-	
+
 	XmlDataProvider(URI dataSource) throws FileNotFoundException {
 		file = ResourceUtils.getFile(dataSource);
 	}
@@ -69,25 +69,24 @@ public class XmlDataProvider {
 	public void write(Collection<AccessControlList> acls) throws XmlDataException {
 		try {
 			// Build backup-file name
-			String backupLocation = String.format(BACKUP_PREFIX_FORMAT_PATTERN,
-					file.getParentFile(),
+			String backupLocation = String.format(BACKUP_PREFIX_FORMAT_PATTERN, file.getParentFile(),
 					Files.getNameWithoutExtension(file.getName()),
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern(BACKUP_SUFFIX_DATE_PATTERN)),
 					Files.getFileExtension(file.getName()));
-			Path destination = Paths.get(backupLocation);  
-			// Backup current source file 
+			Path destination = Paths.get(backupLocation);
+			// Backup current source file
 			java.nio.file.Files.copy(file.toPath(), destination);
-			
+
 			// Create document from collection of ACLs
 			Document doc = buildDocument(acls);
-			
+
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer transformer = tf.newTransformer();
 			// Make content easy for human read
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			// Write new data to file
 			transformer.transform(new DOMSource(doc), new StreamResult(file));
-		} catch (TransformerException| ParserConfigurationException | IOException  e) {
+		} catch (TransformerException | ParserConfigurationException | IOException e) {
 			throw new XmlDataException(e);
 		}
 	}
@@ -177,7 +176,7 @@ public class XmlDataProvider {
 					AccessControlList acl = new AccessControlList();
 					for (int j = 0; j < childList.getLength(); j++) {
 						Node child = childList.item(j);
-						
+
 						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACL_NAME.equals(child.getNodeName())) {
 							String name = child.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
@@ -188,7 +187,7 @@ public class XmlDataProvider {
 							String description = child.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
 							acl.setDescription(description);
 						}
-						// parse acl.name						
+						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACL_OBJ_TYPES.equals(child.getNodeName())) {
 							String objTypes = child.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
 							if (objTypes != null) {
@@ -196,7 +195,7 @@ public class XmlDataProvider {
 										Splitter.on(',').trimResults().omitEmptyStrings().splitToList(objTypes)));
 							}
 						}
-						// parse acl.name						
+						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACL_STATUSES.equals(child.getNodeName())) {
 							String statuses = child.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
 							if (statuses != null) {
@@ -204,12 +203,12 @@ public class XmlDataProvider {
 										Splitter.on(',').trimResults().omitEmptyStrings().splitToList(statuses)));
 							}
 						}
-						// parse acl.name						
+						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACCESSOR.equals(child.getNodeName())) {
 							acl.addAccessor(parseAccessor(child));
 						}
 					}
-					
+
 					result.add(acl);
 				}
 			}
@@ -234,7 +233,7 @@ public class XmlDataProvider {
 				String permit = param.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
 				accessor.setPermit(Integer.parseInt(permit));
 			}
-			// parse accessor.xPermits			
+			// parse accessor.xPermits
 			if (param.getNodeType() == Node.ELEMENT_NODE && ACCESSOR_XPERMITS.equals(param.getNodeName())) {
 				String xPermits = param.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
 				if (xPermits != null) {
