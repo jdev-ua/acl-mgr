@@ -8,11 +8,11 @@ import ua.pp.jdev.permits.domain.AccessControlList;
 public interface AccessControlListDAO {
 	Collection<AccessControlList> readAll();
 
-	Optional<AccessControlList> read(String id);
+	Optional<AccessControlList> read(Long id);
 
 	void create(AccessControlList acl);
 
 	void update(AccessControlList acl);
 
-	boolean delete(String id);
+	boolean delete(Long id);
 }
