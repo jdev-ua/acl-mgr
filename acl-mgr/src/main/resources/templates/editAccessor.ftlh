@@ -14,13 +14,13 @@
             document.getElementById("editAccessor").submit();
         }
     </script>
-    <form id="editAccessor" action="/acls/${acl.id?c}?accessorName=${accessor.name}" method="post"
+    <form id="editAccessor" action="/acls/${acl.id}?accessorName=${accessor.name}" method="post"
           modelAttribute="accessor">
         <input type="hidden" id="refresh" name="refresh" value="false"/>
         <input type="hidden" id="_method" name="_method" value="patch"/>
         <input type="hidden" id="state" name="state" value="${accessor.state}"/>
-        <input type="hidden" id="id" name="id" value="<#if accessor.id??>${accessor.id?c}</#if>"/>
-        <input type="hidden" id="aclId" name="aclId" value="<#if accessor.aclId??>${accessor.aclId?c}</#if>"/>
+        <input type="hidden" id="id" name="id" value="<#if accessor.id??>${accessor.id}</#if>"/>
+        <input type="hidden" id="aclId" name="aclId" value="<#if accessor.aclId??>${accessor.aclId}</#if>"/>
         <div class="card w-75">
             <h5 class="card-header"><@spring.message "title.editaccessor"/> : ${accessor.name}</h5>
             <div class="card-body">
@@ -29,7 +29,7 @@
                            class="col-sm-2 col-form-label font-weight">-ID-</label>
                     <div class="col-sm-4">
                         <input type="text" readonly class="form-control-plaintext" id="id"
-                               value="<#if accessor.id??>${accessor.id?c}</#if>">
+                               value="<#if accessor.id??>${accessor.id}</#if>">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -145,7 +145,7 @@
                 <input class="btn btn-primary mr-2" name="cancel"
                        value="<@spring.message "button.cancel"/>"
                        title="<@spring.message "button.cancel"/>" type="button"
-                       onClick="location.href='/acls/${acl.id?c}/edit'"/>
+                       onClick="location.href='/acls/${acl.id}/edit'"/>
             </div>
         </div>
     </form>

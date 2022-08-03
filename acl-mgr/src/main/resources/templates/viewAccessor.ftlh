@@ -10,7 +10,7 @@
                        class="col-sm-2 col-form-label font-weight">-ID-</label>
                 <div class="col-sm-4">
                     <input type="text" readonly class="form-control-plaintext" id="id"
-                           value="<#if accessor.id??>${accessor.id?c}<#else>null</#if>">
+                           value="<#if accessor.id??>${accessor.id}</#if>">
                 </div>
             </div>
             <div class="form-group row">
@@ -98,7 +98,7 @@
             <input class="btn btn-primary mr-2" name="ok"
                    value="<@spring.message "button.ok"/>"
                    title="<@spring.message "button.ok"/>" type="button"
-                   onClick="location.href='/acls/${acl.id?c}'"/>
+                   onClick="location.href='/acls/${acl.id}'"/>
         </div>
     </div>
 </@c.container>

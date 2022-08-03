@@ -22,7 +22,7 @@
                                class="col-sm-2 col-form-label font-weight">ID</label>
                         <div class="col-sm-4">
                             <input type="text" readonly class="form-control-plaintext" id="id"
-                                   value="<#if acl.id??>${acl.id?c}<#else>null</#if>">
+                                   value="<#if acl.id??>${acl.id}</#if>">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -93,7 +93,7 @@
                                 <tbody>
                                 <#list acl.accessors as accessor>
                                     <tr>
-                                        <td><#if accessor.id??>${accessor.id?c}<#else>null</#if></td>
+                                        <td><#if accessor.id??>${accessor.id}</#if></td>
                                         <td>${accessor.state}</td>
                                         <td>${accessor.name}</td>
                                         <td>${accessor.permit}</td>
@@ -124,7 +124,7 @@
                                         <td>
                                             <button class="btn btn-outline-primary btn-sm" type="button"
                                                     title="<@spring.message "tooltip.details"/>"
-                                                    onClick="location.href='/acls/${acl.id?c}?accessorName=${accessor.name}'">
+                                                    onClick="location.href='/acls/${acl.id}?accessorName=${accessor.name}'">
                                                 <nobr>
                                                     <span class="fas fa-eye"></span>&nbsp;<@spring.message "button.view"/>
                                                 </nobr>
@@ -151,7 +151,7 @@
         <div class="p-2"><input class="btn btn-primary mr-2" name="edit"
                                 value="<@spring.message "button.edit"/>"
                                 title="<@spring.message "button.edit"/>" type="button"
-                                onClick="location.href='/acls/${acl.id?c}/edit'"/>
+                                onClick="location.href='/acls/${acl.id}/edit'"/>
         </div>
     </div>
 </@c.container>
