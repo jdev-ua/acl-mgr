@@ -1,7 +1,8 @@
-package ua.pp.jdev.permits.dao;
+package ua.pp.jdev.permits.data.simple;
 
 import java.sql.Types;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,8 +16,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.pp.jdev.permits.domain.AccessControlList;
-import ua.pp.jdev.permits.domain.Accessor;
+import ua.pp.jdev.permits.data.AccessControlList;
+import ua.pp.jdev.permits.data.AccessControlListDAO;
+import ua.pp.jdev.permits.data.Accessor;
 import ua.pp.jdev.permits.enums.State;
 
 @Slf4j
@@ -27,7 +29,7 @@ public class JdbcAclDAO implements AccessControlListDAO {
 
 	public JdbcAclDAO(JdbcOperations jdbcOperations) {
 		log.info("Initializing ACL datasource persisting data in embedded H2 database by JdbcTemplate");
-		
+
 		this.jdbcOperations = jdbcOperations;
 	}
 
@@ -37,9 +39,9 @@ public class JdbcAclDAO implements AccessControlListDAO {
 				+ " left outer join status s on s.acl_id=a.id left outer join obj_type t on t.acl_id=a.id";
 
 		// Remove duplicates, read accessors and then sort result by ACL name
-		return jdbcOperations.query(sql, new AclRowMapper()).stream().distinct()
+		return jdbcOperations.query(sql, new JdbcAclRowMapper()).stream().distinct()
 				.peek(acl -> acl.setAccessors(readAllAccessors(acl.getId())))
-				.sorted((o1, o2) -> o1.getName().compareTo(o2.getName())).collect(Collectors.toList());
+				.sorted(Comparator.comparing(AccessControlList::getName)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -49,16 +51,16 @@ public class JdbcAclDAO implements AccessControlListDAO {
 				+ " left outer join obj_type t on t.acl_id=a.id where a.id=?";
 
 		// Remove duplicates, read accessors and then get first ACL as a result
-		return jdbcOperations.query(sql, new AclRowMapper(), id).stream().distinct()
+		return jdbcOperations.query(sql, new JdbcAclRowMapper(), id).stream().distinct()
 				.peek(acl -> acl.setAccessors(readAllAccessors(acl.getId()))).findFirst();
 	}
 
-	protected Set<Accessor> readAllAccessors(Long id) {
+	protected Set<Accessor> readAllAccessors(String id) {
 		String sql = "select a.id, a.name, a.permit, a.alias, a.svc, o.org_level, x.xpermit "
 				+ " from accessor a left outer join org_level o on o.accessor_id=a.id "
 				+ " left outer join xpermit x on x.accessor_id=a.id where a.acl_id=?";
 
-		return jdbcOperations.query(sql, new AccessorRowMapper(), id).stream().distinct().collect(Collectors.toSet());
+		return jdbcOperations.query(sql, new JdbcAccessorRowMapper(), id).stream().distinct().collect(Collectors.toSet());
 	}
 
 	@Override
@@ -71,7 +73,7 @@ public class JdbcAclDAO implements AccessControlListDAO {
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
 		jdbcOperations.update(psc, keyHolder);
-		acl.setId(keyHolder.getKey().longValue());
+		acl.setId(String.valueOf(keyHolder.getKey().longValue()));
 
 		// Save acl's statuses
 		saveMultiValueField(acl.getStatuses(), acl.getId(), "status", "acl_id", "status");
@@ -81,7 +83,7 @@ public class JdbcAclDAO implements AccessControlListDAO {
 		saveAccessors(acl);
 	}
 
-	protected void saveMultiValueField(Collection<String> values, Long idParent, String table, String foreignKey,
+	protected void saveMultiValueField(Collection<String> values, String idParent, String table, String foreignKey,
 			String column) {
 		String sqlClear = String.format("delete %s where %s=?", table, foreignKey);
 		jdbcOperations.update(sqlClear, idParent);
@@ -97,8 +99,7 @@ public class JdbcAclDAO implements AccessControlListDAO {
 	}
 
 	protected void saveAccessors(AccessControlList acl) {
-		Collection<Accessor> accessors = acl.getAccessors();
-		accessors.forEach(accessor -> {
+		acl.getAccessors().forEach(accessor -> {
 			// Skip current accessor if it is not changed
 			if (State.PURE.equals(accessor.getState()))
 				return;
@@ -122,7 +123,7 @@ public class JdbcAclDAO implements AccessControlListDAO {
 						accessor.getPermit(), accessor.isAlias(), accessor.isSvc()));
 
 				jdbcOperations.update(psc, keyHolder);
-				accessor.setId(keyHolder.getKey().longValue());
+				accessor.setId(String.valueOf(keyHolder.getKey().longValue()));
 			} else {
 				String updateQuery = "update accessor set name=?, permit=?, alias=?, svc=? where id=?";
 				jdbcOperations.update(updateQuery, accessor.getName(), accessor.getPermit(), accessor.isAlias(),
@@ -136,7 +137,7 @@ public class JdbcAclDAO implements AccessControlListDAO {
 		});
 	}
 
-	protected boolean existsById(Long id) {
+	protected boolean existsById(String id) {
 		String query = "select count(*) from acl where id=?";
 		int count = jdbcOperations.queryForObject(query, Integer.class, id);
 		return count > 0;

@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.dao;
+package ua.pp.jdev.permits.data.simple;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import ua.pp.jdev.permits.domain.Accessor;
+import ua.pp.jdev.permits.data.Accessor;
 
-class AccessorRowMapper implements RowMapper<Accessor> {
+class JdbcAccessorRowMapper implements RowMapper<Accessor> {
 	private Map<Long, Accessor> cache = new HashMap<>();
 
 	@Override
@@ -23,7 +23,7 @@ class AccessorRowMapper implements RowMapper<Accessor> {
 		} else {
 			accessor = new Accessor();
 
-			accessor.setId(id);
+			accessor.setId(String.valueOf(id));
 			accessor.setName(rs.getString("name"));
 			accessor.setPermit(rs.getInt("permit"));
 			accessor.setAlias(rs.getBoolean("alias"));

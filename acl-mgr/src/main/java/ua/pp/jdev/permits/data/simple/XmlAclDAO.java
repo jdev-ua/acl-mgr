@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.dao;
+package ua.pp.jdev.permits.data.simple;
 
 import java.io.FileNotFoundException;
 
@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import ua.pp.jdev.permits.dao.xml.XmlDataException;
-import ua.pp.jdev.permits.dao.xml.XmlDataProvider;
-import ua.pp.jdev.permits.domain.AccessControlList;
+import ua.pp.jdev.permits.data.AccessControlList;
 
 @Component
 @Profile("xml")
@@ -24,7 +22,7 @@ public class XmlAclDAO extends SimpleAclDAO {
 	protected String getInitMessage() {
 		return "Initializing ACL datasource storing data in XML-file";
 	}
-	
+
 	@PostConstruct
 	protected void populate() {
 		try {

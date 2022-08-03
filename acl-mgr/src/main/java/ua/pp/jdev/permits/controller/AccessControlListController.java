@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.pp.jdev.permits.dao.AccessControlListDAO;
-import ua.pp.jdev.permits.domain.AccessControlList;
-import ua.pp.jdev.permits.domain.Accessor;
+import ua.pp.jdev.permits.data.AccessControlList;
+import ua.pp.jdev.permits.data.AccessControlListDAO;
+import ua.pp.jdev.permits.data.Accessor;
 import ua.pp.jdev.permits.enums.OrgLevel;
 import ua.pp.jdev.permits.enums.Permit;
 import ua.pp.jdev.permits.enums.State;
@@ -92,8 +92,7 @@ public class AccessControlListController {
 		model.addAttribute("acl", acl);
 
 		if (accessorName != null && accessorName.length() > 0) {
-			Optional<Accessor> optionalAccessor = acl.getAccessors().stream()
-					.filter(a -> a.getName().equals(accessorName)).findFirst();
+			Optional<Accessor> optionalAccessor = acl.getAccessor(accessorName);
 			if (optionalAccessor.isEmpty()) {
 				// TODO Implement it!
 			}
@@ -116,8 +115,7 @@ public class AccessControlListController {
 
 		if (addAccessor || (accessorName != null && accessorName.length() > 0)) {
 			if (!addAccessor) {
-				Optional<Accessor> result = acl.getAccessors().stream().filter(a -> a.getName().equals(accessorName))
-						.findFirst();
+				Optional<Accessor> result = acl.getAccessor(accessorName);
 				if (result.isEmpty()) {
 					// TODO Implement it!
 				}
@@ -136,7 +134,7 @@ public class AccessControlListController {
 			return "editAccessor";
 		}
 
-		if (acl.getId() == 0) {
+		if (acl.getId() == null || acl.getId().length() == 0) {
 			model.addAttribute("httpMethod", "post");
 		}
 

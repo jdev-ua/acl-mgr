@@ -1,6 +1,7 @@
-package ua.pp.jdev.permits.dao;
+package ua.pp.jdev.permits.data.simple;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -13,20 +14,22 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.pp.jdev.permits.domain.AccessControlList;
-import ua.pp.jdev.permits.domain.Accessor;
+import ua.pp.jdev.permits.data.AccessControlList;
+import ua.pp.jdev.permits.data.AccessControlListDAO;
+import ua.pp.jdev.permits.data.Accessor;
 import ua.pp.jdev.permits.enums.State;
+import ua.pp.jdev.permits.util.IDGenerator;
 
 @Slf4j
 @Component
 @Profile("simple")
 public class SimpleAclDAO implements AccessControlListDAO {
 	private Map<String, AccessControlList> storage = new HashMap<>();
-	
+
 	public SimpleAclDAO() {
 		log.info(getInitMessage());
 	}
-	
+
 	protected String getInitMessage() {
 		return "Initializing simple ACL datasource storing data in memory";
 	}
@@ -81,58 +84,66 @@ public class SimpleAclDAO implements AccessControlListDAO {
 		legalLM.setSvc(true);
 		legalLM.setOrgLevels(Set.of("CO", "VR", "MR", "RD"));
 
-		// Client ACL
-		AccessControlList aclClient = new AccessControlList();
-		aclClient.setName("bnk_client_acl");
-		aclClient.setDescription("Client ACL");
-		aclClient.setObjTypes(Set.of("bnk_client", "bnk_not_client"));
-		aclClient.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
-		create(aclClient);
+		try {
+			// Client ACL
+			AccessControlList aclClient = new AccessControlList();
+			aclClient.setName("bnk_client_acl");
+			aclClient.setDescription("Client ACL");
+			aclClient.setObjTypes(Set.of("bnk_client", "bnk_not_client"));
+			aclClient.setAccessors(Set.of(scaner.clone(), legalPerf.clone(), legalLM.clone(), pam1.clone(),
+					pam2.clone(), bAdmin.clone(), tAdmin.clone()));
+			create(aclClient);
 
-		// Committee ACL
-		AccessControlList aclCommittee = new AccessControlList();
-		aclCommittee.setName("bnk_committee_acl");
-		aclCommittee.setDescription("Credit committee ACL");
-		aclCommittee.setObjTypes(Set.of("bnk_committee"));
-		aclCommittee.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
-		create(aclCommittee);
+			// Committee ACL
+			AccessControlList aclCommittee = new AccessControlList();
+			aclCommittee.setName("bnk_committee_acl");
+			aclCommittee.setDescription("Credit committee ACL");
+			aclCommittee.setObjTypes(Set.of("bnk_committee"));
+			aclCommittee.setAccessors(Set.of(scaner.clone(), legalPerf.clone(), legalLM.clone(), pam1.clone(),
+					pam2.clone(), bAdmin.clone(), tAdmin.clone()));
+			create(aclCommittee);
 
-		// GRL ACL
-		AccessControlList aclGRC = new AccessControlList();
-		aclGRC.setName("bnk_grc_acl");
-		aclGRC.setDescription("Group of related companies ACL");
-		aclGRC.setObjTypes(Set.of("bnk_grc_acl"));
-		aclGRC.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
-		create(aclGRC);
+			// GRL ACL
+			AccessControlList aclGRC = new AccessControlList();
+			aclGRC.setName("bnk_grc_acl");
+			aclGRC.setDescription("Group of related companies ACL");
+			aclGRC.setObjTypes(Set.of("bnk_grc_acl"));
+			aclGRC.setAccessors(Set.of(scaner.clone(), legalPerf.clone(), legalLM.clone(), pam1.clone(), pam2.clone(),
+					bAdmin.clone(), tAdmin.clone()));
+			create(aclGRC);
 
-		// PS Conclusion ACL
-		AccessControlList aclConclPS = new AccessControlList();
-		aclConclPS.setName("bnk_concl_ps_acl");
-		aclConclPS.setDescription("Pledge service conclusion ACL");
-		aclConclPS.setObjTypes(Set.of("bnk_conclusion"));
-		aclConclPS.setStatuses(Set.of("PS_S_CO_APPROVE", "PS_S_CO_ASSIGN", "PS_S_CO_CONCL", "PS_S_CO_DONE",
-				"PS_S_CO_REJECT", "PS_S_CO_REV", "PS_S_RD_APPROVE", "PS_S_RD_ASSIGN", "PS_S_RD_CONCL", "PS_S_RD_DONE",
-				"PS_S_RD_REJECT", "PS_S_RD_REV"));
-		aclConclPS.setAccessors(Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin));
-		create(aclConclPS);
+			// PS Conclusion ACL
+			AccessControlList aclConclPS = new AccessControlList();
+			aclConclPS.setName("bnk_concl_ps_acl");
+			aclConclPS.setDescription("Pledge service conclusion ACL");
+			aclConclPS.setObjTypes(Set.of("bnk_conclusion"));
+			aclConclPS.setStatuses(Set.of("PS_S_CO_APPROVE", "PS_S_CO_ASSIGN", "PS_S_CO_CONCL", "PS_S_CO_DONE",
+					"PS_S_CO_REJECT", "PS_S_CO_REV", "PS_S_RD_APPROVE", "PS_S_RD_ASSIGN", "PS_S_RD_CONCL",
+					"PS_S_RD_DONE", "PS_S_RD_REJECT", "PS_S_RD_REV"));
+			aclConclPS.setAccessors(Set.of(scaner.clone(), legalPerf.clone(), legalLM.clone(), pam1.clone(),
+					pam2.clone(), bAdmin.clone(), tAdmin.clone()));
+			create(aclConclPS);
+		} catch (CloneNotSupportedException cnse) {
+			throw new RuntimeException(cnse);
+		}
 	}
 
 	@Override
 	public Collection<AccessControlList> readAll() {
-		// disable direct access to stored data by getting every single ACL by
+		// Disable direct access to stored data by getting every single ACL by
 		// appropriate read method
 		return storage.values().stream().map(acl -> read(String.valueOf(acl.getId())).get())
-				.collect(Collectors.toList());
+				.sorted(Comparator.comparing(AccessControlList::getName)).collect(Collectors.toList());
 	}
 
 	@Override
 	public Optional<AccessControlList> read(String id) {
 		Optional<AccessControlList> result;
 
+		// Create a clone of current ACL to avoid unwanted changes by consumer
 		AccessControlList acl = storage.get(id);
 		if (acl != null) {
 			try {
-				// Create a clone of current ACL to avoid unwanted changes by consumer
 				result = Optional.of(acl.clone());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -147,16 +158,16 @@ public class SimpleAclDAO implements AccessControlListDAO {
 	@Override
 	public void create(AccessControlList newAcl) {
 		if (newAcl != null) {
-			newAcl.setId(IDGenerator.generateID());
+			newAcl.setId(IDGenerator.genStringID());
 			newAcl.setAccessors(normilizeAccessors(newAcl.getAccessors()));
-			storage.put(String.valueOf(newAcl.getId()), newAcl);
+			storage.put(newAcl.getId(), newAcl);
 		}
 	}
 
 	@Override
 	public void update(AccessControlList data) {
-		if (data != null && storage.containsKey(String.valueOf(data.getId()))) {
-			AccessControlList acl = storage.get(String.valueOf(data.getId()));
+		if (data != null && storage.containsKey(data.getId())) {
+			AccessControlList acl = storage.get(data.getId());
 
 			acl.setName(data.getName());
 			acl.setDescription(data.getDescription());
@@ -167,6 +178,7 @@ public class SimpleAclDAO implements AccessControlListDAO {
 	}
 
 	private Set<Accessor> normilizeAccessors(Collection<Accessor> source) {
+		// Purge Accessors in VOID state and setup others with PURE state
 		return source.stream().filter(accessor -> !State.VOID.equals(accessor.getState()))
 				.peek(accessor -> accessor.setState(State.PURE)).collect(Collectors.toSet());
 	}

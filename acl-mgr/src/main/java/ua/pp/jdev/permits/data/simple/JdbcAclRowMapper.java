@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.dao;
+package ua.pp.jdev.permits.data.simple;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import ua.pp.jdev.permits.domain.AccessControlList;
+import ua.pp.jdev.permits.data.AccessControlList;
 
-class AclRowMapper implements RowMapper<AccessControlList> {
+class JdbcAclRowMapper implements RowMapper<AccessControlList> {
 	private Map<Long, AccessControlList> cache = new HashMap<>();
 
 	@Override
@@ -22,7 +22,7 @@ class AclRowMapper implements RowMapper<AccessControlList> {
 			acl = cache.get(id);
 		} else {
 			acl = new AccessControlList();
-			acl.setId(id);
+			acl.setId(String.valueOf(id));
 			acl.setName(rs.getString("name"));
 			acl.setDescription(rs.getString("description"));
 		}

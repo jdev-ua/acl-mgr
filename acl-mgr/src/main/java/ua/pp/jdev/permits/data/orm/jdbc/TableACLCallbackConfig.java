@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.domain;
+package ua.pp.jdev.permits.data.orm.jdbc;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -6,8 +6,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.relational.core.mapping.event.AfterConvertCallback;
 import org.springframework.data.relational.core.mapping.event.AfterSaveCallback;
-
-import ua.pp.jdev.permits.data.AccessorRepository;
 
 /**
  * Provides stubs for AfterSaveCallback and AfterConvertCallback callbacks.
@@ -17,15 +15,15 @@ import ua.pp.jdev.permits.data.AccessorRepository;
  *
  */
 //@Configuration
-class AclCallbackConfig implements ApplicationContextAware {
+class TableACLCallbackConfig implements ApplicationContextAware {
 	private static ApplicationContext ctx = null;
 
-	protected AccessorRepository getRepository() {
-		return ctx.getBean(AccessorRepository.class);
+	protected JdbcAccessorRepository getRepository() {
+		return ctx.getBean(JdbcAccessorRepository.class);
 	}
 
 	@Bean
-	protected AfterSaveCallback<AccessControlList> afterSaveCallback() {
+	protected AfterSaveCallback<TableACL> afterSaveCallback() {
 		return (acl) -> {
 			// Commented code provides explicit save contained accessors into database by
 			// corresponding AccessorRepository
@@ -41,7 +39,7 @@ class AclCallbackConfig implements ApplicationContextAware {
 	}
 
 	@Bean
-	protected AfterConvertCallback<AccessControlList> afterConvertCallback() {
+	protected AfterConvertCallback<TableACL> afterConvertCallback() {
 		return acl -> {
 			// Commented code provides initialization of current ACL object by explicit read
 			// accessors data from database explicit corresponding AccessorRepository
@@ -55,6 +53,6 @@ class AclCallbackConfig implements ApplicationContextAware {
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		AclCallbackConfig.ctx = applicationContext;
+		TableACLCallbackConfig.ctx = applicationContext;
 	}
 }
