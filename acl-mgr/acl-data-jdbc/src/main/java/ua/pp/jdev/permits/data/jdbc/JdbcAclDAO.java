@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.simple;
+package ua.pp.jdev.permits.data.jdbc;
 
 import java.sql.Types;
 import java.util.Collection;
@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
@@ -23,7 +22,6 @@ import ua.pp.jdev.permits.enums.State;
 
 @Slf4j
 @Component
-@Profile("jdbc")
 public class JdbcAclDAO implements AccessControlListDAO {
 	private JdbcOperations jdbcOperations;
 
@@ -60,7 +58,8 @@ public class JdbcAclDAO implements AccessControlListDAO {
 				+ " from accessor a left outer join org_level o on o.accessor_id=a.id "
 				+ " left outer join xpermit x on x.accessor_id=a.id where a.acl_id=?";
 
-		return jdbcOperations.query(sql, new JdbcAccessorRowMapper(), id).stream().distinct().collect(Collectors.toSet());
+		return jdbcOperations.query(sql, new JdbcAccessorRowMapper(), id).stream().distinct()
+				.collect(Collectors.toSet());
 	}
 
 	@Override

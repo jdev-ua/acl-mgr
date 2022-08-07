@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.simple;
+package ua.pp.jdev.permits.data.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

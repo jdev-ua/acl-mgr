@@ -1,11 +1,10 @@
-package ua.pp.jdev.permits.data.orm.jdbc;
+package ua.pp.jdev.permits.data.jdbc;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
@@ -16,7 +15,6 @@ import ua.pp.jdev.permits.data.AccessControlListDAO;
 
 @Slf4j
 @Component
-@Profile("spring-data-jdbc")
 public class SpringDataJdbcAclDAO implements AccessControlListDAO {
 	private JdbcAclRepository repository;
 

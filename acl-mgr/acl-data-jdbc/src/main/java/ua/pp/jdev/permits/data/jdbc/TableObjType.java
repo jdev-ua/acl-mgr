@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.orm.jdbc;
+package ua.pp.jdev.permits.data.jdbc;
 
 import java.io.Serializable;
 
@@ -10,12 +10,12 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Table("ORG_LEVEL")
-class TableOrgLevel implements Serializable {
-	private static final long serialVersionUID = 214464402970944058L;
+@Table("OBJ_TYPE")
+class TableObjType implements Serializable {
+	private static final long serialVersionUID = -5566939475849907389L;
 	
 	@Id
 	private Long id;
-	private Long accessorId;
-	private String orgLevel;
+	private Long aclId;
+	private String objType;
 }
