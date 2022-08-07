@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.orm.cassandra;
+package ua.pp.jdev.permits.data.cassandra;
 
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 

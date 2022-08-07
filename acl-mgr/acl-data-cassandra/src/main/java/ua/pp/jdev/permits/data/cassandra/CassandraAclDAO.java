@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.orm.cassandra;
+package ua.pp.jdev.permits.data.cassandra;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
@@ -17,12 +16,11 @@ import ua.pp.jdev.permits.data.AccessControlListDAO;
 
 @Slf4j
 @Component
-@Profile("cassandra")
 public class CassandraAclDAO implements AccessControlListDAO {
 	private CassandraAclRepository repository;
 
 	public CassandraAclDAO(CassandraAclRepository repository) {
-		log.info("Initializing ACL datasource persisting data in Cassandra database by Spring Data Cassandra");
+		log.info("Initializing ACL datasource persisting data in Apache Cassandra database by Spring Data");
 
 		this.repository = repository;
 	}

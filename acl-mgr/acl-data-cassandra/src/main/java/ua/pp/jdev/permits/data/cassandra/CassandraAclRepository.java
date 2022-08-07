@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.orm.cassandra;
+package ua.pp.jdev.permits.data.cassandra;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.orm.cassandra;
+package ua.pp.jdev.permits.data.cassandra;
 
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-@UserDefinedType("org_level")
-class OrgLevelUDT {
+@UserDefinedType("xpermit")
+class XPermitUDT {
 	@NonNull
-	private String orgLevel;
+	private String xpermit;
 }
