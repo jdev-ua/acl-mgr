@@ -5,13 +5,11 @@ import java.io.FileNotFoundException;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import ua.pp.jdev.permits.data.AccessControlList;
 
 @Component
-@Profile("xml")
 public class XmlAclDAO extends SimpleAclDAO {
 	@Value("${data.src}")
 	private String dataSource;

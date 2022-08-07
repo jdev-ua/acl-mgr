@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.Transient;
+//import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 import ua.pp.jdev.permits.enums.State;
@@ -30,7 +30,7 @@ public class AccessControlList implements Cloneable {
 	@Length(max = 128, message = "{validation.length.description}")
 	private String description = "";
 
-	@Transient
+	//@Transient
 	private State state = State.PURE;
 
 	private Set<String> objTypes = new HashSet<>();

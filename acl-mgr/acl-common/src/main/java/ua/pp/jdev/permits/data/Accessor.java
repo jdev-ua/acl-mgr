@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.Transient;
+//import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 import ua.pp.jdev.permits.enums.State;
@@ -29,7 +29,7 @@ public class Accessor implements Cloneable {
 	@Max(7)
 	private int permit;
 
-	@Transient
+	//@Transient
 	private State state = State.PURE;
 	
 	private Set<String> xPermits = new HashSet<>();

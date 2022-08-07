@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,6 @@ import ua.pp.jdev.permits.util.IDGenerator;
 
 @Slf4j
 @Component
-@Profile("simple")
 public class SimpleAclDAO implements AccessControlListDAO {
 	private Map<String, AccessControlList> storage = new HashMap<>();
 
