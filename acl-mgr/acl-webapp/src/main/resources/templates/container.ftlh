@@ -16,7 +16,7 @@
               href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 
         <!-- Font Awesome CSS -->
-        <script src="https://kit.fontawesome.com/2d05351983.js" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/ab699fd945.js" crossorigin="anonymous"></script>
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -34,6 +34,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
         <title><@spring.message "title.container"/></title>
+        <!-- TODO Show favicon -->
+        <#-- <link rel="icon" href="/shield-dog-solid.svg" type="image/svg+xml"> -->
     </head>
     <body>
     <#include "navbar.ftlh"/>
