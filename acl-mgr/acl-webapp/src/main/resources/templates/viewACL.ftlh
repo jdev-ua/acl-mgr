@@ -2,7 +2,8 @@
 <#import "container.ftlh" as c>
 <@c.container>
     <div class="card">
-        <h5 class="card-header"><@spring.message "title.viewacl"/> : ${acl.name}</h5>
+        <h5 class="card-header" style="color: grey"><i
+                    class="fa-solid fa-shield-halved"></i>&nbsp;<@spring.message "title.viewacl"/> : ${acl.name}</h5>
         <div class="card-body">
             <ul class="nav nav-tabs" id="aclTab" role="tablist">
                 <li class="nav-item">
@@ -17,6 +18,7 @@
             <div class="tab-content" id="aclTabContent">
                 <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
                     <div class="form-group row"></div>
+                    <#-- 
                     <div class="form-group row">
                         <label for="id"
                                class="col-sm-2 col-form-label font-weight">ID</label>
@@ -24,7 +26,7 @@
                             <input type="text" readonly class="form-control-plaintext" id="id"
                                    value="<#if acl.id??>${acl.id}</#if>">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group row">
                         <label for="name"
                                class="col-sm-2 col-form-label font-weight"><@spring.message "label.name"/></label>
@@ -79,8 +81,9 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th scope="col">-ID-</th>
-                                    <th scope="col">-STATE-</th>
+                                    <#--
+                                        <th scope="col">-ID-</th>
+                                        <th scope="col">-STATE-</th> -->
                                     <th scope="col"><@spring.message "label.name"/></th>
                                     <th scope="col"><@spring.message "label.permit"/></th>
                                     <th scope="col"><@spring.message "label.alias"/></th>
@@ -92,9 +95,9 @@
                                 </thead>
                                 <tbody>
                                 <#list acl.accessors as accessor>
-                                    <tr>
+                                    <tr><#--
                                         <td><#if accessor.id??>${accessor.id}</#if></td>
-                                        <td>${accessor.state}</td>
+                                        <td>${accessor.state}</td> -->
                                         <td>${accessor.name}</td>
                                         <td>${accessor.permit}</td>
                                         <td>
@@ -122,7 +125,7 @@
                                             </#list>
                                         </td>
                                         <td>
-                                            <button class="btn btn-outline-primary btn-sm" type="button"
+                                            <button class="btn btn-outline-secondary btn-sm" type="button"
                                                     title="<@spring.message "tooltip.details"/>"
                                                     onClick="location.href='/acls/${acl.id}?accessorName=${accessor.name}'">
                                                 <nobr>
@@ -143,12 +146,12 @@
         </div>
     </div>
     <div class="d-flex">
-        <div class="p-2"><input class="btn btn-primary mr-2" name="ok"
+        <div class="p-2"><input class="btn btn-secondary mr-2" name="ok"
                                 value="<@spring.message "button.ok"/>"
                                 title="<@spring.message "button.ok"/>" type="button"
                                 onClick="location.href='/acls'"/>
         </div>
-        <div class="p-2"><input class="btn btn-primary mr-2" name="edit"
+        <div class="p-2"><input class="btn btn-secondary mr-2" name="edit"
                                 value="<@spring.message "button.edit"/>"
                                 title="<@spring.message "button.edit"/>" type="button"
                                 onClick="location.href='/acls/${acl.id}/edit'"/>

@@ -3,24 +3,27 @@
 <@c.container>
     <input id="refresh" name="refresh" type="hidden" value="false"/>
     <div class="card w-75">
-        <h5 class="card-header"><@spring.message "title.viewaccessor"/> : ${accessor.name}</h5>
+        <h5 class="card-header" style="color: grey"><i
+                    class="fa-solid fa-user-shield"></i>&nbsp;<@spring.message "title.viewaccessor"/> : ${accessor.name}
+        </h5>
         <div class="card-body">
-            <div class="form-group row">
-                <label for="id"
-                       class="col-sm-2 col-form-label font-weight">-ID-</label>
-                <div class="col-sm-4">
-                    <input type="text" readonly class="form-control-plaintext" id="id"
-                           value="<#if accessor.id??>${accessor.id}</#if>">
+            <#--
+                <div class="form-group row">
+                    <label for="id"
+                           class="col-sm-2 col-form-label font-weight">-ID-</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control-plaintext" id="id"
+                               value="<#if accessor.id??>${accessor.id}</#if>">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="id"
-                       class="col-sm-2 col-form-label font-weight">-STATE-</label>
-                <div class="col-sm-4">
-                    <input type="text" readonly class="form-control-plaintext" id="state"
-                           value="<#if accessor.state??>${accessor.state}<#else>null</#if>">
-                </div>
-            </div>
+                <div class="form-group row">
+                    <label for="id"
+                           class="col-sm-2 col-form-label font-weight">-STATE-</label>
+                    <div class="col-sm-4">
+                        <input type="text" readonly class="form-control-plaintext" id="state"
+                               value="<#if accessor.state??>${accessor.state}<#else>null</#if>">
+                    </div>
+                </div> -->
             <div class="form-group row">
                 <label for="name"
                        class="col-sm-2 col-form-label font-weight"><@spring.message "label.name"/></label>
@@ -95,7 +98,7 @@
     </div>
     <div class="d-flex">
         <div class="p-2">
-            <input class="btn btn-primary mr-2" name="ok"
+            <input class="btn btn-secondary mr-2" name="ok"
                    value="<@spring.message "button.ok"/>"
                    title="<@spring.message "button.ok"/>" type="button"
                    onClick="location.href='/acls/${acl.id}'"/>

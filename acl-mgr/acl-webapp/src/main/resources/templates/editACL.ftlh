@@ -14,7 +14,7 @@
     <form id="editACL" action="/acls" method="post" modelAttribute="acl">
         <input type="hidden" id="_method" name="_method" value="<#if httpMethod??>${httpMethod}<#else>patch</#if>"/>
         <div class="card">
-            <h5 class="card-header"><@spring.message "title.editacl"/> : ${acl.name}</h5>
+            <h5 class="card-header" style="color: grey"><i class="fa-solid fa-shield-halved"></i>&nbsp;<@spring.message "title.editacl"/> : ${acl.name}</h5>
             <div class="card-body">
                 <ul class="nav nav-tabs" id="aclTab" role="tablist">
                     <li class="nav-item">
@@ -29,6 +29,7 @@
                 <div class="tab-content" id="aclTabContent">
                     <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
                         <div class="form-group row"></div>
+                        <#-- 
                         <div class="form-group row">
                             <label for="id"
                                    class="col-sm-2 col-form-label font-weight">ID</label>
@@ -37,6 +38,7 @@
                                        value="<#if acl.id??>${acl.id}</#if>">
                             </div>
                         </div>
+                         -->
                         <div class="form-group row">
                             <label for="name" class="col-sm-2 col-form-label"><@spring.message "label.name"/></label>
                             <div class="col-sm-4">
@@ -98,8 +100,10 @@
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
+                                        <#-- 
                                         <th scope="col">-ID-</th>
                                         <th scope="col">-STATE-</th>
+                                         -->
                                         <th scope="col"><@spring.message "label.name"/></th>
                                         <th scope="col"><@spring.message "label.permit"/></th>
                                         <th scope="col"><@spring.message "label.alias"/></th>
@@ -112,8 +116,10 @@
                                     <tbody>
                                     <#list acl.accessors as accessor>
                                         <tr>
+                                            <#--
                                             <td><#if accessor.id??>${accessor.id}</#if></td>
                                             <td>${accessor.state}</td>
+                                             -->
                                             <td>${accessor.name}</td>
                                             <td>${accessor.permit}</td>
                                             <td>
@@ -141,7 +147,7 @@
                                                 </#list>
                                             </td>
                                             <td>
-                                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                                <button class="btn btn-outline-secondary btn-sm" type="button"
                                                         title="<@spring.message "tooltip.edit"/>"
                                                         onClick="location.href='/acls/${acl.id}/edit?accessorName=${accessor.name}'">
                                                     <nobr>
@@ -159,7 +165,7 @@
                         </#if>
                         <div class="form-group row">
                             <div class="col-sm-10">
-                                <button class="btn btn-outline-primary btn-sm" type="button"
+                                <button class="btn btn-secondary btn-sm" type="button"
                                         title="<@spring.message "tooltip.newaccessor"/>"
                                         onClick="location.href='/acls/${acl.id}/edit?addAccessor=true'">
                                     <nobr>
@@ -174,17 +180,17 @@
         </div>
         <div class="d-flex">
             <div class="p-2">
-                <input class="btn btn-primary mr-2" name="delete"
+                <input class="btn btn-secondary mr-2" name="delete"
                        value="<@spring.message "button.delete"/>" type="button"
                        title="<@spring.message "button.delete"/>" onClick="onDelete('${acl.id}')"/>
             </div>
             <div class="p-2">
-                <input class="btn btn-primary mr-2" name="apply"
+                <input class="btn btn-secondary mr-2" name="apply"
                        value="<@spring.message "button.apply"/>"
                        title="<@spring.message "button.apply"/>" type="submit"/>
             </div>
             <div class="p-2">
-                <input class="btn btn-primary mr-2" name="cancel"
+                <input class="btn btn-secondary mr-2" name="cancel"
                        value="<@spring.message "button.cancel"/>"
                        title="<@spring.message "button.cancel"/>" type="button"
                        onClick="location.href='/acls'"/>
