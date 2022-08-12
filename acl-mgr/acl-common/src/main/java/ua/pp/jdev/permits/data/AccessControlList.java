@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-//import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 import ua.pp.jdev.permits.enums.State;
@@ -19,18 +18,16 @@ import ua.pp.jdev.permits.util.IDGenerator;
 
 @Data
 public class AccessControlList implements Cloneable {
-	// private Long id;
 	private String id;
 
 	@NotBlank(message = "{validation.notblank.name}")
 	@Length(max = 32, message = "{validation.length.name}")
-	@Pattern(regexp = "^[a-zA-Z0-9_]*$", message = "{validation.pattern.name}")
+	@Pattern(regexp = "^[a-zA-Z0-9-_]*$", message = "{validation.pattern.name}")
 	private String name = "";
 
 	@Length(max = 128, message = "{validation.length.description}")
 	private String description = "";
 
-	//@Transient
 	private State state = State.PURE;
 
 	private Set<String> objTypes = new HashSet<>();

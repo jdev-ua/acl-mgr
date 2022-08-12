@@ -9,7 +9,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-//import org.springframework.data.annotation.Transient;
 
 import lombok.Data;
 import ua.pp.jdev.permits.enums.State;
@@ -21,7 +20,7 @@ public class Accessor implements Cloneable {
 
 	@NotBlank(message = "{validation.notblank.name}")
 	@Length(max = 32, message = "{validation.length.name}")
-	@Pattern(regexp = "^[a-zA-Z0-9_]*$", message = "{validation.pattern.name}")
+	@Pattern(regexp = "^[a-zA-Z0-9-_]*$", message = "{validation.pattern.name}")
 	private String name;
 	private boolean alias;
 	private boolean svc;
@@ -29,7 +28,6 @@ public class Accessor implements Cloneable {
 	@Max(7)
 	private int permit;
 
-	//@Transient
 	private State state = State.PURE;
 	
 	private Set<String> xPermits = new HashSet<>();
