@@ -27,13 +27,13 @@
 		</dependency>
 
 		<!-- JDBC datasource module. Remove comment to use -->
-		<!--
+		<!-- -->
 		<dependency>
 			<groupId>ua.pp.jdev</groupId>
 			<artifactId>acl-data-jdbc</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		-->
+		<!-- -->
 
 		<!-- Apache Cassandra datasource module. Remove comment to use -->
 		<!--
@@ -44,10 +44,18 @@
 		</dependency>
 		-->
 
-		<!-- MongoDB datasource module -->
+		<!-- MongoDB datasource module. Remove comment to use -->
+		<!--
 		<dependency>
 			<groupId>ua.pp.jdev</groupId>
 			<artifactId>acl-data-mongo</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		-->
+
+		<dependency>
+			<groupId>ua.pp.jdev</groupId>
+			<artifactId>acl-security</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
