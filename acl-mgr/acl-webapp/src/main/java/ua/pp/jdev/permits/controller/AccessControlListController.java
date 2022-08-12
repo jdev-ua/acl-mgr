@@ -3,6 +3,8 @@ package ua.pp.jdev.permits.controller;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -41,7 +43,7 @@ public class AccessControlListController {
 	private DictionaryService dictService;
 
 	@Autowired
-	@Qualifier("mongoAclDAO")
+	@Qualifier("springDataJdbcAclDAO")
 	private void setAccessControlListDAO(AccessControlListDAO aclDAO) {
 		this.aclDAO = aclDAO;
 	}
@@ -64,6 +66,11 @@ public class AccessControlListController {
 	@ModelAttribute("dictStatuses")
 	private Map<String, String> getDictStatuses() {
 		return dictService.getStatuses();
+	}
+	
+	@ModelAttribute("dictPermits")
+	private Map<String, Permit> getDictPermits() {
+		return Arrays.asList(Permit.values()).stream().collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
 
 	@GetMapping
@@ -100,7 +107,6 @@ public class AccessControlListController {
 			}
 
 			model.addAttribute("accessor", optionalAccessor.get());
-			model.addAttribute("dictPermits", Arrays.asList(Permit.values()));
 			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
 			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
 
@@ -129,7 +135,6 @@ public class AccessControlListController {
 				model.addAttribute("accessor", dummy);
 			}
 
-			model.addAttribute("dictPermits", Arrays.asList(Permit.values()));
 			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
 			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
 
@@ -217,7 +222,6 @@ public class AccessControlListController {
 				log.debug("Failed to update Accessor {} due to validation errors {}", accessor, errors.toString());
 			}
 
-			model.addAttribute("dictPermits", Arrays.asList(Permit.values()));
 			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
 			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
 			return "editAccessor";
