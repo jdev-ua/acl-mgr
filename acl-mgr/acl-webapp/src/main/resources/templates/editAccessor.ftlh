@@ -63,9 +63,9 @@
                             <select class="custom-select ${(spring.status.errorMessages?has_content)?string("is-invalid","")}"
                                     id="permit" name="permit">
                                 <option value="0"></option>
-                                <#list dictPermits as permit>
-                                    <option value="${permit.value}"
-                                            <#if accessor.permit == permit.value>selected</#if>>${permit.display?upper_case}</option>
+                                <#list dictPermits?keys as key>
+                                    <option value="${dictPermits[key].getValue()}"
+                                            <#if dictPermits[accessor.permit?c]??>selected</#if>>${dictPermits[key]}</option>
                                 </#list>
                             </select>
                             <@spring.showErrors "<br>" "invalid-feedback"/>
