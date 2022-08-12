@@ -99,7 +99,7 @@
                                         <td><#if accessor.id??>${accessor.id}</#if></td>
                                         <td>${accessor.state}</td> -->
                                         <td>${accessor.name}</td>
-                                        <td>${accessor.permit}</td>
+                                        <td>${dictPermits[accessor.permit?c]}</td>
                                         <td>
                                             <#if accessor.alias>
                                                 <span class="fas fa-check" style="color: green" title="Yes"></span>

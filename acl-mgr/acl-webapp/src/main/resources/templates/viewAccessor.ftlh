@@ -35,7 +35,7 @@
                 <label for="permit"
                        class="col-sm-2 col-form-label font-weight"><@spring.message "label.permit"/></label>
                 <div class="col-sm-4">
-                    <input type="text" readonly class="form-control" id="permit" value="${accessor.permit}">
+                    <input type="text" readonly class="form-control" id="permit" value="${dictPermits[accessor.permit?c]}">
                 </div>
             </div>
             <div class="form-group row">
