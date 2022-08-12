@@ -34,8 +34,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
         <title><@spring.message "title.container"/></title>
-        <!-- TODO Show favicon -->
-        <#-- <link rel="icon" href="/shield-dog-solid.svg" type="image/svg+xml"> -->
+        <link rel="icon" href="favicon.svg" sizes="any" type="image/svg+xml">
     </head>
     <body>
     <#include "navbar.ftlh"/>
