@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+</head>
+<script type="text/javascript">
+	function onDelete(id) {
+		// change current HTTP method on DELETE
+		document.getElementById("_method").value = "delete";
+		let form = document.getElementById("editACL");
+		// actualize form action
+		form.action = form.action + "/" + id;
+		form.submit();
+	}
+</script>
+<body>
+	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
+	<div class="container mt-3">
+		<form id="editACL" method="post" th:action="@{/acls}" th:object="${acl}">
+			<input type="hidden" id="_method" name="_method"
+				th:value="${httpMethod!=null and #strings.length(httpMethod)>0? httpMethod : 'patch'}" />
+			<div class="card">
+				<h5 class="card-header" style="color: grey">
+					<i class="fa-solid fa-shield-halved"></i>&nbsp;
+					<span th:text="@{#{title.editacl} + ' : ' + ${acl.name}}"></span>
+				</h5>
+				<div class="card-body">
+					<ul class="nav nav-tabs" id="aclTab" role="tablist">
+					<li class="nav-item"><a class="nav-link active" id="info-tab"
+						data-toggle="tab" href="#info" role="tab" aria-controls="info"
+						aria-selected="true" th:text="#{tab.info}">INFO</a></li>
+					<li class="nav-item"><a class="nav-link" id="accessors-tab"
+						data-toggle="tab" href="#accessors" role="tab"
+						aria-controls="accessors" aria-selected="false"
+						th:text="#{tab.accessors}">ACCESSORS</a></li>
+				</ul>
+					<div class="tab-content" id="aclTabContent">
+						<div class="tab-pane fade show active" id="info" role="tabpanel"
+							aria-labelledby="info-tab">
+							<div class="form-group row"></div>
+							<!--
+							<div class="form-group row">
+								<label for="id" class="col-sm-2 col-form-label font-weight">ID</label>
+								<div class="col-sm-4">
+									<input type="text" readonly class="form-control-plaintext"
+										id="id" th:value="${acl.id}">
+								</div>
+							</div>
+							 -->
+							<div class="form-group row">
+								<label for="name" class="col-sm-2 col-form-label font-weight"
+									th:text="#{label.name}">NAME</label>
+								<div class="col-sm-4">
+									<input type="text" th:placeholder="#{placeholder.name}"
+										th:class="${'form-control'}"
+										th:errorclass="${'form-control is-invalid'}"
+										th:field="*{name}" /><span class="invalid-feedback"
+										th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="description"
+									class="col-sm-2 col-form-label font-weight"
+									th:text="#{label.description}">DESCRIPTION</label>
+								<div class="col-sm-4">
+								<input type="text" th:placeholder="#{placeholder.description}"
+										th:class="${'form-control'}"
+										th:errorclass="${'form-control is-invalid'}"
+										th:field="*{description}" /><span class="invalid-feedback"
+										th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="objTypes"
+									class="col-sm-2 col-form-label font-weight"
+									th:text="#{label.objtypes}">OBJTYPES</label>
+								<div class="col-sm-4">
+									<span th:if="${dictObjTypes.empty}" th:text="#{label.notavailable}"></span>
+									<select class="selectpicker" id="objTypes" name="objTypes" multiple>
+										<option th:each="dictEntry : ${dictObjTypes}"
+											th:value="${dictEntry.key}" th:text="${dictEntry.value}"
+											th:selected="${#lists.contains(acl.objTypes,dictEntry.key)}"></option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label for="statuses"
+									class="col-sm-2 col-form-label font-weight"
+									th:text="#{label.statuses}">STATUSES</label>
+								<div class="col-sm-4">
+								<span th:if="${dictStatuses.empty}" th:text="#{label.notavailable}"></span>
+								<select class="selectpicker" id="statuses" name="statuses" multiple>
+									<option th:each="dictEntry : ${dictStatuses}"
+										th:value="${dictEntry.key}" th:text="${dictEntry.value}"
+										th:selected="${#lists.contains(acl.statuses,dictEntry.key)}"></option>
+								</select>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="accessors" role="tabpanel" aria-labelledby="accessors-tab">
+							<div style="overflow: auto; height: 400px">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+										<!--
+										<th scope="col">-ID-</th>
+										<th scope="col">-STATE-</th>
+										 -->
+										<th scope="col" th:text="#{label.name}">NAME</th>
+										<th scope="col" th:text="#{label.permit}">PERMIT</th>
+										<th scope="col" th:text="#{label.alias}">ALIAS</th>
+										<th scope="col" th:text="#{label.svc}">SVC</th>
+										<th scope="col" th:text="#{label.orglevels}">ORGLEVELS</th>
+										<th scope="col" th:text="#{label.xpermits}">XPERMITS</th>
+										<th scope="col"></th>
+									</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${acl.accessors.empty}">
+											<td colspan="7"><p th:text="#{list.empty}">EMPTY</p></td>
+										</tr>
+										<tr th:each="accessor : ${acl.accessors}">
+											<!--
+											<td><#ifaccessor.id??>${accessor.id}</#if></td>
+											<td>${accessor.state}</td>
+											 -->
+											<td th:text="${accessor.name}">ACCESSOR.NAME</td>
+											<td
+												th:text="${dictPermits.get(#strings.toString(accessor.permit))}">ACCESSOR.PERMIT</td>
+											<td><span th:switch="${accessor.alias}"><i
+													th:case="true" class="fas fa-check" style="color: green"
+													th:title="#{label.yes}"></i> <i th:case="false"
+													class="fas fa-times" style="color: red"
+													th:title="#{label.no}"></i></span></td>
+											<td><span th:switch="${accessor.svc}"><i
+													th:case="true" class="fas fa-check" style="color: green"
+													th:title="#{label.yes}"></i> <i th:case="false"
+													class="fas fa-times" style="color: red"
+													th:title="#{label.no}"></i></span></td>
+											<td th:text="${#strings.listJoin(accessor.orgLevels, ',')}">ACCESSOR.ORGLEVELS</td>
+											<td><th:block
+													th:each="xpermit,state : ${accessor.XPermits}">
+													<span th:text="${xpermit}"></span>
+													<br th:if="${!state.last}">
+												</th:block></td>
+											<td>
+											<td><a class="btn btn-outline-secondary btn-sm"
+												type="button" th:title="#{tooltip.edit}"
+												th:href="@{/acls/{id}/edit?accessorName={name}(id=${acl.id},name=${accessor.name})}">
+													<nobr>
+														<span class="fas fa-edit"></span>&nbsp;<span
+															th:text="#{button.edit}"></span>
+													</nobr>
+											</a></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="form-group row">
+								<div class="col-sm-10">
+									<a class="btn btn-secondary btn-sm" type="button"
+										th:title="#{tooltip.newaccessor}"
+										th:href="@{/acls/{id}/edit?addAccessor=true(id=${acl.id})}">
+										<nobr>
+											<span class="fas fa-plus"></span>&nbsp;<span
+												th:text="#{button.add}"></span>
+										</nobr>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex">
+				<div class="p-2">
+					<input class="btn btn-secondary mr-2" type="button"
+						th:title="#{button.delete}" th:value="#{button.delete}"
+						th:onclick="@{onDelete({id})(id=${acl.id})}"/>
+				</div>
+				<div class="p-2">
+					<input class="btn btn-secondary mr-2" type="submit"
+						th:title="#{button.apply}" th:value="#{button.apply}"/>
+				</div>
+				<div class="p-2">
+					<input class="btn btn-secondary mr-2" type="button"
+						th:title="#{button.cancel}" th:value="#{button.cancel}"
+						onClick="location.href='/acls'" />
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

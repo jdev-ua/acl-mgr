@@ -91,12 +91,18 @@ public class AccessControlListController {
 		return "acls";
 	}
 
+	@GetMapping("/favicon.svg")
+	public String forwardFavicon() {
+		// Forward favicon.svg request to a valid location
+		return "forward:/favicon.svg";
+	}
+
 	@GetMapping("/new")
 	public String newForm(Model model) {
 		model.addAttribute("httpMethod", "post");
 		return "editACL";
 	}
-
+	
 	@GetMapping("/{id}")
 	public String viewForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
 			Model model) {

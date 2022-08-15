@@ -56,6 +56,12 @@ public class UserController {
 	private List<Role> getListRoles() {
 		return List.of(Role.values());
 	}
+	
+	@GetMapping("/favicon.svg")
+	public String forwardFavicon() {
+		// Forward favicon.svg request to a valid location
+		return "forward:/favicon.svg";
+	}
 
 	@GetMapping()
 	public String viewAllForm(Model model, SessionStatus sessionStatus) {
