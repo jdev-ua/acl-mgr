@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head"></head>
+<body>
+	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
+	<div class="container mt-3">
+		<div class="card w-75">
+			<h5 class="card-header" style="color: grey" th:inline="text"><i
+                    class="fa-solid fa-file-shield"></i>&nbsp;[[#{title.acls}]]</h5>
+			<div class="card-body">
+				<div class="form-group row">
+					<div class="col-sm-12">
+						<div style="overflow: auto; height: 320px">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<!-- 
+										<th scope="col">-ID-</th>
+										<th scope="col">-STATE-</th>
+										 -->
+										<th scope="col" th:text="#{label.name}">NAME</th>
+										<th scope="col" th:text="#{label.description}">DESCRIPTION</th>
+										<th scope="col"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:if="${acls.empty}">
+										<td colspan="3"><p th:text="#{list.empty}">EMPTY</p></td>
+									</tr>
+									<tr th:each="acl : ${acls}">
+										<!--
+										<td th:text="${acl.id}">ACL.ID</td>
+										<td th:text="${acl.state}">ACL.STATE</td>
+										 -->
+										<td th:text="${acl.name}">ACL.NAME</td>
+										<td th:text="${acl.description}">ACL.DESCRIPTION</td>
+										<td>
+											<a class="btn btn-outline-secondary btn-sm" type="button"
+												th:title="#{tooltip.details}"
+												th:href="@{/acls/{id}(id=${acl.id})}">
+												<nobr>
+													<span class="fas fa-eye"></span>&nbsp;<span
+														th:text="#{button.view}"></span>
+												</nobr>
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-sm-12">
+						<button class="btn btn-secondary btn-sm" type="button"
+							th:title="#{tooltip.newacl}" onClick="location.href='/acls/new'">
+							<nobr>
+								<span class="fas fa-plus"></span>&nbsp;<span
+									th:text="#{button.add}"></span>
+							</nobr>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
