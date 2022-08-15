@@ -57,7 +57,7 @@
                 <div class="form-group row">
                     <label for="permit"
                            class="col-sm-2 col-form-label font-weight"><@spring.message "label.permit"/></label>
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <#if dictPermits?has_content>
                             <@spring.bind "accessor.permit"/>
                             <select class="custom-select ${(spring.status.errorMessages?has_content)?string("is-invalid","")}"
@@ -80,9 +80,9 @@
                     <div class="col-sm-4">
                         <#if dictXPermits?has_content>
                             <select class="selectpicker" id="XPermits" name="XPermits" multiple>
-                                <#list dictXPermits as xPermit>
-                                    <option value="${xPermit.value}"
-                                            <#if accessor.XPermits?seq_contains(xPermit.value)>selected</#if>>${xPermit.display}</option>
+                                <#list dictXPermits?keys as key>
+                                    <option value="${dictXPermits[key]}"
+                                            <#if accessor.XPermits?seq_contains(dictXPermits[key])>selected</#if>>${dictXPermits[key].display}</option>
                                 </#list>
                             </select>
                         <#else>
@@ -121,9 +121,9 @@
                         <div class="col-sm-4">
                             <#if dictOrgLevels?has_content>
                                 <select class="selectpicker" id="orgLevels" name="orgLevels" multiple>
-                                    <#list dictOrgLevels as orgLevel>
-                                        <option value="${orgLevel.value}"
-                                                <#if accessor.orgLevels?seq_contains(orgLevel.value)>selected</#if>>${orgLevel.display}</option>
+                                    <#list dictOrgLevels?keys as key>
+                                        <option value="${dictOrgLevels[key]}"
+                                                <#if accessor.orgLevels?seq_contains(dictOrgLevels[key])>selected</#if>>${dictOrgLevels[key].display}</option>
                                     </#list>
                                 </select>
                             <#else>

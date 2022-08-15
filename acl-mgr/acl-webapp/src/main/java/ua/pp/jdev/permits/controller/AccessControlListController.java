@@ -73,6 +73,14 @@ public class AccessControlListController {
 		return Arrays.asList(Permit.values()).stream().collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
 
+	private Map<String, XPermit> getDictXPermits() {
+		return Arrays.asList(XPermit.values()).stream().collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
+	}
+	
+	private Map<String, OrgLevel> getDictOrgLevels() {
+		return Arrays.asList(OrgLevel.values()).stream().collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
+	}
+	
 	@GetMapping
 	public String viewAllForm(Model model, SessionStatus sessionStatus) {
 		model.addAttribute("acls", aclDAO.readAll());
@@ -107,8 +115,8 @@ public class AccessControlListController {
 			}
 
 			model.addAttribute("accessor", optionalAccessor.get());
-			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
-			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
+			model.addAttribute("dictXPermits", getDictXPermits());
+			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 
 			return "viewAccessor";
 		}
@@ -135,8 +143,8 @@ public class AccessControlListController {
 				model.addAttribute("accessor", dummy);
 			}
 
-			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
-			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
+			model.addAttribute("dictXPermits", getDictXPermits());
+			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 
 			return "editAccessor";
 		}
@@ -222,8 +230,8 @@ public class AccessControlListController {
 				log.debug("Failed to update Accessor {} due to validation errors {}", accessor, errors.toString());
 			}
 
-			model.addAttribute("dictXPermits", Arrays.asList(XPermit.values()));
-			model.addAttribute("dictOrgLevels", Arrays.asList(OrgLevel.values()));
+			model.addAttribute("dictXPermits", getDictXPermits());
+			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			return "editAccessor";
 		}
 
