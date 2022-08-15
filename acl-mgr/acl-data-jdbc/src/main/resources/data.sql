@@ -15,11 +15,11 @@ insert into accessor (acl_id, name, permit, alias, svc) values ((select id from 
 insert into accessor (acl_id, name, permit, alias, svc) values ((select id from acl where name='shire'),'dm_owner',7,false,false);
 
 insert into accessor (acl_id, name, permit, alias, svc) values ((select id from acl where name='shire'),'sauron',1,true,true);
-insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'co');
-insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'od');
-insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'vr');
-insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'mr');
-insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'rd');
+insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'CO');
+insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'OD');
+insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'VR');
+insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'MR');
+insert into org_level (accessor_id, org_level) values ((select id from accessor where name='sauron'),'RD');
 
 insert into accessor (acl_id, name, permit, alias, svc) values ((select id from acl where name='shire'),'frodo',6,false,false);
 insert into xpermit (accessor_id, xpermit) values ((select id from accessor where name='frodo'),'CHANGE_LOCATION');
