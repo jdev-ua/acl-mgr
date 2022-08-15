@@ -58,6 +58,7 @@ public class UserDAOImpl implements UserDAO {
 		user.setId(String.valueOf(userDetails.getId()));
 		user.setUsername(userDetails.getUsername());
 		user.setPassword(userDetails.getPassword());
+		user.setEmail(userDetails.getEmail());
 		user.setFirstName(userDetails.getFirstName());
 		user.setLastName(userDetails.getLastName());
 		user.setPosition(userDetails.getPosition());
@@ -77,7 +78,7 @@ public class UserDAOImpl implements UserDAO {
 
 	protected UserDetailsImpl fromUser(User user) {
 		UserDetailsImpl userDetails = new UserDetailsImpl(user.getUsername(), encoder.encode(user.getPassword()),
-				user.getFirstName(), user.getLastName(), user.getPosition(), user.isEnabled());
+				user.getEmail(), user.getFirstName(), user.getLastName(), user.getPosition(), user.isEnabled());
 		if (!user.isNew()) {
 			userDetails.setId(Long.parseLong(user.getId()));
 		}
