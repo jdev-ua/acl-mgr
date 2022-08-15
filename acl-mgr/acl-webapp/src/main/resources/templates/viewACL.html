@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head"></head>
 <body>
 	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
@@ -140,7 +140,7 @@
 					th:title="#{button.ok}" th:href="@{'/acls'}"
 					th:text="#{button.ok}">OK</a>
 			</div>
-			<div class="p-2">
+			<div class="p-2" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')">
 				<a class="btn btn-secondary mr-2" type="button"
 					th:title="#{button.edit}"
 					th:href="@{/acls/{id}/edit(id=${acl.id})}"
