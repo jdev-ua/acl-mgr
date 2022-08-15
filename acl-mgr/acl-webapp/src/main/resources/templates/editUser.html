@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head">
+</head>
+<script type="text/javascript">
+	function onDelete() {
+		alert('onDelete');
+		// change current HTTP method on DELETE and submit form
+		document.getElementById("_method").value = "delete";
+		document.getElementById("editUser").submit();
+	}
+</script>
+<body>
+	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
+	<div class="container mt-3">
+		<form id="editUser" method="post" th:action="@{/users/{id}(id=${user.id})}" th:object="${user}">
+			<input type="hidden" id="refresh" name="refresh" value="false" />
+			<input type="hidden" id="_method" name="_method"
+				th:value="${httpMethod!=null and #strings.length(httpMethod)>0? httpMethod : 'patch'}" />
+			<div class="card w-75">
+				<h5 class="card-header" style="color: grey">
+					<i class="fa-solid fa-user-shield"></i>&nbsp;<span
+						th:switch="${user.new}"> <span th:case="true"
+						th:text="#{title.newuser}"></span> <span th:case="false"
+						th:text="@{#{title.edituser} + ' : ' + ${user.username}}"></span>
+					</span>
+				</h5>
+				<div class="card-body">
+					<div class="form-group row">
+						<label for="username" class="col-sm-2 col-form-label font-weight"
+							th:text="#{label.username}">USERNAME</label>
+						<div class="col-sm-4">
+							<span th:switch="${user.new}">
+								<input th:case="true"
+									type="text" th:placeholder="#{placeholder.username}"
+									th:class="${'form-control'}" th:errorclass="${'form-control is-invalid'}"
+									th:field="*{username}" /><span class="invalid-feedback"
+									th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+								<input th:case="false" type="text" readonly
+									class="form-control-plaintext" id="username"
+									th:value="${user.username}">
+							</span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="password" class="col-sm-2 col-form-label font-weight"
+							th:text="#{label.password}">PASSWORD</label>
+						<div class="col-sm-4">
+								<input type="password" th:placeholder="#{placeholder.password}" autocomplete="off"
+								th:class="${'form-control'}" th:errorclass="${'form-control is-invalid'}"
+								th:value="${user.password}" th:id="password" th:name="password"/><span class="invalid-feedback"
+								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="email" class="col-sm-2 col-form-label font-weight"
+							th:text="#{label.email}">EMAIL</label>
+						<div class="col-sm-4">
+								<input type="email" th:placeholder="#{placeholder.email}"
+								th:class="${'form-control'}" th:errorclass="${'form-control is-invalid'}"
+								th:field="*{email}" /><span class="invalid-feedback"
+								th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="enabled" class="col-sm-2 col-form-label font-weight"
+							th:text="#{label.enabled}">ENABLED</label>
+						<div class="col-sm-4">
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" id="enabled"
+									name="enabled" th:value="${user.enabled}"
+									th:checked="${user.enabled}" />
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="authorities"
+							class="col-sm-2 col-form-label font-weight"
+							th:text="#{label.authorities}">AUTHORITIES</label>
+						<div class="col-sm-4">
+							<span th:if="${dictRoles.empty}"
+								th:text="#{label.notavailable}"></span>
+							<select class="selectpicker" id="roles" name="roles" th:title="#{placeholder.roles}">
+								<option value="NONE"></option>
+								<option th:each="dictEntry : ${dictRoles}"
+									th:value="${dictEntry.key}" th:text="${dictEntry.value}"
+									th:selected="${#lists.contains(user.roles,dictEntry.value)}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="firstName" class="col-sm-2 col-form-label"
+							th:text="#{label.firstname}">FIRSTNAME</label>
+						<div class="col-sm-4">
+							<input type="text" th:placeholder="#{placeholder.firstname}"
+								class="form-control" id="firstName" th:value="${user.firstName}">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="lastName" class="col-sm-2 col-form-label"
+							th:text="#{label.lastname}">LASTNAME</label>
+						<div class="col-sm-4">
+							<input type="text" th:placeholder="#{placeholder.lastname}"
+								class="form-control" id="lastName" th:value="${user.lastName}">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="position" class="col-sm-2 col-form-label"
+							th:text="#{label.position}">POSITION</label>
+						<div class="col-sm-4">
+							<input type="text" th:placeholder="#{placeholder.position}"
+								class="form-control" id="position" th:value="${user.position}">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="d-flex">
+				<div class="p-2">
+					<input class="btn btn-secondary mr-2" type="button"
+						th:title="#{button.delete}" th:value="#{button.delete}"
+						onClick="onDelete()" />
+				</div>
+				<div class="p-2">
+					<input class="btn btn-secondary mr-2" type="submit"
+						th:title="#{button.apply}" th:value="#{button.apply}"/>
+				</div>
+				<div class="p-2">
+					<input class="btn btn-secondary mr-2" type="button"
+						th:title="#{button.cancel}" th:value="#{button.cancel}"
+						onClick="location.href='/users'" />
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>
