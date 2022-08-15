@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragments/head :: head"></head>
+<body>
+	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
+	<div class="container mt-3">
+		<div class="card w-50">
+			<h5 class="card-header" style="color: grey" th:inline="text"><i
+                    class="fa-solid fa-users"></i>&nbsp;[[#{title.users}]]</h5>
+			<div class="card-body">
+				<div class="form-group row">
+					<div class="col-sm-12">
+						<div style="overflow: auto; height: 320px">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col" th:text="#{label.enabled}">ENABLED</th>
+										<th scope="col" th:text="#{label.username}">USERNAME</th>
+										<th scope="col" th:text="#{label.authorities}">AUTHORITIES</th>
+										<th scope="col"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:if="${users.empty}">
+										<td colspan="4"><p th:text="#{list.empty}">EMPTY</p></td>
+									</tr>
+									<tr th:each="user : ${users}">
+										<td><span th:switch="${user.enabled}">
+											<i th:case="true" class="fas fa-user-check"
+												style="color: green" th:title="#{label.enabled}"></i>
+											<i th:case="false" class="fa-user-xmark"
+												style="color: red" th:title="#{label.disabled}"></i>
+											</span></td>
+										<td th:text="${user.username}">USER.USERNAME</td>
+										<td th:text="${#strings.listJoin(user.roles, ',')}">USER.ROLES</td>
+										<td>
+											<a class="btn btn-outline-secondary btn-sm" type="button"
+												th:title="#{tooltip.edit}"
+												th:href="@{/users/{id}(id=${user.id})}">
+												<nobr>
+													<span class="fas fa-eye"></span>&nbsp;<span
+														th:text="#{button.edit}"></span>
+												</nobr>
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-sm-12">
+						<button class="btn btn-secondary btn-sm" type="button"
+							th:title="#{tooltip.newuser}" onClick="location.href='/users/new'">
+							<nobr>
+								<span class="fas fa-plus"></span>&nbsp;<span
+									th:text="#{button.add}"></span>
+							</nobr>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
