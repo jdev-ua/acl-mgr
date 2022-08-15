@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.pp.jdev.permits.enums.Role;
 
 @Component
-public class StringToRole implements Converter<String, Role> {
+public class StringToRoleConverter implements Converter<String, Role> {
 
 	@Override
 	public Role convert(String source) {
