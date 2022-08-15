@@ -1,14 +1,14 @@
 package ua.pp.jdev.permits.service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class DictionaryService {
-    private Map<String, String> dictObjTypes = new HashMap<>();
-    private Map<String, String> dictStatuses = new HashMap<>();
+    private Map<String, String> dictObjTypes = new TreeMap<>();
+    private Map<String, String> dictStatuses = new TreeMap<>();
 
 	public DictionaryService() {
 		initDictObjTypes();
@@ -25,7 +25,7 @@ public class DictionaryService {
     	dictObjTypes.put("bnk_covenant","bnk_covenant");
     	dictObjTypes.put("bnk_document","bnk_document");
     	dictObjTypes.put("bnk_grc","bnk_grc");
-    	dictObjTypes.put("rba_aps_limit","rba_aps_limit");
+    	dictObjTypes.put("bnk_limit","bnk_limit");
     	dictObjTypes.put("bnk_not_client","bnk_not_client");
     	dictObjTypes.put("bnk_report","bnk_report");
     	
