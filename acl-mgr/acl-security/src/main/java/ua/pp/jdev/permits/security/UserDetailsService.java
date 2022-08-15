@@ -29,7 +29,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 		Optional<UserDetailsImpl> optUser = repository.findByUsername(adminUsername);
 		// Create default administrator account if it isn't yet
 		if(optUser.isEmpty()) {
-			UserDetailsImpl defaultAdmin = new UserDetailsImpl(adminUsername, encoder.encode(adminUsername), "", "", Role.ADMIN.getDisplay(), true);
+			UserDetailsImpl defaultAdmin = new UserDetailsImpl(adminUsername, encoder.encode(adminUsername),"admin@jdev.pp.ua", "", "", Role.ADMIN.getDisplay(), true);
 			defaultAdmin.grantAuthority(Role.ADMIN);
 			repository.save(defaultAdmin);
 		}
