@@ -39,6 +39,7 @@ class UserDetailsImpl implements UserDetails {
 	@Column(unique=true)
 	private final String username;
 	private final String password;
+	private final String email;
 	private final String firstName;
 	private final String lastName;
 	private final String position;
