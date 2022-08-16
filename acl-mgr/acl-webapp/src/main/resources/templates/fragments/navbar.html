@@ -30,7 +30,9 @@
 			<span th:if="${#authorization.expression('!isAuthenticated()')}">
 				<button type="button" class="btn btn-secondary ml-2"
 					onClick="location.href='/login'" th:text="#{button.login}">LOGIN</button>
-			</span> <span th:if="${#authorization.expression('isAuthenticated()')}">
+			</span>
+			<span th:if="${#authorization.expression('isAuthenticated()')}">
+				<span style="color: grey" th:inline="text"><i class="fa-solid fa-circle-user"></i>&nbsp;[[${#authentication.name}]]</span>
 				<button type="button" class="btn btn-outline-secondary ml-2"
 					onClick="location.href='/logout'" th:text="#{button.logout}">LOGOUT</button>
 			</span>
