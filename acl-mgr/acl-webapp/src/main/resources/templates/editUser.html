@@ -115,7 +115,7 @@
 				</div>
 			</div>
 			<div class="d-flex">
-				<div class="p-2">
+				<div class="p-2" th:if="${!user.new}">
 					<input class="btn btn-secondary mr-2" type="button"
 						th:title="#{button.delete}" th:value="#{button.delete}"
 						onClick="onDelete()" />
