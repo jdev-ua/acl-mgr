@@ -20,8 +20,11 @@
 				th:value="${httpMethod!=null and #strings.length(httpMethod)>0? httpMethod : 'patch'}" />
 			<div class="card">
 				<h5 class="card-header" style="color: grey">
-					<i class="fa-solid fa-shield-halved"></i>&nbsp;
-					<span th:text="@{#{title.editacl} + ' : ' + ${acl.name}}"></span>
+					<i class="fa-solid fa-shield-halved"></i>&nbsp;<span
+                    th:switch="${T(ua.pp.jdev.permits.enums.State).NEW.toString() == acl.state.toString()}">
+						<span th:case="true" th:text="#{title.newacl}"></span>
+						<span th:case="false" th:text="@{#{title.editacl} + ' : ' + ${acl.name}}"></span>
+					</span>
 				</h5>
 				<div class="card-body">
 					<ul class="nav nav-tabs" id="aclTab" role="tablist">
@@ -172,17 +175,17 @@
 				</div>
 			</div>
 			<div class="d-flex">
-				<div class="p-2">
-					<input class="btn btn-secondary mr-2" type="button"
+				<div class="p-2" th:if="${T(ua.pp.jdev.permits.enums.State).NEW.toString() != acl.state.toString()}">
+					<input class="btn btn-secondary mr-3" type="button"
 						th:title="#{button.delete}" th:value="#{button.delete}"
 						th:onclick="@{onDelete({id})(id=${acl.id})}"/>
 				</div>
 				<div class="p-2">
-					<input class="btn btn-secondary mr-2" type="submit"
+					<input class="btn btn-secondary" type="submit"
 						th:title="#{button.apply}" th:value="#{button.apply}"/>
 				</div>
 				<div class="p-2">
-					<input class="btn btn-secondary mr-2" type="button"
+					<input class="btn btn-secondary" type="button"
 						th:title="#{button.cancel}" th:value="#{button.cancel}"
 						onClick="location.href='/acls'" />
 				</div>
