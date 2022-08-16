@@ -30,6 +30,8 @@ public class SecurityConfig {
 				.antMatchers("/acls", "/acls/**").authenticated()
 				// Make the rest of links available for anonymous users
 				.anyRequest().permitAll().and()
-				.formLogin().defaultSuccessUrl("/acls").and().build();
+				.formLogin().defaultSuccessUrl("/acls").and()
+				.logout().logoutSuccessUrl("/").and()
+				.build();
 	}
 }
