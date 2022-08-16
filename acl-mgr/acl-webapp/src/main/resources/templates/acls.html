@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head"></head>
 <body>
 	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
@@ -21,11 +21,12 @@
 										<th scope="col" th:text="#{label.name}">NAME</th>
 										<th scope="col" th:text="#{label.description}">DESCRIPTION</th>
 										<th scope="col"></th>
+										<th scope="col"></th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr th:if="${acls.empty}">
-										<td colspan="3"><p th:text="#{list.empty}">EMPTY</p></td>
+										<td colspan="4"><p th:text="#{list.empty}">EMPTY</p></td>
 									</tr>
 									<tr th:each="acl : ${acls}">
 										<!--
@@ -34,15 +35,26 @@
 										 -->
 										<td th:text="${acl.name}">ACL.NAME</td>
 										<td th:text="${acl.description}">ACL.DESCRIPTION</td>
-										<td>
-											<a class="btn btn-outline-secondary btn-sm" type="button"
-												th:title="#{tooltip.details}"
-												th:href="@{/acls/{id}(id=${acl.id})}">
-												<nobr>
-													<span class="fas fa-eye"></span>&nbsp;<span
-														th:text="#{button.view}"></span>
-												</nobr>
-											</a>
+										<td width="1%">
+											<div>
+												<a class="btn btn-outline-secondary btn-sm" type="button"
+													th:title="#{tooltip.details}"
+													th:href="@{/acls/{id}(id=${acl.id})}"> <nobr>
+														<span class="fas fa-eye"></span>&nbsp;<span
+															th:text="#{button.view}"></span>
+													</nobr>
+												</a>
+											</div></td>
+										<td width="1%">
+											<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')">
+												<a class="btn btn-outline-secondary btn-sm" type="button"
+													th:title="#{tooltip.edit}"
+													th:href="@{/acls/{id}/edit(id=${acl.id})}"> <nobr>
+														<span class="fas fa-edit"></span>&nbsp;<span
+															th:text="#{button.edit}"></span>
+													</nobr>
+												</a>
+											</div>
 										</td>
 									</tr>
 								</tbody>
@@ -50,7 +62,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group row" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')">
 					<div class="col-sm-12">
 						<button class="btn btn-secondary btn-sm" type="button"
 							th:title="#{tooltip.newacl}" onClick="location.href='/acls/new'">
