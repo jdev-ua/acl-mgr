@@ -54,7 +54,7 @@ public class AccessControlListController {
 	}
 
 	@ModelAttribute("acl")
-	private AccessControlList name() {
+	private AccessControlList putNewAclToModel() {
 		return new AccessControlList(State.NEW);
 	}
 
@@ -104,60 +104,83 @@ public class AccessControlListController {
 	}
 	
 	@GetMapping("/{id}")
-	public String viewForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
-			Model model) {
+	public String viewForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName, Model model) {
+		log.debug("Starting get ACL with ID={} for view", id);
 
-		Optional<AccessControlList> optionalAcl = aclDAO.read(id);
-		if (optionalAcl.isEmpty()) {
-			// TODO Implement it!
-		}
-		AccessControlList acl = optionalAcl.get();
+		AccessControlList acl = readACL(id);
 		model.addAttribute("acl", acl);
 
 		if (accessorName != null && accessorName.length() > 0) {
-			Optional<Accessor> optionalAccessor = acl.getAccessor(accessorName);
-			if (optionalAccessor.isEmpty()) {
+			log.debug("Starting prepare eview form for Accessor '{}' of ACL {}", accessorName, acl);
+			
+			Optional<Accessor> optlAccessor = acl.getAccessor(accessorName);
+			if (optlAccessor.isEmpty()) {
 				// TODO Implement it!
+				throw new RuntimeException();
 			}
 
-			model.addAttribute("accessor", optionalAccessor.get());
+			model.addAttribute("accessor", optlAccessor.get());
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
+			
+			log.debug("Return view form for Accessor {}: ", optlAccessor.get());
 
 			return "viewAccessor";
 		}
+		log.debug("Return view form for ACL {}: ", acl);
 
 		return "viewACL";
 	}
+	
+	protected AccessControlList readACL(String id) {
+		Optional<AccessControlList> optionalAcl = aclDAO.read(id);
+		if (optionalAcl.isEmpty()) {
+			// TODO Implement it!
+			throw new RuntimeException();
+		}
+		
+		return optionalAcl.get();
+	}
 
 	@GetMapping("/{id}/edit")
-	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
-			@RequestParam(required = false) boolean addAccessor, Model model) {
+	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName, @RequestParam(required = false) boolean addAccessor, Model model) {
 		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
-
+		if(!acl.getId().equalsIgnoreCase(id)) {
+			acl = readACL(id);
+			model.addAttribute("acl", acl);
+		}
+		
 		if (addAccessor || (accessorName != null && accessorName.length() > 0)) {
+			log.debug("Starting prepare edit form for Accessor '{}' of ACL {}", accessorName, acl);
+			
+			Accessor accessor;
 			if (!addAccessor) {
-				Optional<Accessor> result = acl.getAccessor(accessorName);
-				if (result.isEmpty()) {
+				Optional<Accessor> optAccessor = acl.getAccessor(accessorName);
+				if (optAccessor.isEmpty()) {
 					// TODO Implement it!
+					throw new RuntimeException();
 				}
+				accessor = optAccessor.get();
 
-				model.addAttribute("accessor", result.get());
+				model.addAttribute("accessor", accessor);
 			} else {
-				Accessor dummy = new Accessor(State.NEW);
-				dummy.setName("");
-				model.addAttribute("accessor", dummy);
+				accessor = new Accessor(State.NEW);
+				accessor.setName("");
+				model.addAttribute("accessor", accessor);
 			}
 
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
+			log.debug("Return edit form for Accessor {}: ", accessor);
 
 			return "editAccessor";
 		}
+		log.debug("Starting prepare edit form for ACL {}", acl);
 
 		if (acl.getId() == null || acl.getId().length() == 0) {
 			model.addAttribute("httpMethod", "post");
 		}
+		log.debug("Return edit form for ACL {}: ", acl);
 
 		return "editACL";
 	}
