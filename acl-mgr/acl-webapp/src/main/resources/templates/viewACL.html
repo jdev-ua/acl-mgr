@@ -135,16 +135,16 @@
 			</div>
 		</div>
 		<div class="d-flex">
-			<div class="p-2">
-				<a class="btn btn-secondary mr-2" type="button"
-					th:title="#{button.ok}" th:href="@{'/acls'}"
-					th:text="#{button.ok}">OK</a>
-			</div>
 			<div class="p-2" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')">
-				<a class="btn btn-secondary mr-2" type="button"
+				<a class="btn btn-secondary" type="button"
 					th:title="#{button.edit}"
 					th:href="@{/acls/{id}/edit(id=${acl.id})}"
 					th:text="#{button.edit}">EDIT</a>
+			</div>
+			<div class="p-2">
+				<a class="btn btn-secondary" type="button"
+					th:title="#{button.ok}" th:href="@{'/acls'}"
+					th:text="#{button.ok}">OK</a>
 			</div>
 		</div>
 	</div>
