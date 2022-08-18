@@ -74,62 +74,7 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="accessors" role="tabpanel" aria-labelledby="accessors-tab">
-						<div style="overflow: auto; height: 400px">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<!--
-										<th scope="col">-ID-</th>
-										<th scope="col">-STATE-</th>
-										 -->
-										<th scope="col" th:text="#{label.name}">NAME</th>
-										<th scope="col" th:text="#{label.permit}">PERMIT</th>
-										<th scope="col" th:text="#{label.alias}">ALIAS</th>
-										<th scope="col" th:text="#{label.svc}">SVC</th>
-										<th scope="col" th:text="#{label.orglevels}">ORGLEVELS</th>
-										<th scope="col" th:text="#{label.xpermits}">XPERMITS</th>
-										<th scope="col"></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:if="${acl.accessors.empty}">
-										<td colspan="7"><p th:text="#{list.empty}">EMPTY</p></td>
-									</tr>
-									<tr th:each="accessor : ${acl.accessors}">
-										<!--
-										<td th:text="${accessor.id}">ACCESSOR.ID</td>
-										<td th:text="${accessor.state}">ACCESSOR.STATE</td>
-										 -->
-										<td th:text="${accessor.name}">ACCESSOR.NAME</td>
-										<td th:text="${dictPermits.get(#strings.toString(accessor.permit))}">ACCESSOR.PERMIT</td>
-										<td><span th:switch="${accessor.alias}">
-											<i th:case="true" class="fas fa-check" style="color: green"
-												th:title="#{label.yes}"></i>
-											<i th:case="false" class="fas fa-times"
-												style="color: red" th:title="#{label.no}"></i>
-											</span></td>
-										<td><span th:switch="${accessor.svc}">
-											<i th:case="true" class="fas fa-check" style="color: green"
-												th:title="#{label.yes}"></i>
-											<i th:case="false" class="fas fa-times"
-												style="color: red" th:title="#{label.no}"></i>
-											</span></td>
-										<td th:text="${#strings.listJoin(accessor.orgLevels, ',')}">ACCESSOR.ORGLEVELS</td>
-										<td><th:block th:each="xpermit,state : ${accessor.XPermits}">
-												<span th:text="${xpermit}"></span><br th:if="${!state.last}">
-											</th:block></td>
-										<td>
-										<a class="btn btn-outline-secondary btn-sm" type="button"
-												th:title="#{tooltip.details}"
-												th:href="@{/acls/{id}?accessorName={name}(id=${acl.id},name=${accessor.name})}">
-												<nobr><span class="fas fa-eye"></span>&nbsp;<span
-														th:text="#{button.view}"></span></nobr>
-											</a>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+						<div th:replace="/fragments/accessors :: accessor-list">&nbsp;</div>
 					</div>
 				</div>
 			</div>
