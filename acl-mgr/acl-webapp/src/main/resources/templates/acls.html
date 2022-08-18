@@ -14,46 +14,42 @@
 							<table class="table table-striped">
 								<thead>
 									<tr>
-										<!-- 
+										<!-- -->
 										<th scope="col">-ID-</th>
 										<th scope="col">-STATE-</th>
-										 -->
 										<th scope="col" th:text="#{label.name}">NAME</th>
 										<th scope="col" th:text="#{label.description}">DESCRIPTION</th>
-										<th scope="col"></th>
 										<th scope="col"></th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr th:if="${acls.empty}">
-										<td colspan="4"><p th:text="#{list.empty}">EMPTY</p></td>
+										<td colspan="3"><p th:text="#{list.empty}">EMPTY</p></td>
 									</tr>
 									<tr th:each="acl : ${acls}">
-										<!--
+										<!-- -->
 										<td th:text="${acl.id}">ACL.ID</td>
 										<td th:text="${acl.state}">ACL.STATE</td>
-										 -->
 										<td th:text="${acl.name}">ACL.NAME</td>
 										<td th:text="${acl.description}">ACL.DESCRIPTION</td>
 										<td width="1%">
-											<div>
-												<a class="btn btn-outline-secondary btn-sm" type="button"
-													th:title="#{tooltip.details}"
-													th:href="@{/acls/{id}(id=${acl.id})}"> <nobr>
-														<span class="fas fa-eye"></span>&nbsp;<span
-															th:text="#{button.view}"></span>
-													</nobr>
-												</a>
-											</div></td>
-										<td width="1%">
-											<div sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')">
-												<a class="btn btn-outline-secondary btn-sm" type="button"
-													th:title="#{tooltip.edit}"
-													th:href="@{/acls/{id}/edit(id=${acl.id})}"> <nobr>
-														<span class="fas fa-edit"></span>&nbsp;<span
-															th:text="#{button.edit}"></span>
-													</nobr>
-												</a>
+											<div class="d-flex">
+												<span sec:authorize="hasRole('ROLE_VIEWER')">
+													<a class="btn btn-outline-secondary btn-sm" type="button"
+														th:title="#{tooltip.details}"
+														th:href="@{/acls/{id}(id=${acl.id})}"> <nobr>
+															<i class="fas fa-eye"></i>&nbsp;<span
+																th:text="#{button.view}"></span>
+														</nobr></a>
+												</span>
+												<span sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')">
+													<a class="btn btn-outline-secondary btn-sm" type="button"
+														th:title="#{tooltip.edit}"
+														th:href="@{/acls/{id}/edit(id=${acl.id})}"> <nobr>
+															<i class="fas fa-edit"></i>&nbsp;<span
+																th:text="#{button.edit}"></span>
+														</nobr></a>
+												</span>
 											</div>
 										</td>
 									</tr>
