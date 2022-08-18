@@ -127,11 +127,6 @@
             </div>
         </div>
         <div class="d-flex">
-            <div class="p-2" th:if="${T(ua.pp.jdev.permits.enums.State).NEW.toString() != accessor.state.toString()}">
-                <input class="btn btn-secondary mr-2" type="button"
-                       th:title="#{button.delete}" th:value="#{button.delete}"
-                       onClick="onDelete()"/>
-            </div>
             <div class="p-2">
                 <input class="btn btn-secondary" type="submit"
                        th:title="#{button.apply}" th:value="#{button.apply}"/>
