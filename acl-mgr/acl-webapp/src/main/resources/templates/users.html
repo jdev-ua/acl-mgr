@@ -26,9 +26,9 @@
 									</tr>
 									<tr th:each="user : ${users}">
 										<td><span th:switch="${user.enabled}">
-											<i th:case="true" class="fas fa-user-check"
+											<i th:case="true" class="fas fa-check"
 												style="color: green" th:title="#{label.enabled}"></i>
-											<i th:case="false" class="fa-user-xmark"
+											<i th:case="false" class="fas fa-times"
 												style="color: red" th:title="#{label.disabled}"></i>
 											</span></td>
 										<td th:text="${user.username}">USER.USERNAME</td>
