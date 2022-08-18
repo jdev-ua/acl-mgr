@@ -192,9 +192,14 @@ public class AccessControlListController {
 			log.debug("Starting delete accessor '{}' from ACL with ID={}", accessorName, id);
 
 			AccessControlList acl = (AccessControlList) model.getAttribute("acl");
-			Optional<Accessor> optional = acl.getAccessor(accessorName);
-			if (optional.isPresent()) {
-				optional.get().setState(State.VOID);
+			Optional<Accessor> optAccessor = acl.getAccessor(accessorName);
+			if (optAccessor.isPresent()) {
+				Accessor accessor = optAccessor.get();
+				if(State.VOID.equals(accessor.getState())) {
+					accessor.setState(State.DIRTY);
+				} else {
+					accessor.setState(State.VOID);
+				}
 			}
 			log.info("Deleted accessor '{}' from ACL: {}", accessorName, acl);
 
