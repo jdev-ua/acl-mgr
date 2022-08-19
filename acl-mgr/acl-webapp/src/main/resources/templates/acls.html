@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head"></head>
+<script type="text/javascript">
+	function onDelete(id) {
+		// change current HTTP method on DELETE
+		//document.getElementById("_method").value = "delete";
+		let form = document.getElementById("acls");
+		// actualize form action
+		form.action = form.action + "/" + id;
+		form.submit();
+	}
+</script>
 <body>
 	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
 	<div class="container mt-3">
@@ -11,7 +21,9 @@
 				<div class="form-group row">
 					<div class="col-sm-12">
 						<div style="overflow: auto; height: 320px">
-							<table class="table table-striped">
+						<form id="acls" method="post" th:action="@{/acls}" th:object="${acl}">
+							<input type="hidden" id="_method" name="_method" form="acls" th:value="delete" />
+							<table class="table table-sm table-striped">
 								<thead>
 									<tr>
 										<!-- -->
@@ -35,26 +47,34 @@
 										<td width="1%">
 											<div class="d-flex">
 												<span sec:authorize="hasRole('ROLE_VIEWER')">
-													<a class="btn btn-outline-secondary btn-sm" type="button"
+													<a class="btn btn-outline-secondary btn-sm mr-2" type="button"
 														th:title="#{tooltip.details}"
 														th:href="@{/acls/{id}(id=${acl.id})}"> <nobr>
 															<i class="fas fa-eye"></i>&nbsp;<span
 																th:text="#{button.view}"></span>
 														</nobr></a>
 												</span>
-												<span sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')">
-													<a class="btn btn-outline-secondary btn-sm" type="button"
-														th:title="#{tooltip.edit}"
+												<th:block sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_EDITOR')">
+													<span><a class="btn btn-outline-secondary btn-sm mr-2"
+														type="button" th:title="#{tooltip.edit}"
 														th:href="@{/acls/{id}/edit(id=${acl.id})}"> <nobr>
-															<i class="fas fa-edit"></i>&nbsp;<span
-																th:text="#{button.edit}"></span>
-														</nobr></a>
-												</span>
+																<i class="fas fa-edit"></i>&nbsp;<span
+																	th:text="#{button.edit}"></span>
+															</nobr></a></span>
+													<span>
+														<a class="btn btn-outline-secondary btn-sm mr-2" type="button"
+															th:onclick="@{onDelete('{id}')(id=${acl.id})}">
+															<nobr th:inline="text">
+																<i th:title="#{tooltip.delete}" class="fa-solid fa-trash-can"></i>&nbsp;[[#{button.delete}]]
+															</nobr></a>
+													</span>
+												</th:block>
 											</div>
 										</td>
 									</tr>
 								</tbody>
 							</table>
+							</form>
 						</div>
 					</div>
 				</div>
