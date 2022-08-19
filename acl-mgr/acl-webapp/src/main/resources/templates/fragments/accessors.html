@@ -51,7 +51,7 @@
 									<i th:title="#{label.statedirty}" class="fa-solid fa-user-pen"></i>
 								</p>
 								<p th:case="${T(ua.pp.jdev.permits.enums.State).VOID.toString()}">
-									<i th:title="#{label.statevoid}" class="fa-solid fa-trash"></i>
+									<i th:title="#{label.statevoid}" class="fa-solid fa-user-slash"></i>
 								</p>
 								<p th:case="*" th:text="${accessor.state}">ACCESSOR.STATE</p>
 							</div>
@@ -88,9 +88,9 @@
 										<a class="btn btn-outline-secondary btn-sm mr-2" type="button"
 											th:onclick="@{onDeleteAccessor('{name}')(name=${accessor.name})}">
 											<nobr th:switch="${T(ua.pp.jdev.permits.enums.State).VOID.toString() != accessor.state.toString()}">
-												<span th:case="true" th:inline="text"><i
-													th:title="#{tooltip.delete}" class="fa-solid fa-trash-can"></i>&nbsp;[[#{button.delete}]]</span>
-												<span th:case="false" th:inline="text"><i
+												<span th:case="true" th:inline="text"><i th:title="#{tooltip.void}"
+													class="fa-solid fa-ban"></i>&nbsp;[[#{button.void}]]</span>
+												<span th:case="false" th:inline="text"><i th:title="#{tooltip.restore}"
 													class="fa-solid fa-rotate-left"></i>&nbsp;[[#{button.restore}]]</span>
 											</nobr></a>
 									</span>
