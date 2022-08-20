@@ -95,7 +95,7 @@ class TableACL implements Serializable, Persistable<Long> {
 					origin.getObjTypes().stream().map(t -> new TableObjType(null, id, t)).collect(Collectors.toSet()));
 			result.setStatuses(
 					origin.getStatuses().stream().map(t -> new TableStatus(null, id, t)).collect(Collectors.toSet()));
-			result.setAccessors(origin.getAccessors().stream().map(t -> {
+			result.setAccessors(origin.getAccessors().stream().filter(t -> !State.VOID.equals(t.getState())).map(t -> {
 				TableAccessor temp = TableAccessor.fromAccessor(t);
 				temp.setAclId(id);
 				return temp;
