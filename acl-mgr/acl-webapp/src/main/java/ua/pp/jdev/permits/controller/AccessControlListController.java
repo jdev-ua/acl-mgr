@@ -186,8 +186,7 @@ public class AccessControlListController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
-			Model model) {
+	public String delete(@PathVariable("id") String id, @RequestParam(required = false) String accessorName, Model model) {
 		if (accessorName != null && accessorName.length() > 0) {
 			log.debug("Starting delete accessor '{}' from ACL with ID={}", accessorName, id);
 
@@ -202,7 +201,7 @@ public class AccessControlListController {
 				}
 			}
 			log.info("Deleted accessor '{}' from ACL: {}", accessorName, acl);
-
+			
 			return String.format("redirect:/acls/%s/edit", acl.getId());
 		}
 
@@ -220,12 +219,12 @@ public class AccessControlListController {
 	@PostMapping()
 	public String create(@RequestParam(required = false) boolean addAccessor,
 			@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors, Model model) {
-		log.debug("Starting create new ACL " + acl);
-
 		if (addAccessor) {
 			model.addAttribute("accessor", new Accessor(State.NEW));
 			return "redirect:/acls";
 		}
+		
+		log.debug("Starting create new ACL " + acl);
 
 		if (errors.hasErrors()) {
 			log.debug("Failed to create new ACL " + acl + " due to validation errors " + errors.toString());
