@@ -1,6 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org">
 <head th:replace="/fragments/head :: head"></head>
+<script type="text/javascript">
+	function onDelete(id) {
+		let form = document.getElementById("users");
+		// actualize form action
+		form.action = form.action + "/" + id;
+		form.submit();
+	}
+</script>
 <body>
 	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
 	<div class="container mt-3">
@@ -10,43 +18,90 @@
 			<div class="card-body">
 				<div class="form-group row">
 					<div class="col-sm-12">
-						<div style="overflow: auto; height: 320px">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<th scope="col" th:text="#{label.enabled}">ENABLED</th>
-										<th scope="col" th:text="#{label.username}">USERNAME</th>
-										<th scope="col" th:text="#{label.authorities}">AUTHORITIES</th>
-										<th scope="col"></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:if="${users.empty}">
-										<td colspan="4"><p th:text="#{list.empty}">EMPTY</p></td>
-									</tr>
-									<tr th:each="user : ${users}">
-										<td><span th:switch="${user.enabled}">
-											<i th:case="true" class="fas fa-check"
-												style="color: green" th:title="#{label.enabled}"></i>
-											<i th:case="false" class="fas fa-times"
-												style="color: red" th:title="#{label.disabled}"></i>
+						<form id="users" method="post" th:action="@{/users}">
+							<input type="hidden" id="_method" name="_method" form="users" th:value="delete" />
+							<div style="overflow: auto; height: 320px">
+								<table class="table table-sm table-striped">
+									<thead>
+										<tr>
+											<th scope="col" th:text="#{label.enabled}">ENABLED</th>
+											<th scope="col" th:text="#{label.username}">USERNAME</th>
+											<th scope="col" th:text="#{label.authorities}">AUTHORITIES</th>
+											<th scope="col"></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${users.empty}">
+											<td colspan="4"><p th:text="#{list.empty}">EMPTY</p></td>
+										</tr>
+										<tr th:each="user : ${users}">
+											<td align="center"><span th:switch="${user.enabled}"> <i
+													th:case="true" class="fas fa-check" style="color: green"
+													th:title="#{tooltip.enabled}"></i> <i th:case="false"
+													class="fas fa-times" style="color: red"
+													th:title="#{tooltip.disabled}"></i>
 											</span></td>
-										<td th:text="${user.username}">USER.USERNAME</td>
-										<td th:text="${#strings.listJoin(user.roles, ',')}">USER.ROLES</td>
-										<td>
-											<a class="btn btn-outline-secondary btn-sm" type="button"
-												th:title="#{tooltip.edit}"
-												th:href="@{/users/{id}(id=${user.id})}">
-												<nobr>
-													<span class="fas fa-edit"></span>&nbsp;<span
-														th:text="#{button.edit}"></span>
-												</nobr>
-											</a>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+											<td th:text="${user.username}">USER.USERNAME</td>
+											<td th:text="${#strings.listJoin(user.roles, ',')}">USER.ROLES</td>
+											<td width="1%">
+												<div class="d-flex" sec:authorize="hasRole('ROLE_ADMIN')">
+													<span><a class="btn btn-outline-secondary btn-sm mr-2" type="button"
+														th:title="#{tooltip.edit}"
+														th:href="@{/users/{id}(id=${user.id})}"> <nobr>
+															<span class="fas fa-edit"></span>&nbsp;<span
+																th:text="#{button.edit}"></span>
+														</nobr>
+													</a></span>
+													<span>
+														<a class="btn btn-outline-secondary btn-sm mr-2"
+															type="button" data-toggle="modal"
+															th:attr="data-target=@{'#confirm_'+ ${user.id}}"> <nobr
+																	th:inline="text">
+																	<i th:title="#{tooltip.delete}"
+																		class="fa-solid fa-trash-can"></i>&nbsp;[[#{button.delete}]]
+																</nobr></a>
+													</span>
+													<div class="modal fade"
+														th:attr="id=@{'confirm_'+ ${user.id}}"
+														data-backdrop="static" data-keyboard="false" tabindex="-1"
+														aria-labelledby="staticBackdropLabel" aria-hidden="true">
+														<div class="modal-dialog modal-dialog-centered">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title" id="staticBackdropLabel"
+																		th:text="#{title.deleteuser}"></h5>
+																	<button type="button" class="close"
+																		data-dismiss="modal" aria-label="Close">
+																		<span aria-hidden="true">&times;</span>
+																	</button>
+																</div>
+																<div class="modal-body">
+																	<nobr>
+																		<img th:src="@{/alert-red.svg}"
+																			class="rounded float-left" height="32"
+																			style="color: red" />&nbsp;<span
+																			th:text="@{#{message.deleteuser}(username=${user.username})}"></span>
+																	</nobr>
+																</div>
+																<div class="modal-footer">
+																	<input class="btn btn-outline-secondary" type="button"
+																		th:title="#{tooltip.cancel}"
+																		th:value="#{button.cancel}" data-dismiss="modal" /> <input
+																		class="btn btn-secondary" type="button"
+																		th:title="#{tooltip.delete}"
+																		th:value="#{button.delete}"
+																		th:onclick="@{onDelete('{id}')(id=${user.id})}" />
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</form>
 					</div>
 				</div>
 				<div class="form-group row">
