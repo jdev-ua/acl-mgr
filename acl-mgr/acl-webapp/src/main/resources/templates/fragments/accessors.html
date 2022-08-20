@@ -42,16 +42,16 @@
 						<td width="1%">
 							<div th:switch="${accessor.state.toString()}">
 								<p th:case="${T(ua.pp.jdev.permits.enums.State).NEW.toString()}">
-									<i th:title="#{label.statenew}" class="fa-solid fa-user-plus"></i>
+									<i th:title="#{tooltip.statenew}" class="fa-solid fa-user-plus"></i>
 								</p>
 								<p th:case="${T(ua.pp.jdev.permits.enums.State).PURE.toString()}">
-									<i th:title="#{label.statepure}" class="fa-solid fa-user-check"></i>
+									<i th:title="#{tooltip.statepure}" class="fa-solid fa-user-check"></i>
 								</p>
 								<p th:case="${T(ua.pp.jdev.permits.enums.State).DIRTY.toString()}">
-									<i th:title="#{label.statedirty}" class="fa-solid fa-user-pen"></i>
+									<i th:title="#{tooltip.statedirty}" class="fa-solid fa-user-pen"></i>
 								</p>
 								<p th:case="${T(ua.pp.jdev.permits.enums.State).VOID.toString()}">
-									<i th:title="#{label.statevoid}" class="fa-solid fa-user-slash"></i>
+									<i th:title="#{tooltip.statevoid}" class="fa-solid fa-user-slash"></i>
 								</p>
 								<p th:case="*" th:text="${accessor.state}">ACCESSOR.STATE</p>
 							</div>
@@ -59,12 +59,12 @@
 						<td th:text="${accessor.name}">ACCESSOR.NAME</td>
 						<td th:text="${dictPermits.get(#strings.toString(accessor.permit))}">ACCESSOR.PERMIT</td>
 						<td><span th:switch="${accessor.alias}">
-							<i th:case="true" class="fas fa-check" style="color: green" th:title="#{label.yes}"></i>
-							<i th:case="false" class="fas fa-times" style="color: red" th:title="#{label.no}"></i></span>
+							<i th:case="true" class="fas fa-check" style="color: green" th:title="#{tooltip.yes}"></i>
+							<i th:case="false" class="fas fa-times" style="color: red" th:title="#{tooltip.no}"></i></span>
 						</td>
 						<td><span th:switch="${accessor.svc}">
-							<i th:case="true" class="fas fa-check" style="color: green" th:title="#{label.yes}"></i>
-							<i th:case="false" class="fas fa-times" style="color: red" th:title="#{label.no}"></i></span>
+							<i th:case="true" class="fas fa-check" style="color: green" th:title="#{tooltip.yes}"></i>
+							<i th:case="false" class="fas fa-times" style="color: red" th:title="#{tooltip.no}"></i></span>
 						</td>
 						<td th:text="${#strings.listJoin(accessor.orgLevels, ',')}">ACCESSOR.ORGLEVELS</td>
 						<td><th:block th:each="xpermit,state : ${accessor.XPermits}">
