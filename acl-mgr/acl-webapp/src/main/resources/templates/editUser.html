@@ -67,9 +67,7 @@
 							th:text="#{label.enabled}">ENABLED</label>
 						<div class="col-sm-4">
 							<div class="form-check">
-								<input type="checkbox" class="form-check-input" id="enabled"
-									name="enabled" th:value="${user.enabled}"
-									th:checked="${user.enabled}" />
+								<input type="checkbox" class="form-check-input" th:field="*{enabled}" />
 							</div>
 						</div>
 					</div>
@@ -115,11 +113,12 @@
 				</div>
 			</div>
 			<div class="d-flex">
+				<!-- 
 				<div class="p-2" th:if="${!user.new}">
 					<input class="btn btn-secondary mr-2" type="button"
 						th:title="#{button.delete}" th:value="#{button.delete}"
 						onClick="onDelete()" />
-				</div>
+				</div> -->
 				<div class="p-2">
 					<input class="btn btn-secondary" type="submit"
 						th:title="#{button.apply}" th:value="#{button.apply}"/>
