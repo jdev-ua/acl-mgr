@@ -1,0 +1,870 @@
+{
+  "types-all": [
+    "bnk_acl_config",
+    "bnk_agreement",
+    "bnk_agreement_state",
+    "bnk_agreements_folder",
+    "bnk_application",
+    "bnk_borrower",
+    "bnk_borrower_co",
+    "bnk_borrower_phys",
+    "bnk_borrowers_folder",
+    "bnk_ca_doc",
+    "bnk_cc_checklist",
+    "bnk_client",
+    "bnk_client_fact_folder",
+    "bnk_clients_folder",
+    "bnk_co_document",
+    "bnk_committee",
+    "bnk_committees_folder",
+    "bnk_conclusion",
+    "bnk_conclusion_doc",
+    "bnk_conclusions_folder",
+    "bnk_control_request",
+    "bnk_covenant",
+    "bnk_covenant_dict",
+    "bnk_covenant_history",
+    "bnk_covenants",
+    "bnk_covenants_folder",
+    "bnk_cr_folder",
+    "bnk_customer",
+    "bnk_depositor",
+    "bnk_depositor_phys",
+    "bnk_depositors_folder",
+    "bnk_di_agr_subtype",
+    "bnk_di_boolean",
+    "bnk_di_category",
+    "bnk_di_committee",
+    "bnk_di_covenant",
+    "bnk_di_currency",
+    "bnk_di_doc_type",
+    "bnk_di_insurer",
+    "bnk_di_macroregion",
+    "bnk_di_pledge",
+    "bnk_di_pledge_type",
+    "bnk_di_svc_subject",
+    "bnk_di_svc_type",
+    "bnk_dict_agr_subtype",
+    "bnk_dict_category",
+    "bnk_dict_committee",
+    "bnk_dict_covenant",
+    "bnk_dict_currency",
+    "bnk_dict_insurer",
+    "bnk_dict_item",
+    "bnk_dict_pledge",
+    "bnk_dict_pledge_type",
+    "bnk_dict_svc_subject",
+    "bnk_dict_svc_type",
+    "bnk_dictionary",
+    "bnk_docs_classifier",
+    "bnk_docs_folder",
+    "bnk_document",
+    "bnk_event",
+    "bnk_events_folder",
+    "bnk_fixed_table",
+    "bnk_folder",
+    "bnk_formula_cfg",
+    "bnk_gcc",
+    "bnk_ind_offer",
+    "bnk_io_folder",
+    "bnk_limit",
+    "bnk_limits",
+    "bnk_limits_folder",
+    "bnk_loan_request",
+    "bnk_lr_folder",
+    "bnk_ls_doc",
+    "bnk_mo_folder",
+    "bnk_mo_request",
+    "bnk_modify_config",
+    "bnk_monitoring",
+    "bnk_monitoring_folder",
+    "bnk_not_client",
+    "bnk_org_folder",
+    "bnk_org_item",
+    "bnk_org_office",
+    "bnk_org_service",
+    "bnk_org_unit",
+    "bnk_pledge",
+    "bnk_pledges_folder",
+    "bnk_process_scheme",
+    "bnk_reg_groups_cfg",
+    "bnk_reg_roles_cfg",
+    "bnk_report",
+    "bnk_representation",
+    "bnk_request_state",
+    "bnk_service_request",
+    "bnk_sr_folder",
+    "bnk_support_request",
+    "bnk_sys_doc",
+    "bnk_sysobject",
+    "bnk_temp_obj",
+    "bnk_time_manager_config",
+    "bnk_time_report",
+    "bnk_view",
+    "bnk_views_folder",
+    "bnk_voters_list"
+  ],
+  "statuses-all": [
+    {
+      "type": "bnk_service_request",
+      "service": "",
+      "statuses": [
+        "SR_S_INIT",
+        "SR_S_CLOSED"
+      ]
+    },
+    {
+      "type": "bnk_covenant",
+      "service": "",
+      "statuses": [
+        "COV_S_ACTIVE",
+        "COV_S_CLOSED",
+        "COV_S_INACTIVE",
+        "COV_S_NEW",
+        "COV_S_AGREEMENT",
+        "COV_S_CHANGE"
+      ]
+    },
+    {
+      "type": "bnk_limit",
+      "service": "",
+      "statuses": [
+        "LIM_S_ACTIVE",
+        "LIM_S_NEW",
+        "LIM_S_CLOSED"
+      ]
+    },
+    {
+      "type": "bnk_pledge",
+      "service": "",
+      "statuses": [
+        "PLG_S_NEW",
+        "PLG_S_ACTIVE",
+        "PLG_S_CLOSED"
+      ]
+    },
+    {
+      "type": "bnk_conclusion",
+      "service": "RM",
+      "statuses": [
+        "RM_S_CO_APPROVE",
+        "RM_S_CO_ASSIGN",
+        "RM_S_CO_CONCL",
+        "RM_S_CO_DONE",
+        "RM_S_CO_REJECT",
+        "RM_S_CO_REV"
+      ]
+    },
+    {
+      "type": "bnk_conclusion",
+      "service": "CA",
+      "statuses": [
+        "CA_S_CO_APPROVE",
+        "CA_S_CO_ASSIGN",
+        "CA_S_CO_CONCL",
+        "CA_S_CO_DONE",
+        "CA_S_CO_REJECT",
+        "CA_S_CO_REV",
+        "CA_S_RD_APPROVE",
+        "CA_S_RD_ASSIGN",
+        "CA_S_RD_CONCL",
+        "CA_S_RD_DONE",
+        "CA_S_RD_REJECT",
+        "CA_S_RD_REV"
+      ]
+    },
+    {
+      "type": "bnk_conclusion",
+      "service": "LS",
+      "statuses": [
+        "LS_S_CO_ASSIGN",
+        "LS_S_CO_APPROVE",
+        "LS_S_CO_CONCL",
+        "LS_S_CO_DONE",
+        "LS_S_CO_REJECT",
+        "LS_S_CO_REV",
+        "LS_S_RD_APPROVE",
+        "LS_S_RD_ASSIGN",
+        "LS_S_RD_CONCL",
+        "LS_S_RD_DONE",
+        "LS_S_RD_REJECT",
+        "LS_S_RD_REV"
+      ]
+    },
+    {
+      "type": "bnk_conclusion",
+      "service": "FS",
+      "statuses": [
+        "FS_S_CO_APPROVE",
+        "FS_S_CO_ASSIGN",
+        "FS_S_CO_CONCL",
+        "FS_S_CO_DONE",
+        "FS_S_CO_REJECT",
+        "FS_S_CO_REV",
+        "FS_S_RD_APPROVE",
+        "FS_S_RD_ASSIGN",
+        "FS_S_RD_CONCL",
+        "FS_S_RD_DONE",
+        "FS_S_RD_REJECT",
+        "FS_S_RD_REV"
+      ]
+    },
+    {
+      "type": "bnk_conclusion",
+      "service": "PS",
+      "statuses": [
+        "PS_S_CO_APPROVE",
+        "PS_S_CO_ASSIGN",
+        "PS_S_CO_CONCL",
+        "PS_S_CO_DONE",
+        "PS_S_CO_REJECT",
+        "PS_S_CO_REV",
+        "PS_S_RD_APPROVE",
+        "PS_S_RD_ASSIGN",
+        "PS_S_RD_CONCL",
+        "PS_S_RD_DONE",
+        "PS_S_RD_REJECT",
+        "PS_S_RD_REV"
+      ]
+    },
+    {
+      "type": "bnk_loan_request",
+      "service": "",
+      "statuses": [
+        "LR_S_INIT",
+        "LR_S_PREP",
+        "LR_S_REV",
+        "LR_S_KK",
+        "LR_S_KK_ASGN",
+        "LR_S_KK_S",
+        "LR_S_KK_L",
+        "LR_S_KK_PREP",
+        "LR_S_CLOSED",
+        "LR_S_BANK_NO",
+        "LR_S_CLNT_NO",
+        "LR_S_STOPPED"
+      ]
+    },
+    {
+      "type": "bnk_ind_offer",
+      "service": "",
+      "statuses": [
+        "IO_S_DOC",
+        "IO_S_SVC",
+        "IO_S_CLOSED",
+        "IO_S_BANK_NO",
+        "IO_S_CLNT_NO"
+      ]
+    },
+    {
+      "type": "bnk_control_request",
+      "service": "",
+      "statuses": [
+        "CR_S_OPS_APRV",
+        "CR_S_OPS_REV",
+        "CR_S_OPS_PERF",
+        "CR_S_MO_APRV",
+        "CR_S_MO_REV",
+        "CR_S_INIT",
+        "CR_S_CTRL_1",
+        "CR_S_CTRL_2",
+        "CR_S_CTRL_APRV",
+        "CR_S_CTRL_REV",
+        "CR_S_CTRL_CONF1",
+        "CR_S_CTRL_CONF2",
+        "CR_S_CTRL_CONF3",
+        "CR_S_DONE",
+        "CR_S_REFUSE"
+      ]
+    },
+    {
+      "type": "bnk_agreement",
+      "service": "",
+      "statuses": [
+        "AGR_S_ACTIVE",
+        "AGR_S_NEW",
+        "AGR_S_INACTIVE",
+        "AGR_S_AGREEMENT"
+      ]
+    },
+    {
+      "type": "bnk_mo_request",
+      "service": "",
+      "statuses": [
+        "MO_S_INIT",
+        "MO_S_RD_PREP",
+        "MO_S_CO_PREP",
+        "MO_S_CO_ASSIGN",
+        "MO_S_RD_ASSIGN"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "CA",
+      "statuses": [
+        "SR_S_CO_CA_REJ",
+        "SR_S_CO_CA_DONE",
+        "SR_S_MR_CA_REJ",
+        "SR_S_MR_CA_DONE",
+        "SR_S_RD_CA_REJ",
+        "SR_S_RD_CA_DONE",
+        "SR_S_VR_CA_REJ",
+        "SR_S_VR_CA_DONE",
+        "SR_S_OD_CA_REJ",
+        "SR_S_OD_CA_DONE",
+        "SR_S_CO_CA_ASSGN",
+        "SR_S_CO_CA_CONCL",
+        "SR_S_VR_CA_ASSGN",
+        "SR_S_VR_CA_CONCL",
+        "SR_S_MR_CA_ASSGN",
+        "SR_S_MR_CA_CONCL",
+        "SR_S_RD_CA_ASSGN",
+        "SR_S_RD_CA_CONCL",
+        "SR_S_OD_CA_ASSGN",
+        "SR_S_OD_CA_CONCL",
+        "SR_S_CO_CA_ASGN",
+        "SR_S_CO_CA_CNCL",
+        "SR_S_VR_CA_ASGN",
+        "SR_S_VR_CA_CNCL",
+        "SR_S_MR_CA_ASGN",
+        "SR_S_MR_CA_CNCL",
+        "SR_S_RD_CA_ASGN",
+        "SR_S_RD_CA_CNCL",
+        "SR_S_OD_CA_ASGN",
+        "SR_S_OD_CA_CNCL"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "FS",
+      "statuses": [
+        "SR_S_CO_FS_REJ",
+        "SR_S_CO_FS_DONE",
+        "SR_S_MR_FS_REJ",
+        "SR_S_MR_FS_DONE",
+        "SR_S_RD_FS_REJ",
+        "SR_S_RD_FS_DONE",
+        "SR_S_VR_FS_REJ",
+        "SR_S_VR_FS_DONE",
+        "SR_S_OD_FS_REJ",
+        "SR_S_OD_FS_DONE",
+        "SR_S_CO_FS_ASSGN",
+        "SR_S_CO_FS_CONCL",
+        "SR_S_VR_FS_ASSGN",
+        "SR_S_VR_FS_CONCL",
+        "SR_S_MR_FS_ASSGN",
+        "SR_S_MR_FS_CONCL",
+        "SR_S_RD_FS_ASSGN",
+        "SR_S_RD_FS_CONCL",
+        "SR_S_OD_FS_ASSGN",
+        "SR_S_OD_FS_CONCL",
+        "SR_S_CO_FS_ASGN",
+        "SR_S_CO_FS_CNCL",
+        "SR_S_VR_FS_ASGN",
+        "SR_S_VR_FS_CNCL",
+        "SR_S_MR_FS_ASGN",
+        "SR_S_MR_FS_CNCL",
+        "SR_S_RD_FS_ASGN",
+        "SR_S_RD_FS_CNCL",
+        "SR_S_OD_FS_ASGN",
+        "SR_S_OD_FS_CNCL"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "LS",
+      "statuses": [
+        "SR_S_CO_LS_REJ",
+        "SR_S_CO_LS_DONE",
+        "SR_S_MR_LS_REJ",
+        "SR_S_MR_LS_DONE",
+        "SR_S_RD_LS_REJ",
+        "SR_S_RD_LS_DONE",
+        "SR_S_VR_LS_REJ",
+        "SR_S_VR_LS_DONE",
+        "SR_S_OD_LS_REJ",
+        "SR_S_OD_LS_DONE",
+        "SR_S_CO_LS_ASSGN",
+        "SR_S_CO_LS_CONCL",
+        "SR_S_VR_LS_ASSGN",
+        "SR_S_VR_LS_CONCL",
+        "SR_S_MR_LS_ASSGN",
+        "SR_S_MR_LS_CONCL",
+        "SR_S_RD_LS_ASSGN",
+        "SR_S_RD_LS_CONCL",
+        "SR_S_OD_LS_ASSGN",
+        "SR_S_OD_LS_CONCL",
+        "SR_S_CO_LS_ASGN",
+        "SR_S_CO_LS_CNCL",
+        "SR_S_VR_LS_ASGN",
+        "SR_S_VR_LS_CNCL",
+        "SR_S_MR_LS_ASGN",
+        "SR_S_MR_LS_CNCL",
+        "SR_S_RD_LS_ASGN",
+        "SR_S_RD_LS_CNCL",
+        "SR_S_OD_LS_ASGN",
+        "SR_S_OD_LS_CNCL"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "PS",
+      "statuses": [
+        "SR_S_CO_PS_REJ",
+        "SR_S_CO_PS_DONE",
+        "SR_S_MR_PS_REJ",
+        "SR_S_MR_PS_DONE",
+        "SR_S_RD_PS_REJ",
+        "SR_S_RD_PS_DONE",
+        "SR_S_VR_PS_REJ",
+        "SR_S_VR_PS_DONE",
+        "SR_S_OD_PS_REJ",
+        "SR_S_OD_PS_DONE",
+        "SR_S_CO_PS_ASSGN",
+        "SR_S_CO_PS_CONCL",
+        "SR_S_VR_PS_ASSGN",
+        "SR_S_VR_PS_CONCL",
+        "SR_S_MR_PS_ASSGN",
+        "SR_S_MR_PS_CONCL",
+        "SR_S_RD_PS_ASSGN",
+        "SR_S_RD_PS_CONCL",
+        "SR_S_OD_PS_ASSGN",
+        "SR_S_OD_PS_CONCL",
+        "SR_S_CO_PS_ASGN",
+        "SR_S_CO_PS_CNCL",
+        "SR_S_VR_PS_ASGN",
+        "SR_S_VR_PS_CNCL",
+        "SR_S_MR_PS_ASGN",
+        "SR_S_MR_PS_CNCL",
+        "SR_S_RD_PS_ASGN",
+        "SR_S_RD_PS_CNCL",
+        "SR_S_OD_PS_ASGN",
+        "SR_S_OD_PS_CNCL"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "FA",
+      "statuses": [
+        "SR_S_CO_FA_REV",
+        "SR_S_RD_FA_REV",
+        "SR_S_RD_FA_APPRV",
+        "SR_S_CO_FA_APPRV",
+        "SR_S_CO_FA_CONCL",
+        "SR_S_RD_FA_CONCL",
+        "SR_S_RD_FA_ASSGN",
+        "SR_S_CO_FA_ASSGN",
+        "SR_S_RD_FA_APRV",
+        "SR_S_CO_FA_APRV",
+        "SR_S_CO_FA_CNCL",
+        "SR_S_RD_FA_CNCL",
+        "SR_S_RD_FA_ASGN",
+        "SR_S_CO_FA_ASGN",
+        "SR_S_CO_FA_DONE"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "FO",
+      "statuses": [
+        "SR_S_CO_FO_ASSGN",
+        "SR_S_CO_FO_CONCL",
+        "SR_S_VR_FO_ASSGN",
+        "SR_S_VR_FO_CONCL",
+        "SR_S_MR_FO_ASSGN",
+        "SR_S_MR_FO_CONCL",
+        "SR_S_RD_FO_ASSGN",
+        "SR_S_RD_FO_CONCL",
+        "SR_S_OD_FO_ASSGN",
+        "SR_S_OD_FO_CONCL",
+        "SR_S_CO_FO_ASGN",
+        "SR_S_CO_FO_CNCL",
+        "SR_S_VR_FO_ASGN",
+        "SR_S_VR_FO_CNCL",
+        "SR_S_MR_FO_ASGN",
+        "SR_S_MR_FO_CNCL",
+        "SR_S_RD_FO_ASGN",
+        "SR_S_RD_FO_CNCL",
+        "SR_S_OD_FO_ASGN",
+        "SR_S_OD_FO_CNCL",
+        "SR_S_CO_FO_DONE"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "RM",
+      "statuses": [
+        "SR_S_CO_RM_REJ",
+        "SR_S_CO_RM_DONE",
+        "SR_S_MR_RM_REJ",
+        "SR_S_MR_RM_DONE",
+        "SR_S_RD_RM_REJ",
+        "SR_S_RD_RM_DONE",
+        "SR_S_VR_RM_REJ",
+        "SR_S_VR_RM_DONE",
+        "SR_S_OD_RM_REJ",
+        "SR_S_OD_RM_DONE",
+        "SR_S_CO_RM_ASSGN",
+        "SR_S_CO_RM_CONCL",
+        "SR_S_VR_RM_ASSGN",
+        "SR_S_VR_RM_CONCL",
+        "SR_S_MR_RM_ASSGN",
+        "SR_S_MR_RM_CONCL",
+        "SR_S_RD_RM_ASSGN",
+        "SR_S_RD_RM_CONCL",
+        "SR_S_OD_RM_ASSGN",
+        "SR_S_OD_RM_CONCL",
+        "SR_S_CO_RM_ASGN",
+        "SR_S_CO_RM_CNCL",
+        "SR_S_VR_RM_ASGN",
+        "SR_S_VR_RM_CNCL",
+        "SR_S_MR_RM_ASGN",
+        "SR_S_MR_RM_CNCL",
+        "SR_S_RD_RM_ASGN",
+        "SR_S_RD_RM_CNCL",
+        "SR_S_OD_RM_ASGN",
+        "SR_S_OD_RM_CNCL"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "DO",
+      "statuses": [
+        "SR_S_CO_DO_ASSGN",
+        "SR_S_CO_DO_CONCL",
+        "SR_S_VR_DO_ASSGN",
+        "SR_S_VR_DO_CONCL",
+        "SR_S_MR_DO_ASSGN",
+        "SR_S_MR_DO_CONCL",
+        "SR_S_RD_DO_ASSGN",
+        "SR_S_RD_DO_CONCL",
+        "SR_S_OD_DO_ASSGN",
+        "SR_S_OD_DO_CONCL",
+        "SR_S_CO_DO_ASGN",
+        "SR_S_CO_DO_CNCL",
+        "SR_S_VR_DO_ASGN",
+        "SR_S_VR_DO_CNCL",
+        "SR_S_MR_DO_ASGN",
+        "SR_S_MR_DO_CNCL",
+        "SR_S_RD_DO_ASGN",
+        "SR_S_RD_DO_CNCL",
+        "SR_S_OD_DO_ASGN",
+        "SR_S_OD_DO_CNCL",
+        "SR_S_CO_DO_DONE"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "CP",
+      "statuses": [
+        "SR_S_CO_CP_DONE",
+        "SR_S_CO_CP_ASSGN",
+        "SR_S_CO_CP_CONCL",
+        "SR_S_VR_CP_ASSGN",
+        "SR_S_VR_CP_CONCL",
+        "SR_S_MR_CP_ASSGN",
+        "SR_S_MR_CP_CONCL",
+        "SR_S_RD_CP_ASSGN",
+        "SR_S_RD_CP_CONCL",
+        "SR_S_OD_CP_ASSGN",
+        "SR_S_OD_CP_CONCL",
+        "SR_S_CO_CP_ASGN",
+        "SR_S_CO_CP_CNCL",
+        "SR_S_VR_CP_ASGN",
+        "SR_S_VR_CP_CNCL",
+        "SR_S_MR_CP_ASGN",
+        "SR_S_MR_CP_CNCL",
+        "SR_S_RD_CP_ASGN",
+        "SR_S_RD_CP_CNCL",
+        "SR_S_OD_CP_ASGN",
+        "SR_S_OD_CP_CNCL"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "MO",
+      "statuses": [
+        "SR_S_CO_MO_ASSGN",
+        "SR_S_CO_MO_CONCL",
+        "SR_S_VR_MO_ASSGN",
+        "SR_S_VR_MO_CONCL",
+        "SR_S_MR_MO_ASSGN",
+        "SR_S_MR_MO_CONCL",
+        "SR_S_RD_MO_ASSGN",
+        "SR_S_RD_MO_CONCL",
+        "SR_S_OD_MO_ASSGN",
+        "SR_S_OD_MO_CONCL",
+        "SR_S_CO_MO_ASGN",
+        "SR_S_CO_MO_CNCL",
+        "SR_S_VR_MO_ASGN",
+        "SR_S_VR_MO_CNCL",
+        "SR_S_MR_MO_ASGN",
+        "SR_S_MR_MO_CNCL",
+        "SR_S_RD_MO_ASGN",
+        "SR_S_RD_MO_CNCL",
+        "SR_S_OD_MO_ASGN",
+        "SR_S_OD_MO_CNCL"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "CC",
+      "statuses": [
+        "SR_S_CO_CC_ASSGN",
+        "SR_S_CO_CC_CONCL",
+        "SR_S_VR_CC_ASSGN",
+        "SR_S_VR_CC_CONCL",
+        "SR_S_MR_CC_ASSGN",
+        "SR_S_MR_CC_CONCL",
+        "SR_S_RD_CC_ASSGN",
+        "SR_S_RD_CC_CONCL",
+        "SR_S_OD_CC_ASSGN",
+        "SR_S_OD_CC_CONCL",
+        "SR_S_CO_CC_ASGN",
+        "SR_S_CBO_CC_ASGN",
+        "SR_S_CO_CC_CNCL",
+        "SR_S_CBO_CC_CNCL",
+        "SR_S_VR_CC_ASGN",
+        "SR_S_VR_CC_CNCL",
+        "SR_S_MR_CC_ASGN",
+        "SR_S_MR_CC_CNCL",
+        "SR_S_RD_CC_ASGN",
+        "SR_S_RD_CC_CNCL",
+        "SR_S_OD_CC_ASGN",
+        "SR_S_OD_CC_CNCL"
+      ]
+    },
+    {
+      "type": "bnk_service_request",
+      "service": "OP",
+      "statuses": [
+        "SR_S_CO_OP_ASSGN",
+        "SR_S_CO_OP_CONCL",
+        "SR_S_VR_OP_ASSGN",
+        "SR_S_VR_OP_CONCL",
+        "SR_S_MR_OP_ASSGN",
+        "SR_S_MR_OP_CONCL",
+        "SR_S_RD_OP_ASSGN",
+        "SR_S_RD_OP_CONCL",
+        "SR_S_OD_OP_ASSGN",
+        "SR_S_OD_OP_CONCL",
+        "SR_S_CO_OP_ASGN",
+        "SR_S_CBO_OP_ASGN",
+        "SR_S_CO_OP_CNCL",
+        "SR_S_CBO_OP_CNCL",
+        "SR_S_VR_OP_ASGN",
+        "SR_S_VR_OP_CNCL",
+        "SR_S_MR_OP_ASGN",
+        "SR_S_MR_OP_CNCL",
+        "SR_S_RD_OP_ASGN",
+        "SR_S_RD_OP_CNCL",
+        "SR_S_OD_OP_ASGN",
+        "SR_S_OD_OP_CNCL"
+      ]
+    }
+  ],
+  "roles-all": [
+    "dm_dbo",
+    "dm_owner",
+    "docu",
+    "bnk_badmin",
+    "bnk_tadmin",
+    "bnk_pledge_lm",
+    "bnk_pledge_conf1",
+    "bnk_pledge_conf2",
+    "bnk_pledge_perf",
+    "bnk_control_lm_central",
+    "bnk_control_perf_central",
+    "bnk_control_conf1_central",
+    "bnk_control_conf2_central",
+    "bnk_control_conf3_central",
+    "bnk_ops_perf_central",
+    "bnk_ops_lm_central"
+  ],
+  "aliases-all": [
+    {
+      "alias": "bnk_gcc_pam1",
+      "service": false
+    },
+    {
+      "alias": "bnk_gcc_pam2",
+      "service": false
+    },
+    {
+      "alias": "bnk-ca-conf1",
+      "service": true
+    },
+    {
+      "alias": "bnk-ca-conf2",
+      "service": true
+    },
+    {
+      "alias": "bnk-ca-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-ca-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-cc-conf1",
+      "service": true
+    },
+    {
+      "alias": "bnk-cc-conf2",
+      "service": true
+    },
+    {
+      "alias": "bnk-cc-conf3",
+      "service": true
+    },
+    {
+      "alias": "bnk-cc-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-cc-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-cp-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-cp-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-do-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-do-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-fa-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-fa-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-fo-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-fo-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-fo-conf1",
+      "service": true
+    },
+    {
+      "alias": "bnk-fo-conf2",
+      "service": true
+    },
+    {
+      "alias": "bnk-fs-conf1",
+      "service": true
+    },
+    {
+      "alias": "bnk-fs-conf2",
+      "service": true
+    },
+    {
+      "alias": "bnk-fs-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-fs-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-ls-conf1",
+      "service": true
+    },
+    {
+      "alias": "bnk-ls-conf2",
+      "service": true
+    },
+    {
+      "alias": "bnk-ls-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-ls-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-mo-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-mo-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-pd-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-pl-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-rm-conf1",
+      "service": true
+    },
+    {
+      "alias": "bnk-rm-conf2",
+      "service": true
+    },
+    {
+      "alias": "bnk-rm-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-rm-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-op-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-op-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-sale-conf1",
+      "service": true
+    },
+    {
+      "alias": "bnk-sale-conf2",
+      "service": true
+    },
+    {
+      "alias": "bnk-sale-lm",
+      "service": true
+    },
+    {
+      "alias": "bnk-sale-perf",
+      "service": true
+    },
+    {
+      "alias": "bnk-scaner",
+      "service": false
+    },
+    {
+      "alias": "bnk-secretary",
+      "service": false
+    },
+    {
+      "alias": "bnk-voter",
+      "service": false
+    }
+  ]
+}
