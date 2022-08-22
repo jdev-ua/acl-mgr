@@ -1,61 +1,46 @@
 package ua.pp.jdev.permits.service;
 
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Service;
+
+import ua.pp.jdev.permits.data.dict.DictDataProvider;
 
 @Service
 public class DictionaryService {
-    private Map<String, String> dictObjTypes = new TreeMap<>();
-    private Map<String, String> dictStatuses = new TreeMap<>();
+	DictDataProvider dataProvider;
 
-	public DictionaryService() {
-		initDictObjTypes();
-		initDictStatuses();
-	}
-
-	private void initDictObjTypes() {
-    	dictObjTypes.put("bnk_agreement","bnk_agreement");
-    	dictObjTypes.put("bnk_application","bnk_application");
-    	dictObjTypes.put("bnk_borrower","bnk_borrower");
-    	dictObjTypes.put("bnk_client","bnk_client");
-    	dictObjTypes.put("bnk_committee","bnk_committee");
-    	dictObjTypes.put("bnk_conclusion","bnk_conclusion");
-    	dictObjTypes.put("bnk_covenant","bnk_covenant");
-    	dictObjTypes.put("bnk_document","bnk_document");
-    	dictObjTypes.put("bnk_grc","bnk_grc");
-    	dictObjTypes.put("bnk_limit","bnk_limit");
-    	dictObjTypes.put("bnk_not_client","bnk_not_client");
-    	dictObjTypes.put("bnk_report","bnk_report");
-    	
-    }
-
-	private void initDictStatuses() {
-		dictStatuses.put("PS_S_CO_APPROVE","PS_S_CO_APPROVE");
-		dictStatuses.put("PS_S_CO_ASSIGN","PS_S_CO_ASSIGN");
-		dictStatuses.put("PS_S_CO_CONCL","PS_S_CO_CONCL");
-		dictStatuses.put("PS_S_CO_DONE","PS_S_CO_DONE");
-		dictStatuses.put("PS_S_CO_REJECT","PS_S_CO_REJECT");
-		dictStatuses.put("PS_S_CO_REV","PS_S_CO_REV");
-		dictStatuses.put("PS_S_RD_APPROVE","PS_S_RD_APPROVE");
-		dictStatuses.put("PS_S_RD_ASSIGN","PS_S_RD_ASSIGN");
-		dictStatuses.put("PS_S_RD_CONCL","PS_S_RD_CONCL");
-		dictStatuses.put("PS_S_RD_DONE","PS_S_RD_DONE");
-		dictStatuses.put("PS_S_RD_REJECT","PS_S_RD_REV");
-		dictStatuses.put("COV_S_CLOSED","COV_S_CLOSED");
-		dictStatuses.put("COV_S_INACTIVE","COV_S_INACTIVE");
-		dictStatuses.put("COV_S_ACTIVE","COV_S_ACTIVE");
-		dictStatuses.put("LIM_S_CLOSED","LIM_S_CLOSED");
-		dictStatuses.put("LIM_S_INACTIVE","LIM_S_INACTIVE");
-		dictStatuses.put("LIM_S_ACTIVE","LIM_S_ACTIVE");
+	@PostConstruct
+	private void populate() {
+		try {
+			// TODO Make it configurable!
+			dataProvider = new DictDataProvider("/dict/dictionaries.json");
+		} catch (FileNotFoundException|URISyntaxException fnfe) {
+			// TODO: handle exception
+			throw new RuntimeException(fnfe);
+		}
 	}
 	
 	public Map<String, String> getObjTypes() {
-		return dictObjTypes;
+		return dataProvider.getSupportedTypes();
+	}
+
+	public Map<String, String> getStatuses(Collection<String> objTypes) {
+		Map<String, String> dictStatuses = new TreeMap<>();
+		objTypes.forEach(t -> {
+			dictStatuses.putAll(dataProvider.getAvailableStatuses(t, ""));
+		});
+
+		return dictStatuses;
 	}
 	
-	public Map<String, String> getStatuses() {
-		return dictStatuses;
+	public Map<String, String> getAliases(boolean alias, boolean svc) {
+		return alias ? dataProvider.getSupportedAliases(svc) : dataProvider.getSupportedRoles();
 	}
 }
