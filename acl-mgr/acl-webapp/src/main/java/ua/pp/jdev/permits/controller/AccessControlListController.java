@@ -1,6 +1,7 @@
 package ua.pp.jdev.permits.controller;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -63,24 +64,30 @@ public class AccessControlListController {
 		return dictService.getObjTypes();
 	}
 
-	@ModelAttribute("dictStatuses")
-	private Map<String, String> getDictStatuses() {
-		return dictService.getStatuses();
+	private Map<String, String> getDictStatuses(Collection<String> objTypes) {
+		return dictService.getStatuses(objTypes);
 	}
-	
+
 	@ModelAttribute("dictPermits")
 	private Map<String, Permit> getDictPermits() {
-		return Arrays.asList(Permit.values()).stream().collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
+		return Arrays.asList(Permit.values()).stream()
+				.collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
 
 	private Map<String, XPermit> getDictXPermits() {
-		return Arrays.asList(XPermit.values()).stream().collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
+		return Arrays.asList(XPermit.values()).stream()
+				.collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
-	
+
+	private Map<String, String> getDictAliases(boolean alias, boolean svc) {
+		return dictService.getAliases(alias, svc);
+	}
+
 	private Map<String, OrgLevel> getDictOrgLevels() {
-		return Arrays.asList(OrgLevel.values()).stream().collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
+		return Arrays.asList(OrgLevel.values()).stream()
+				.collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
-	
+
 	@GetMapping
 	public String viewAllForm(Model model, SessionStatus sessionStatus) {
 		model.addAttribute("acls", aclDAO.readAll());
@@ -98,21 +105,23 @@ public class AccessControlListController {
 	}
 
 	@GetMapping("/new")
-	public String newForm(Model model) {
+	public String newForm(@ModelAttribute("acl") AccessControlList acl, Model model) {
 		model.addAttribute("httpMethod", "post");
+		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
 		return "editACL";
 	}
-	
+
 	@GetMapping("/{id}")
 	public String viewForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName, Model model) {
 		log.debug("Starting get ACL with ID={} for view", id);
 
 		AccessControlList acl = readACL(id);
 		model.addAttribute("acl", acl);
+		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
 
 		if (accessorName != null && accessorName.length() > 0) {
 			log.debug("Starting prepare eview form for Accessor '{}' of ACL {}", accessorName, acl);
-			
+
 			Optional<Accessor> optlAccessor = acl.getAccessor(accessorName);
 			if (optlAccessor.isEmpty()) {
 				// TODO Implement it!
@@ -122,7 +131,7 @@ public class AccessControlListController {
 			model.addAttribute("accessor", optlAccessor.get());
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
-			
+
 			log.debug("Return view form for Accessor {}: ", optlAccessor.get());
 
 			return "viewAccessor";
@@ -131,28 +140,29 @@ public class AccessControlListController {
 
 		return "viewACL";
 	}
-	
+
 	protected AccessControlList readACL(String id) {
 		Optional<AccessControlList> optionalAcl = aclDAO.read(id);
 		if (optionalAcl.isEmpty()) {
 			// TODO Implement it!
 			throw new RuntimeException();
 		}
-		
+
 		return optionalAcl.get();
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName, @RequestParam(required = false) boolean addAccessor, Model model) {
+	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
+			@RequestParam(required = false) boolean addAccessor, Model model) {
 		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
-		if(!acl.getId().equalsIgnoreCase(id)) {
+		if (!acl.getId().equalsIgnoreCase(id)) {
 			acl = readACL(id);
 			model.addAttribute("acl", acl);
 		}
-		
+
 		if (addAccessor || (accessorName != null && accessorName.length() > 0)) {
 			log.debug("Starting prepare edit form for Accessor '{}' of ACL {}", accessorName, acl);
-			
+
 			Accessor accessor;
 			if (!addAccessor) {
 				Optional<Accessor> optAccessor = acl.getAccessor(accessorName);
@@ -169,6 +179,7 @@ public class AccessControlListController {
 				model.addAttribute("accessor", accessor);
 			}
 
+			model.addAttribute("dictAccessorNames", getDictAliases(accessor.isAlias(), accessor.isSvc()));
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			log.debug("Return edit form for Accessor {}: ", accessor);
@@ -176,6 +187,8 @@ public class AccessControlListController {
 			return "editAccessor";
 		}
 		log.debug("Starting prepare edit form for ACL {}", acl);
+
+		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
 
 		if (acl.getId() == null || acl.getId().length() == 0) {
 			model.addAttribute("httpMethod", "post");
@@ -194,14 +207,14 @@ public class AccessControlListController {
 			Optional<Accessor> optAccessor = acl.getAccessor(accessorName);
 			if (optAccessor.isPresent()) {
 				Accessor accessor = optAccessor.get();
-				if(State.VOID.equals(accessor.getState())) {
+				if (State.VOID.equals(accessor.getState())) {
 					accessor.setState(State.DIRTY);
 				} else {
 					accessor.setState(State.VOID);
 				}
 			}
 			log.info("Deleted accessor '{}' from ACL: {}", accessorName, acl);
-			
+
 			return String.format("redirect:/acls/%s/edit", acl.getId());
 		}
 
@@ -223,7 +236,7 @@ public class AccessControlListController {
 			model.addAttribute("accessor", new Accessor(State.NEW));
 			return "redirect:/acls";
 		}
-		
+
 		log.debug("Starting create new ACL " + acl);
 
 		if (errors.hasErrors()) {
@@ -263,6 +276,7 @@ public class AccessControlListController {
 				log.debug("Failed to update Accessor {} due to validation errors {}", accessor, errors.toString());
 			}
 
+			model.addAttribute("dictAccessorNames", getDictAliases(accessor.isAlias(), accessor.isSvc()));
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			return "editAccessor";
