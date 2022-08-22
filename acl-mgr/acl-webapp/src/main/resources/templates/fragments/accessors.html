@@ -15,7 +15,7 @@
 		</script>
 		<form id="accessors" th:object="${acl}" method="post" th:action="@{/acls/{id}?accessorName=(id=${acl.id})}">
 			<input type="hidden" id="_method" name="_method" th:value="delete"  form="accessors" />
-			<table class="table table-striped">
+			<table class="table table-sm table-striped">
 				<thead>
 					<tr>
 						<!--
@@ -41,20 +41,20 @@
 						-->
 						<td width="1%">
 							<div th:switch="${accessor.state.toString()}">
-								<p th:case="${T(ua.pp.jdev.permits.enums.State).NEW.toString()}">
+								<span th:case="${T(ua.pp.jdev.permits.enums.State).NEW.toString()}">
 									<i th:title="#{tooltip.statenew}" class="fa-solid fa-user-plus"></i>
-								</p>
-								<p th:case="${T(ua.pp.jdev.permits.enums.State).PURE.toString()}">
+								</span>
+								<span th:case="${T(ua.pp.jdev.permits.enums.State).PURE.toString()}">
 									<i th:title="#{tooltip.statepure}" class="fa-solid fa-user-check"></i>
-								</p>
-								<p th:case="${T(ua.pp.jdev.permits.enums.State).DIRTY.toString()}">
+								</span>
+								<span th:case="${T(ua.pp.jdev.permits.enums.State).DIRTY.toString()}">
 									<i th:title="#{tooltip.statedirty}" class="fa-solid fa-user-pen"></i>
-								</p>
-								<p th:case="${T(ua.pp.jdev.permits.enums.State).VOID.toString()}">
+								</span>
+								<span th:case="${T(ua.pp.jdev.permits.enums.State).VOID.toString()}">
 									<i th:title="#{tooltip.statevoid}" class="fa-solid fa-user-slash"></i>
-								</p>
-								<p th:case="*" th:text="${accessor.state}">ACCESSOR.STATE</p>
-							</div>
+								</span>
+								<span th:case="*" th:text="${accessor.state}">ACCESSOR.STATE</span>
+							</div> 
 						</td>
 						<td th:text="${accessor.name}">ACCESSOR.NAME</td>
 						<td th:text="${dictPermits.get(#strings.toString(accessor.permit))}">ACCESSOR.PERMIT</td>
@@ -84,7 +84,7 @@
 											th:href="@{/acls/{id}/edit?accessorName={name}(id=${acl.id},name=${accessor.name})}">
 											<nobr><i class="fas fa-edit"></i>&nbsp;<span th:text="#{button.edit}"></span></nobr></a>
 									</span>
-									<span>
+									<span th:if="${accessor.name != 'dm_owner' and accessor.name != 'dm_world'}">
 										<a class="btn btn-outline-secondary btn-sm mr-2" type="button"
 											th:onclick="@{onDeleteAccessor('{name}')(name=${accessor.name})}">
 											<nobr th:switch="${T(ua.pp.jdev.permits.enums.State).VOID.toString() != accessor.state.toString()}">
