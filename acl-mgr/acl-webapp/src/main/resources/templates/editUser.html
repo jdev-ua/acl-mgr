@@ -26,25 +26,32 @@
 					</span>
 				</h5>
 				<div class="card-body">
-					<div class="form-group row">
-						<label for="username" class="col-sm-2 col-form-label font-weight"
-							th:text="#{label.username}">USERNAME</label>
-						<div class="col-sm-4">
-							<span th:switch="${user.new}">
-								<input th:case="true"
-									type="text" th:placeholder="#{placeholder.username}"
-									th:class="${'form-control'}" th:errorclass="${'form-control is-invalid'}"
+					<div class="form-group row" th:switch="${user.new}">
+						<th:block th:case="true">
+							<label for="username" class="col-sm-2 col-form-label font-weight"
+								th:inline="text"><b style="color: red;">*</b>[[#{label.username}]]</label>
+							<div class="col-sm-4">
+								<input type="text" th:placeholder="#{placeholder.username}"
+									th:class="${'form-control'}"
+									th:errorclass="${'form-control is-invalid'}"
 									th:field="*{username}" /><span class="invalid-feedback"
-									th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
-								<input th:case="false" type="text" readonly
-									class="form-control-plaintext" id="username"
-									th:value="${user.username}">
-							</span>
-						</div>
+									th:if="${#fields.hasErrors('username')}"
+									th:errors="*{username}"></span>
+
+							</div>
+						</th:block>
+						<th:block th:case="false">
+							<label for="username" class="col-sm-2 col-form-label font-weight"
+								th:text="#{label.username}">USERNAME</label>
+							<div class="col-sm-4">
+								<input type="text" readonly class="form-control-plaintext"
+									id="username" th:value="${user.username}">
+							</div>
+						</th:block>
 					</div>
 					<div class="form-group row">
 						<label for="password" class="col-sm-2 col-form-label font-weight"
-							th:text="#{label.password}">PASSWORD</label>
+							th:inline="text"><b style="color:red;">*</b>[[#{label.password}]]</label>
 						<div class="col-sm-4">
 								<input type="password" th:placeholder="#{placeholder.password}" autocomplete="off"
 								th:class="${'form-control'}" th:errorclass="${'form-control is-invalid'}"
@@ -54,7 +61,7 @@
 					</div>
 					<div class="form-group row">
 						<label for="email" class="col-sm-2 col-form-label font-weight"
-							th:text="#{label.email}">EMAIL</label>
+							th:inline="text"><b style="color:red;">*</b>[[#{label.email}]]</label>
 						<div class="col-sm-4">
 								<input type="email" th:placeholder="#{placeholder.email}"
 								th:class="${'form-control'}" th:errorclass="${'form-control is-invalid'}"
