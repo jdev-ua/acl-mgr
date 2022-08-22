@@ -238,6 +238,8 @@ public class AccessControlListController {
 		}
 
 		log.debug("Starting create new ACL " + acl);
+		
+		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
 
 		if (errors.hasErrors()) {
 			log.debug("Failed to create new ACL " + acl + " due to validation errors " + errors.toString());
