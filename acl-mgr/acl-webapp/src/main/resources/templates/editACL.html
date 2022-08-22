@@ -46,13 +46,11 @@
 							</div> -->
 							<div class="form-group row">
 								<label for="name" class="col-sm-2 col-form-label font-weight"
-									th:text="#{label.name}">NAME</label>
+									th:inline="text"><b style="color:red;">*</b>[[#{label.name}]]</label>
 								<div class="col-sm-4">
-									<input type="text" th:placeholder="#{placeholder.name}"
-										th:class="${'form-control'}"
-										th:errorclass="${'form-control is-invalid'}"
-										th:field="*{name}" /><span class="invalid-feedback"
-										th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+									<input type="text" th:placeholder="#{placeholder.name}" th:field="*{name}"
+										th:class="${'form-control'}" th:errorclass="${'form-control is-invalid'}"/>
+									<span class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
 								</div>
 							</div>
 							<div class="form-group row">
@@ -71,24 +69,28 @@
 								<label for="objTypes" class="col-sm-2 col-form-label font-weight"
 									th:text="#{label.objtypes}">OBJTYPES</label>
 								<div class="col-sm-4">
-									<span th:if="${dictObjTypes.empty}" th:text="#{label.notavailable}"></span>
-									<select class="selectpicker" id="objTypes" name="objTypes" multiple>
-										<option th:each="dictEntry : ${dictObjTypes}"
-											th:value="${dictEntry.key}" th:text="${dictEntry.value}"
-											th:selected="${#lists.contains(acl.objTypes,dictEntry.key)}"></option>
-									</select>
+									<th:block th:switch="${dictObjTypes.empty}">
+										<input th:case="true" type="text" readonly class="form-control-plaintext" th:value="#{label.notavailable}">
+										<select th:case="false" class="selectpicker" id="objTypes" name="objTypes" multiple>
+											<option th:each="dictEntry : ${dictObjTypes}"
+												th:value="${dictEntry.key}" th:text="${dictEntry.value}"
+												th:selected="${#lists.contains(acl.objTypes,dictEntry.key)}"></option>
+										</select>
+									</th:block>
 								</div>
 							</div>
 							<div class="form-group row">
 								<label for="statuses" class="col-sm-2 col-form-label font-weight"
 									th:text="#{label.statuses}">STATUSES</label>
 								<div class="col-sm-4">
-									<span th:if="${dictStatuses.empty}" th:text="#{label.notavailable}"></span>
-									<select class="selectpicker" id="statuses" name="statuses" multiple>
-										<option th:each="dictEntry : ${dictStatuses}"
-											th:value="${dictEntry.key}" th:text="${dictEntry.value}"
-											th:selected="${#lists.contains(acl.statuses,dictEntry.key)}"></option>
-									</select>
+									<th:block th:switch="${dictStatuses.empty}">
+										<input th:case="true" type="text" readonly class="form-control-plaintext" th:value="#{label.notavailable}">
+										<select th:case="false" class="selectpicker" id="statuses" name="statuses" multiple>
+											<option th:each="dictEntry : ${dictStatuses}"
+												th:value="${dictEntry.key}" th:text="${dictEntry.value}"
+												th:selected="${#lists.contains(acl.statuses,dictEntry.key)}"></option>
+										</select>
+									</th:block>
 								</div>
 							</div>
 						</form>

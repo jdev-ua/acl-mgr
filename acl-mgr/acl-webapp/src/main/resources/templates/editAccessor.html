@@ -49,45 +49,62 @@
                     </div>
                 </div>
                 -->
-                <div class="form-group row">
-                    <label for="name" class="col-sm-2 col-form-label font-weight"
-                           th:text="#{label.name}">NAME</label>
-                    <div class="col-sm-4">
-                        <input type="text" th:placeholder="#{placeholder.name}"
-                               th:class="${'form-control'}"
-                               th:errorclass="${'form-control is-invalid'}" th:field="*{name}"/><span
-                            class="invalid-feedback" th:if="${#fields.hasErrors('name')}"
-                            th:errors="*{name}"></span>
-                    </div>
-                </div>
+                <div class="form-group row" th:switch="${accessor.name != 'dm_owner' and accessor.name != 'dm_world'}">
+                	<th:block th:case="true">
+                    	<label for="name" class="col-sm-2 col-form-label font-weight"
+							th:inline="text"><b style="color:red;">*</b>[[#{label.name}]]</label>
+						<div class="col-sm-4">
+							<select th:class="selectpicker" th:errorclass="'selectpicker is-invalid'"
+								th:id="name" th:name="name" th:title="#{placeholder.accessor}">
+								<option value="NONE"></option>
+								<option th:each="dictEntry : ${dictAccessorNames}"
+									th:value="${dictEntry.key}" th:text="${dictEntry.value}"
+									th:selected="${#maps.containsKey(dictAccessorNames, #strings.toString(accessor.name))}"></option>
+							</select>
+							<span class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+						</div>
+					</th:block>
+					<th:block th:case="false">
+						<label for="name" class="col-sm-2 col-form-label font-weight" th:text="#{label.name}">NAME</label>
+						<div class="col-sm-4">
+							<input type="text" readonly class="form-control-plaintext"
+							th:value="${accessor.name}" th:field="*{name}">
+						</div>
+					</th:block>
+				</div>
                 <div class="form-group row">
                     <label for="permit" class="col-sm-2 col-form-label font-weight"
-                           th:text="#{label.permit}">PERMIT</label>
-                    <div class="col-sm-2">
-                    	<span th:if="${dictPermits.empty}" th:text="#{label.notavailable}"></span>
-						<select th:class="selectpicker" th:errorclass="'selectpicker is-invalid'" th:id="permit"
-                            th:name="permit" th:title="#{placeholder.permit}">
-                            <option value="NONE"></option>
-                            <option th:each="dictEntry : ${dictPermits}"
-                                th:value="${dictEntry.key}" th:text="${dictEntry.value}"
-                                th:selected="${#maps.containsKey(dictPermits, #strings.toString(accessor.permit))}"></option>
-                        </select>
-                        <span th:class="invalid-feedback" th:if="${#fields.hasErrors('permit')}" th:errors="*{permit}"></span>
+						th:inline="text"><b style="color:red;">*</b>[[#{label.permit}]]</label>
+                    <div class="col-sm-2" th:switch="${dictPermits.empty}">
+                    	<span th:case="true" th:text="#{label.notavailable}"></span>
+                    	<th:block th:case="false">
+							<select th:class="selectpicker" th:errorclass="'selectpicker is-invalid'" th:id="permit"
+                            	th:name="permit" th:title="#{placeholder.permit}">
+                            	<option value="NONE"></option>
+                            	<option th:each="dictEntry : ${dictPermits}"
+                                	th:value="${dictEntry.key}" th:text="${dictEntry.value}"
+                                	th:selected="${#maps.containsKey(dictPermits, #strings.toString(accessor.permit))}"></option>
+                        	</select>
+                        	<span th:class="invalid-feedback" th:if="${#fields.hasErrors('permit')}" th:errors="*{permit}"></span>
+                        </th:block>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="XPermits" class="col-sm-2 col-form-label font-weight"
                            th:text="#{label.xpermits}">XPERMITS</label>
-                    <div class="col-sm-4">
-						<span th:if="${dictXPermits.empty}" th:text="#{label.notavailable}"></span>
-						<select class="selectpicker" id="XPermits" name="XPermits"
-							th:title="#{placeholder.xpermits}" multiple>
-							<option th:each="dictEntry : ${dictXPermits}"
-								th:value="${dictEntry.key}" th:text="${dictEntry.value}"
-								th:selected="${#lists.contains(accessor.XPermits,dictEntry.key)}"></option>
-						</select>
+                    <div class="col-sm-4" th:switch="${dictXPermits.empty}">
+						<span th:case="true" th:text="#{label.notavailable}"></span>
+						<th:block th:case="false">
+							<select class="selectpicker" id="XPermits" name="XPermits"
+								th:title="#{placeholder.xpermits}" multiple>
+								<option th:each="dictEntry : ${dictXPermits}"
+									th:value="${dictEntry.key}" th:text="${dictEntry.value}"
+									th:selected="${#lists.contains(accessor.XPermits,dictEntry.key)}"></option>
+							</select>
+						</th:block>
                     </div>
                 </div>
+                <th:block th:if="${accessor.name != 'dm_owner' and accessor.name != 'dm_world'}">
                 <div class="form-group row">
                     <label for="alias" class="col-sm-2 col-form-label font-weight"
                            th:text="#{label.alias}">ALIAS</label>
@@ -113,9 +130,9 @@
                 <div class="form-group row" th:if="${accessor.svc}">
                     <label for="orgLevels" class="col-sm-2 col-form-label font-weight"
                            th:text="#{label.orglevels}">ORGLEVELS</label>
-                    <div class="col-sm-4">
-						<span th:if="${dictOrgLevels.empty}" th:text="#{label.notavailable}"></span>
-						<select class="selectpicker" id="orgLevels" name="orgLevels"
+                    <div class="col-sm-4" th:switch="${dictOrgLevels.empty}">
+						<span th:case="true" th:text="#{label.notavailable}"></span>
+						<select th:case="false" class="selectpicker" id="orgLevels" name="orgLevels"
 							th:title="#{placeholder.orglevels}" multiple>
 							<option th:each="dictEntry : ${dictOrgLevels}"
                                 th:value="${dictEntry.key}"
@@ -124,6 +141,7 @@
                     	</select>
                     </div>
                 </div>
+                </th:block>
             </div>
         </div>
         <div class="d-flex">
