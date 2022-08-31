@@ -51,10 +51,10 @@ public class AccessControlList implements Cloneable {
 		setState(state);
 	}
 
-	protected Accessor create(String name, boolean alias, boolean svc, int permit, State state) {
+	protected Accessor create(String accessorName, boolean alias, boolean svc, int permit, State state) {
 		// Accessor result = new Accessor(State.NEW);
 		Accessor result = new Accessor(state);
-		result.setName(name);
+		result.setName(accessorName);
 		result.setAlias(alias);
 		result.setSvc(svc);
 		result.setPermit(permit);
@@ -89,15 +89,15 @@ public class AccessControlList implements Cloneable {
 	}
 
 	public boolean hasAccessor(String accessorName) {
-		return getAccessor(name).isPresent();
+		return getAccessor(accessorName).isPresent();
 	}
 
-	public Optional<Accessor> getAccessor(String name) {
-		return accessors.stream().filter(t -> t.getName().equalsIgnoreCase(name)).findFirst();
+	public Optional<Accessor> getAccessor(String accessorName) {
+		return accessors.stream().filter(t -> t.getName().equalsIgnoreCase(accessorName)).findFirst();
 	}
 
-	public void removeAccessor(String name) {
-		Optional<Accessor> optional = getAccessor(name);
+	public void removeAccessor(String accessorName) {
+		Optional<Accessor> optional = getAccessor(accessorName);
 		if (optional.isPresent()) {
 			accessors.remove(optional.get());
 		}
