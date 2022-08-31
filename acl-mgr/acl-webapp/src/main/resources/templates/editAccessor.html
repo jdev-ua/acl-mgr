@@ -56,7 +56,7 @@
 						<div class="col-sm-4">
 							<select th:class="selectpicker" th:errorclass="'selectpicker is-invalid'"
 								th:id="name" th:name="name" th:title="#{placeholder.accessor}">
-								<option value="NONE"></option>
+								<option value=""></option>
 								<option th:each="dictEntry : ${dictAccessorNames}"
 									th:value="${dictEntry.key}" th:text="${dictEntry.value}"
 									th:selected="${#maps.containsKey(dictAccessorNames, #strings.toString(accessor.name))}"></option>
@@ -80,7 +80,7 @@
                     	<th:block th:case="false">
 							<select th:class="selectpicker" th:errorclass="'selectpicker is-invalid'" th:id="permit"
                             	th:name="permit" th:title="#{placeholder.permit}">
-                            	<option value="NONE"></option>
+                            	<option value=""></option>
                             	<option th:each="dictEntry : ${dictPermits}"
                                 	th:value="${dictEntry.key}" th:text="${dictEntry.value}"
                                 	th:selected="${#maps.containsKey(dictPermits, #strings.toString(accessor.permit))}"></option>
