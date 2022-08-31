@@ -37,6 +37,7 @@ public class Accessor implements Cloneable {
 			setId(IDGenerator.genStringID());
 		}
 
+		setName("");
 		setState(state);
 	}
 	
