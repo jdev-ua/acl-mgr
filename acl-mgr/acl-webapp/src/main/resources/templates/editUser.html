@@ -28,7 +28,7 @@
 				<div class="card-body">
 					<div class="form-group row" th:switch="${user.new}">
 						<th:block th:case="true">
-							<label for="username" class="col-sm-2 col-form-label font-weight"
+							<label for="username" class="col-sm-3 col-form-label font-weight"
 								th:inline="text"><b style="color: red;">*</b>[[#{label.username}]]</label>
 							<div class="col-sm-4">
 								<input type="text" th:placeholder="#{placeholder.username}"
@@ -41,7 +41,7 @@
 							</div>
 						</th:block>
 						<th:block th:case="false">
-							<label for="username" class="col-sm-2 col-form-label font-weight"
+							<label for="username" class="col-sm-3 col-form-label font-weight"
 								th:text="#{label.username}">USERNAME</label>
 							<div class="col-sm-4">
 								<input type="text" readonly class="form-control-plaintext"
@@ -50,7 +50,7 @@
 						</th:block>
 					</div>
 					<div class="form-group row">
-						<label for="password" class="col-sm-2 col-form-label font-weight"
+						<label for="password" class="col-sm-3 col-form-label font-weight"
 							th:inline="text"><b style="color:red;">*</b>[[#{label.password}]]</label>
 						<div class="col-sm-4">
 								<input type="password" th:placeholder="#{placeholder.password}" autocomplete="off"
@@ -60,7 +60,7 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label for="email" class="col-sm-2 col-form-label font-weight"
+						<label for="email" class="col-sm-3 col-form-label font-weight"
 							th:inline="text"><b style="color:red;">*</b>[[#{label.email}]]</label>
 						<div class="col-sm-4">
 								<input type="email" th:placeholder="#{placeholder.email}"
@@ -70,7 +70,7 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label for="enabled" class="col-sm-2 col-form-label font-weight"
+						<label for="enabled" class="col-sm-3 col-form-label font-weight"
 							th:text="#{label.enabled}">ENABLED</label>
 						<div class="col-sm-4">
 							<div class="form-check">
@@ -80,7 +80,7 @@
 					</div>
 					<div class="form-group row">
 						<label for="authorities"
-							class="col-sm-2 col-form-label font-weight"
+							class="col-sm-3 col-form-label font-weight"
 							th:text="#{label.authorities}">AUTHORITIES</label>
 						<div class="col-sm-4">
 							<span th:if="${dictRoles.empty}"
@@ -94,7 +94,7 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label for="firstName" class="col-sm-2 col-form-label"
+						<label for="firstName" class="col-sm-3 col-form-label"
 							th:text="#{label.firstname}">FIRSTNAME</label>
 						<div class="col-sm-4">
 							<input type="text" th:placeholder="#{placeholder.firstname}"
@@ -102,7 +102,7 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label for="lastName" class="col-sm-2 col-form-label"
+						<label for="lastName" class="col-sm-3 col-form-label"
 							th:text="#{label.lastname}">LASTNAME</label>
 						<div class="col-sm-4">
 							<input type="text" th:placeholder="#{placeholder.lastname}"
@@ -110,7 +110,7 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label for="position" class="col-sm-2 col-form-label"
+						<label for="position" class="col-sm-3 col-form-label"
 							th:text="#{label.position}">POSITION</label>
 						<div class="col-sm-4">
 							<input type="text" th:placeholder="#{placeholder.position}"
