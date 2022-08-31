@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.data.AccessControlList;
 import ua.pp.jdev.permits.data.AccessControlListDAO;
+import ua.pp.jdev.permits.data.AccessControlListPageableDAO;
 import ua.pp.jdev.permits.data.Accessor;
 import ua.pp.jdev.permits.enums.OrgLevel;
 import ua.pp.jdev.permits.enums.Permit;
@@ -79,18 +81,35 @@ public class AccessControlListController {
 				.collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
 
-	private Map<String, String> getDictAliases(boolean alias, boolean svc) {
-		return dictService.getAliases(alias, svc);
+	private Map<String, String> getAvailableAliases(boolean alias, boolean svc, AccessControlList acl) {
+		Map<String, String> aliases = dictService.getAliases(alias, svc);
+		return new TreeMap<>(aliases.entrySet().stream().filter(t -> !acl.hasAccessor(t.getKey()))
+				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
 	}
-
+	
 	private Map<String, OrgLevel> getDictOrgLevels() {
 		return Arrays.asList(OrgLevel.values()).stream()
 				.collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
 
 	@GetMapping
-	public String viewAllForm(Model model, SessionStatus sessionStatus) {
-		model.addAttribute("acls", aclDAO.readAll());
+	public String viewAllForm(@RequestParam(required = false) Integer pageNo, Model model, SessionStatus sessionStatus) {
+		if(aclDAO instanceof AccessControlListPageableDAO pageableAclDAO) {
+			if(pageNo == null) pageNo = 1;
+			
+			ua.pp.jdev.permits.data.Page<AccessControlList> page = pageableAclDAO.readPage(pageNo - 1);
+			System.out.println("page: " + page);
+			
+			model.addAttribute("pageable", true);
+			model.addAttribute("currentPage", pageNo);
+		    model.addAttribute("totalPages", page.getPageCount());
+		    model.addAttribute("totalItems", page.getItemCount());
+		    model.addAttribute("acls", page.getContent());
+			
+		} else {
+			model.addAttribute("pageable", false);
+			model.addAttribute("acls", aclDAO.readAll());
+		}
 
 		// Clear previous session data
 		sessionStatus.setComplete();
@@ -179,7 +198,7 @@ public class AccessControlListController {
 				model.addAttribute("accessor", accessor);
 			}
 
-			model.addAttribute("dictAccessorNames", getDictAliases(accessor.isAlias(), accessor.isSvc()));
+			model.addAttribute("dictAccessorNames", getAvailableAliases(accessor.isAlias(), accessor.isSvc(), acl));
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			log.debug("Return edit form for Accessor {}: ", accessor);
@@ -233,8 +252,13 @@ public class AccessControlListController {
 	public String create(@RequestParam(required = false) boolean addAccessor,
 			@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors, Model model) {
 		if (addAccessor) {
-			model.addAttribute("accessor", new Accessor(State.NEW));
-			return "redirect:/acls";
+			Accessor newAccessor = new Accessor(State.NEW);
+			model.addAttribute("accessor", newAccessor);
+			
+			model.addAttribute("dictAccessorNames", getAvailableAliases(newAccessor.isAlias(), newAccessor.isSvc(), acl));
+			model.addAttribute("dictXPermits", getDictXPermits());
+			model.addAttribute("dictOrgLevels", getDictOrgLevels());
+			return "editAccessor";
 		}
 
 		log.debug("Starting create new ACL " + acl);
@@ -272,13 +296,15 @@ public class AccessControlListController {
 	public String updateAccessor(@RequestParam boolean refresh, @RequestParam String accessorName,
 			@Valid @ModelAttribute("accessor") Accessor accessor, BindingResult errors, Model model) {
 		log.debug("Starting update Accessor {}", accessor);
+		
+		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
 
 		if (errors.hasErrors() || refresh) {
 			if (errors.hasErrors()) {
 				log.debug("Failed to update Accessor {} due to validation errors {}", accessor, errors.toString());
 			}
 
-			model.addAttribute("dictAccessorNames", getDictAliases(accessor.isAlias(), accessor.isSvc()));
+			model.addAttribute("dictAccessorNames", getAvailableAliases(accessor.isAlias(), accessor.isSvc(), acl));
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			return "editAccessor";
@@ -288,7 +314,7 @@ public class AccessControlListController {
 			accessor.setState(State.DIRTY);
 		}
 
-		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
+		
 		acl.addAccessor(accessor);
 		log.info("Updated Accessor: {}", accessor);
 
