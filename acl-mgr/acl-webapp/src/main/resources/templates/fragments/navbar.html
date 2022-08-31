@@ -27,6 +27,23 @@
 			</ul>
 		</div>
 		<div class="form-inline">
+			<div class="dropdown">
+				<button class="btn btn-sm btn-outline-secondary mr-2 dropdown-toggle" type="button"
+					data-toggle="dropdown" aria-expanded="false" th:switch="${#locale.language}">
+					<img th:case="en" src="/us.png"/>
+					<img th:case="uk" src="/uk.png"/>
+					</button>
+				<div class="dropdown-menu">
+					<th:block th:switch="${#locale.language == 'en'}">
+						<a th:case="true" class="dropdown-item active" href="/home?lang=en"><img src="/us.png"/>&nbsp;[[#{lang.en}]]</a>
+						<a th:case="false" class="dropdown-item" href="/home?lang=en"><img src="/us.png"/>&nbsp;[[#{lang.en}]]</a>
+					</th:block>
+					<th:block th:switch="${#locale.language == 'uk'}">
+						<a th:case="true" class="dropdown-item active" href="/home?lang=uk"><img src="/uk.png"/>&nbsp;[[#{lang.uk}]]</a>
+						<a th:case="false" class="dropdown-item" href="/home?lang=uk"><img src="/uk.png"/>&nbsp;[[#{lang.uk}]]</a>
+					</th:block>
+				</div>
+			</div>
 			<span th:if="${#authorization.expression('!isAuthenticated()')}">
 				<button type="button" class="btn btn-secondary ml-2"
 					onClick="location.href='/login'" th:text="#{button.login}">LOGIN</button>
