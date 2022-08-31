@@ -12,7 +12,7 @@
 <body>
 	<div th:replace="/fragments/navbar :: navbar">&nbsp;</div>
 	<div class="container mt-3">
-		<div class="card w-50">
+		<div class="card w-75">
 			<h5 class="card-header" style="color: grey" th:inline="text"><i
                     class="fa-solid fa-users"></i>&nbsp;[[#{title.users}]]</h5>
 			<div class="card-body">
@@ -35,7 +35,7 @@
 											<td colspan="4"><p th:text="#{list.empty}">EMPTY</p></td>
 										</tr>
 										<tr th:each="user : ${users}">
-											<td align="center"><span th:switch="${user.enabled}"> <i
+											<td width="1%" align="center"><span th:switch="${user.enabled}"> <i
 													th:case="true" class="fas fa-check" style="color: green"
 													th:title="#{tooltip.enabled}"></i> <i th:case="false"
 													class="fas fa-times" style="color: red"
