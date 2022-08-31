@@ -18,9 +18,43 @@
 			<h5 class="card-header" style="color: grey" th:inline="text"><i
                     class="fa-solid fa-file-shield"></i>&nbsp;[[#{title.acls}]]</h5>
 			<div class="card-body">
+				<div class="d-flex" th:if="${pageable}">
+					<div>[[#{label.total} + ': ' + ${totalItems}]]</div>
+					<div class="ml-auto">
+						<nav>
+							<ul class="pagination pagination-sm">
+								<th:block th:switch="${currentPage > 1}">
+									<li th:case="true" class="page-item"><a class="page-link"
+										th:href="@{/acls?pageNo={page}(page=${currentPage - 1})}">
+											<span aria-hidden="true">[[#{button.previous}]]</span>
+									</a></li>
+									<li th:case="false" class="page-item disabled"><a
+										class="page-link" href="#"> <span aria-hidden="true">[[#{button.previous}]]</span></a></li>
+								</th:block>
+								<th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
+									<th:block th:switch="${i == currentPage}">
+										<li th:case="true" class="page-item active"
+											aria-current="page"><a class="page-link"
+											th:href="@{/acls?pageNo={page}(page=${i})}">[[${i}]]</a></li>
+										<li th:case="false" class="page-item"><a
+											class="page-link" th:href="@{/acls?pageNo={page}(page=${i})}">[[${i}]]</a></li>
+									</th:block>
+								</th:block>
+								<th:block th:switch="${currentPage < totalPages}">
+									<li th:case="true" class="page-item"><a class="page-link"
+										th:href="@{/acls?pageNo={page}(page=${currentPage + 1})}">
+											<span aria-hidden="true">[[#{button.next}]]</span>
+									</a></li>
+									<li th:case="false" class="page-item disabled"><a
+										class="page-link" href="#"><span aria-hidden="true">[[#{button.next}]]</span></a></li>
+								</th:block>
+							</ul>
+						</nav>
+					</div>
+				</div>
 				<div class="form-group row">
 					<div class="col-sm-12">
-						<div style="overflow: auto; height: 320px">
+						<div style="overflow: auto; height: 300px">
 							<form id="acls" method="post" th:action="@{/acls}"
 								th:object="${acl}">
 								<input type="hidden" id="_method" name="_method" form="acls"
@@ -28,9 +62,10 @@
 								<table class="table table-sm table-striped">
 									<thead>
 										<tr>
-											<!-- -->
+											<!--
 											<th scope="col">-ID-</th>
 											<th scope="col">-STATE-</th>
+											 -->
 											<th scope="col" th:text="#{label.name}">NAME</th>
 											<th scope="col" th:text="#{label.description}">DESCRIPTION</th>
 											<th scope="col"></th>
@@ -41,9 +76,10 @@
 											<td colspan="3"><p th:text="#{list.empty}">EMPTY</p></td>
 										</tr>
 										<tr th:each="acl : ${acls}">
-											<!-- -->
+											<!--
 											<td th:text="${acl.id}">ACL.ID</td>
 											<td th:text="${acl.state}">ACL.STATE</td>
+											 -->
 											<td th:text="${acl.name}">ACL.NAME</td>
 											<td th:text="${acl.description}">ACL.DESCRIPTION</td>
 											<td width="1%">
