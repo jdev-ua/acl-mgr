@@ -16,6 +16,40 @@
 			<h5 class="card-header" style="color: grey" th:inline="text"><i
                     class="fa-solid fa-users"></i>&nbsp;[[#{title.users}]]</h5>
 			<div class="card-body">
+				<div class="d-flex" th:if="${pageable}">
+					<div>[[#{label.total} + ': ' + ${totalItems}]]</div>
+					<div class="ml-auto">
+						<nav>
+							<ul class="pagination pagination-sm">
+								<th:block th:switch="${currentPage > 1}">
+									<li th:case="true" class="page-item"><a class="page-link"
+										th:href="@{/users?pageNo={page}(page=${currentPage - 1})}">
+											<span aria-hidden="true">[[#{button.previous}]]</span>
+									</a></li>
+									<li th:case="false" class="page-item disabled"><a
+										class="page-link" href="#"> <span aria-hidden="true">[[#{button.previous}]]</span></a></li>
+								</th:block>
+								<th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
+									<th:block th:switch="${i == currentPage}">
+										<li th:case="true" class="page-item active"
+											aria-current="page"><a class="page-link"
+											th:href="@{/users?pageNo={page}(page=${i})}">[[${i}]]</a></li>
+										<li th:case="false" class="page-item"><a
+											class="page-link" th:href="@{/acls?pageNo={page}(page=${i})}">[[${i}]]</a></li>
+									</th:block>
+								</th:block>
+								<th:block th:switch="${currentPage < totalPages}">
+									<li th:case="true" class="page-item"><a class="page-link"
+										th:href="@{/users?pageNo={page}(page=${currentPage + 1})}">
+											<span aria-hidden="true">[[#{button.next}]]</span>
+									</a></li>
+									<li th:case="false" class="page-item disabled"><a
+										class="page-link" href="#"><span aria-hidden="true">[[#{button.next}]]</span></a></li>
+								</th:block>
+							</ul>
+						</nav>
+					</div>
+				</div>
 				<div class="form-group row">
 					<div class="col-sm-12">
 						<form id="users" method="post" th:action="@{/users}">
