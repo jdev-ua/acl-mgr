@@ -15,11 +15,11 @@ import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.data.AccessControlList;
-import ua.pp.jdev.permits.data.AccessControlListPageableDAO;
+import ua.pp.jdev.permits.data.AccessControlListDAO;
 
 @Slf4j
 @Component
-public class SpringDataJdbcAclDAO implements AccessControlListPageableDAO {
+public class SpringDataJdbcAclDAO implements AccessControlListDAO {
 	private JdbcAclRepository repository;
 
 	public SpringDataJdbcAclDAO(JdbcAclRepository repository) {
@@ -34,8 +34,14 @@ public class SpringDataJdbcAclDAO implements AccessControlListPageableDAO {
 				.sorted(Comparator.comparing(AccessControlList::getName)).collect(Collectors.toList());
 	}
 	
-	public ua.pp.jdev.permits.data.Page<AccessControlList> readPage(int pageNo) {
-		Pageable pageable = PageRequest.of(pageNo, 5, Sort.by("name").ascending());
+	@Override
+	public boolean pageable() {
+		return true;
+	}
+	
+	@Override
+	public ua.pp.jdev.permits.data.Page<AccessControlList> readPage(int pageNo, int size) {
+		Pageable pageable = PageRequest.of(pageNo, size, Sort.by("name").ascending());
 		Page<TableACL> page = repository.findAll(pageable);
 		return new ua.pp.jdev.permits.data.Page<AccessControlList>() {
 			@Override
@@ -75,5 +81,11 @@ public class SpringDataJdbcAclDAO implements AccessControlListPageableDAO {
 	public boolean delete(String id) {
 		repository.deleteById(Long.parseLong(id));
 		return true;
+	}
+
+	@Override
+	public Optional<AccessControlList> readByName(String name) {
+		Optional<TableACL> result = repository.findByName(name).stream().findFirst();
+		return result.isPresent() ? Optional.of(TableACL.toAccessControlList(result.get())) : Optional.empty();
 	}
 }
