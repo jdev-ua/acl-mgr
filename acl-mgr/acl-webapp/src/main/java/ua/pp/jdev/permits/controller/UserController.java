@@ -21,10 +21,12 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import lombok.extern.slf4j.Slf4j;
+import ua.pp.jdev.permits.data.Page;
 import ua.pp.jdev.permits.data.User;
 import ua.pp.jdev.permits.data.UserDAO;
 import ua.pp.jdev.permits.enums.Role;
@@ -36,6 +38,9 @@ import ua.pp.jdev.permits.enums.Role;
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 	private UserDAO userDAO;
+	
+	// TODO Make it configurable
+	private final static int DEFAULT_PAGE_SIZE = 5;
 
 	@Autowired
 	private void setAccessControlListDAO(UserDAO userDAO) {
@@ -64,8 +69,24 @@ public class UserController {
 	}
 
 	@GetMapping()
-	public String viewAllForm(Model model, SessionStatus sessionStatus) {
-		model.addAttribute("users", userDAO.readAll());
+	public String viewAllForm(@RequestParam(required = false) Integer pageNo, Model model, SessionStatus sessionStatus) {
+		if (userDAO.pageable()) {
+			if (pageNo == null) {
+				pageNo = 1;
+			}
+			
+			Page<User> page = userDAO.readPage(pageNo - 1, DEFAULT_PAGE_SIZE);
+			
+			model.addAttribute("pageable", true);
+			model.addAttribute("currentPage", pageNo);
+		    model.addAttribute("totalPages", page.getPageCount());
+		    model.addAttribute("totalItems", page.getItemCount());
+		    model.addAttribute("users", page.getContent());
+			
+		} else {
+			model.addAttribute("pageable", false);
+			model.addAttribute("users", userDAO.readAll());
+		}
 
 		// Clear previous session data
 		sessionStatus.setComplete();
