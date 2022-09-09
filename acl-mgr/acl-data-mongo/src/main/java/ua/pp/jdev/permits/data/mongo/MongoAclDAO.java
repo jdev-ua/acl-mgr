@@ -52,4 +52,9 @@ public class MongoAclDAO implements AccessControlListDAO {
 		return true;
 	}
 
+	@Override
+	public Optional<AccessControlList> readByName(String name) {
+		Optional<MongoACL> result = repository.findByName(name).stream().findFirst();
+		return result.isPresent() ? Optional.of(MongoACL.toAccessControlList(result.get())) : Optional.empty();
+	}
 }

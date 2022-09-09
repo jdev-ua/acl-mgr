@@ -165,4 +165,15 @@ public class JdbcAclDAO implements AccessControlListDAO {
 		String query = "delete acl where id=?";
 		return jdbcOperations.update(query, id) > 0;
 	}
+
+	@Override
+	public Optional<AccessControlList> readByName(String name) {
+		String sql = "SELECT a.id, a.name, a.description, s.status, t.obj_type "
+				+ " from acl a left outer join status s on s.acl_id=a.id "
+				+ " left outer join obj_type t on t.acl_id=a.id where a.name=?";
+
+		// Remove duplicates, read accessors and then get first ACL as a result
+		return jdbcOperations.query(sql, new JdbcAclRowMapper(), name).stream().distinct()
+				.peek(acl -> acl.setAccessors(readAllAccessors(acl.getId()))).findFirst();
+	}
 }

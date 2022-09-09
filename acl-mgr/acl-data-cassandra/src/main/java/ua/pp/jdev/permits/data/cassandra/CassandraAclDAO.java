@@ -52,4 +52,10 @@ public class CassandraAclDAO implements AccessControlListDAO {
 		repository.deleteById(UUID.fromString(id));
 		return true;
 	}
+
+	@Override
+	public Optional<AccessControlList> readByName(String name) {
+		Optional<CassandraACL> result = repository.findByName(name).stream().findFirst();
+		return result.isPresent() ? Optional.of(CassandraACL.toAccessControlList(result.get())) : Optional.empty();
+	}
 }
