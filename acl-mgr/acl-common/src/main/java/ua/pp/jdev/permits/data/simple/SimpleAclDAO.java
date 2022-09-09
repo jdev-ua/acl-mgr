@@ -185,4 +185,9 @@ public class SimpleAclDAO implements AccessControlListDAO {
 	public boolean delete(String id) {
 		return (storage.remove(id) != null);
 	}
+
+	@Override
+	public Optional<AccessControlList> readByName(String name) {
+		return storage.values().stream().filter(t -> t.getName().equalsIgnoreCase(name)).findFirst();
+	}
 }
