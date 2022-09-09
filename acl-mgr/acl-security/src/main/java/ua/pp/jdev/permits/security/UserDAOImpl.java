@@ -5,6 +5,10 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +32,33 @@ public class UserDAOImpl implements UserDAO {
 	public Collection<User> readAll() {
 		return Lists.newArrayList(repository.findAll()).stream().map(this::toUser)
 				.sorted(Comparator.comparing(User::getUsername)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public boolean pageable() {
+		return true;
+	}
+	
+	@Override
+	public ua.pp.jdev.permits.data.Page<User> readPage(int pageNo, int size) {
+		Pageable pageable = PageRequest.of(pageNo, size, Sort.by("username").ascending());
+		Page<UserDetailsImpl> page = repository.findAll(pageable);
+		return new ua.pp.jdev.permits.data.Page<User>() {
+			@Override
+			public int getPageCount() {
+				return page.getTotalPages();
+			}
+
+			@Override
+			public long getItemCount() {
+				return page.getTotalElements();
+			}
+
+			@Override
+			public Collection<User> getContent() {
+				return page.map(UserDAOImpl.this::toUser).getContent();
+			}
+		};
 	}
 
 	@Override
