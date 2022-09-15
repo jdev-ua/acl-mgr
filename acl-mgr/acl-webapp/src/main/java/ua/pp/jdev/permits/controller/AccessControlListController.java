@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,8 +29,8 @@ import org.springframework.web.bind.support.SessionStatus;
 import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.data.AccessControlList;
 import ua.pp.jdev.permits.data.AccessControlListDAO;
-import ua.pp.jdev.permits.data.AccessControlListPageableDAO;
 import ua.pp.jdev.permits.data.Accessor;
+import ua.pp.jdev.permits.data.Page;
 import ua.pp.jdev.permits.enums.OrgLevel;
 import ua.pp.jdev.permits.enums.Permit;
 import ua.pp.jdev.permits.enums.State;
@@ -44,9 +44,11 @@ import ua.pp.jdev.permits.service.DictionaryService;
 public class AccessControlListController {
 	private AccessControlListDAO aclDAO;
 	private DictionaryService dictService;
+	
+	// TODO Make it configurable
+	private final static int DEFAULT_PAGE_SIZE = 5;
 
 	@Autowired
-	@Qualifier("springDataJdbcAclDAO")
 	private void setAccessControlListDAO(AccessControlListDAO aclDAO) {
 		this.aclDAO = aclDAO;
 	}
@@ -94,11 +96,12 @@ public class AccessControlListController {
 
 	@GetMapping
 	public String viewAllForm(@RequestParam(required = false) Integer pageNo, Model model, SessionStatus sessionStatus) {
-		if(aclDAO instanceof AccessControlListPageableDAO pageableAclDAO) {
-			if(pageNo == null) pageNo = 1;
+		if (aclDAO.pageable()) {
+			if (pageNo == null) {
+				pageNo = 1;
+			}
 			
-			ua.pp.jdev.permits.data.Page<AccessControlList> page = pageableAclDAO.readPage(pageNo - 1);
-			System.out.println("page: " + page);
+			Page<AccessControlList> page = aclDAO.readPage(pageNo - 1, DEFAULT_PAGE_SIZE);
 			
 			model.addAttribute("pageable", true);
 			model.addAttribute("currentPage", pageNo);
@@ -264,6 +267,13 @@ public class AccessControlListController {
 		log.debug("Starting create new ACL " + acl);
 		
 		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
+		
+		// Check whether another ACL with the same name is already existed
+		// and register corresponding validation error if it's true
+		Optional<AccessControlList> optACL = aclDAO.readByName(acl.getName());
+		if(optACL.isPresent()) {
+			errors.addError(new FieldError("acl", "name", acl.getName(), false, null, null, "ACL name must be unique!"));
+		}
 
 		if (errors.hasErrors()) {
 			log.debug("Failed to create new ACL " + acl + " due to validation errors " + errors.toString());
@@ -278,11 +288,20 @@ public class AccessControlListController {
 	}
 
 	@PatchMapping
-	public String updateACL(@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors) {
+	public String updateACL(@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors, Model model) {
 		log.debug("Starting update ACL " + acl);
+		
+		// Check whether another ACL with the same name is already existed 
+		// and register corresponding validation error if it's true
+		Optional<AccessControlList> optACL = aclDAO.readByName(acl.getName());
+		if(optACL.isPresent() && !optACL.get().getId().equalsIgnoreCase(acl.getId())) {
+			errors.addError(new FieldError("acl", "name", acl.getName(), false, null, null, "ACL name must be unique!"));
+		}
 
 		if (errors.hasErrors()) {
 			log.debug("Failed to update ACL " + acl + " due to validation errors " + errors.toString());
+			
+			model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
 			return "editACL";
 		}
 
@@ -298,7 +317,7 @@ public class AccessControlListController {
 		log.debug("Starting update Accessor {}", accessor);
 		
 		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
-
+		
 		if (errors.hasErrors() || refresh) {
 			if (errors.hasErrors()) {
 				log.debug("Failed to update Accessor {} due to validation errors {}", accessor, errors.toString());
