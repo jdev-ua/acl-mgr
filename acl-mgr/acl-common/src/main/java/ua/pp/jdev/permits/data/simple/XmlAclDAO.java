@@ -1,6 +1,8 @@
 package ua.pp.jdev.permits.data.simple;
 
 import java.io.FileNotFoundException;
+import java.util.Collection;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -8,17 +10,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import ua.pp.jdev.permits.data.AccessControlList;
+import ua.pp.jdev.permits.data.AccessControlListDAO;
 
 @Component
-public class XmlAclDAO extends SimpleAclDAO {
+public class XmlAclDAO implements AccessControlListDAO {
 	@Value("${data.src}")
 	private String dataSource;
 
-	XmlDataProvider provider;
+	private XmlDataProvider provider;
+	private SimpleAclDAO dao;
 
-	@Override
-	protected String getInitMessage() {
-		return "Initializing ACL datasource storing data in XML-file";
+	public XmlAclDAO() {
+		this.dao = new SimpleAclDAO();
 	}
 
 	@PostConstruct
@@ -26,7 +29,7 @@ public class XmlAclDAO extends SimpleAclDAO {
 		try {
 			provider = new XmlDataProvider(dataSource);
 			provider.read().forEach(acl -> {
-				super.create(acl);
+				dao.create(acl);
 			});
 		} catch (FileNotFoundException | XmlDataException e) {
 			throw new RuntimeException(e);
@@ -43,7 +46,7 @@ public class XmlAclDAO extends SimpleAclDAO {
 
 	@Override
 	public void create(AccessControlList acl) {
-		super.create(acl);
+		dao.create(acl);
 
 		// save changes to XML data source
 		saveToXml();
@@ -51,19 +54,36 @@ public class XmlAclDAO extends SimpleAclDAO {
 
 	@Override
 	public boolean delete(String id) {
-		boolean result = super.delete(id);
+		boolean result = dao.delete(id);
 
 		// save changes to XML data source
-		saveToXml();
+		if (result) {
+			saveToXml();
+		}
 
 		return result;
 	}
 
 	@Override
 	public void update(AccessControlList acl) {
-		super.update(acl);
+		dao.update(acl);
 
 		// save changes to XML data source
 		saveToXml();
+	}
+
+	@Override
+	public Collection<AccessControlList> readAll() {
+		return dao.readAll();
+	}
+
+	@Override
+	public Optional<AccessControlList> read(String id) {
+		return dao.read(id);
+	}
+
+	@Override
+	public Optional<AccessControlList> readByName(String name) {
+		return dao.readByName(name);
 	}
 }
