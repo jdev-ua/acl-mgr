@@ -2,6 +2,14 @@ package ua.pp.jdev.permits.data;
 
 import java.util.Collection;
 
+/**
+ * Defines a simple object to navigate though entire collection by pages -
+ * smaller portions of containing items.
+ * 
+ * @author Maksym Shramko
+ *
+ * @param <T>
+ */
 public interface Page<T> {
 	/**
 	 * Returns the number of total pages.
@@ -16,7 +24,7 @@ public interface Page<T> {
 	 * @return the total amount of items
 	 */
 	long getItemCount();
-	
+
 	/**
 	 * Returns the page content as {@link Collection}.
 	 *
