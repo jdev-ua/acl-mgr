@@ -35,11 +35,6 @@ public class SpringDataJdbcAclDAO implements AccessControlListDAO {
 	}
 	
 	@Override
-	public boolean pageable() {
-		return true;
-	}
-	
-	@Override
 	public ua.pp.jdev.permits.data.Page<AccessControlList> readPage(int pageNo, int size) {
 		Pageable pageable = PageRequest.of(pageNo, size, Sort.by("name").ascending());
 		Page<TableACL> page = repository.findAll(pageable);
