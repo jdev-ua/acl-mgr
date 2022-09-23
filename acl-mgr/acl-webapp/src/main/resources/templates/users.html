@@ -35,7 +35,7 @@
 											aria-current="page"><a class="page-link"
 											th:href="@{/users?pageNo={page}(page=${i})}">[[${i}]]</a></li>
 										<li th:case="false" class="page-item"><a
-											class="page-link" th:href="@{/acls?pageNo={page}(page=${i})}">[[${i}]]</a></li>
+											class="page-link" th:href="@{/users?pageNo={page}(page=${i})}">[[${i}]]</a></li>
 									</th:block>
 								</th:block>
 								<th:block th:switch="${currentPage < totalPages}">
