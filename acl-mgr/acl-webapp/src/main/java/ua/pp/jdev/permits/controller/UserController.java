@@ -38,7 +38,7 @@ import ua.pp.jdev.permits.enums.Role;
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 	private UserDAO userDAO;
-	
+
 	// TODO Make it configurable
 	private final static int DEFAULT_PAGE_SIZE = 5;
 
@@ -61,7 +61,7 @@ public class UserController {
 	private List<Role> getListRoles() {
 		return List.of(Role.values());
 	}
-	
+
 	@GetMapping("/favicon.svg")
 	public String forwardFavicon() {
 		// Forward favicon.svg request to a valid location
@@ -69,24 +69,15 @@ public class UserController {
 	}
 
 	@GetMapping()
-	public String viewAllForm(@RequestParam(required = false) Integer pageNo, Model model, SessionStatus sessionStatus) {
-		if (userDAO.pageable()) {
-			if (pageNo == null) {
-				pageNo = 1;
-			}
-			
-			Page<User> page = userDAO.readPage(pageNo - 1, DEFAULT_PAGE_SIZE);
-			
-			model.addAttribute("pageable", true);
-			model.addAttribute("currentPage", pageNo);
-		    model.addAttribute("totalPages", page.getPageCount());
-		    model.addAttribute("totalItems", page.getItemCount());
-		    model.addAttribute("users", page.getContent());
-			
-		} else {
-			model.addAttribute("pageable", false);
-			model.addAttribute("users", userDAO.readAll());
-		}
+	public String viewAllForm(@RequestParam(defaultValue = "1") Integer pageNo, Model model,
+			SessionStatus sessionStatus) {
+		Page<User> page = userDAO.readPage(pageNo - 1, DEFAULT_PAGE_SIZE);
+
+		model.addAttribute("pageable", true);
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", page.getPageCount());
+		model.addAttribute("totalItems", page.getItemCount());
+		model.addAttribute("users", page.getContent());
 
 		// Clear previous session data
 		sessionStatus.setComplete();
