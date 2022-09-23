@@ -35,11 +35,6 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	@Override
-	public boolean pageable() {
-		return true;
-	}
-	
-	@Override
 	public ua.pp.jdev.permits.data.Page<User> readPage(int pageNo, int size) {
 		Pageable pageable = PageRequest.of(pageNo, size, Sort.by("username").ascending());
 		Page<UserDetailsImpl> page = repository.findAll(pageable);
