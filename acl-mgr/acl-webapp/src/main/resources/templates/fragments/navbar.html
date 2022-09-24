@@ -33,7 +33,7 @@
 					<img th:case="en" src="/us.png"/>
 					<img th:case="uk" src="/uk.png"/>
 					</button>
-				<div class="dropdown-menu">
+				<div class="dropdown-menu dropdown-menu-right">
 					<th:block th:switch="${#locale.language == 'en'}">
 						<a th:case="true" class="dropdown-item active" href="/home?lang=en"><img src="/us.png"/>&nbsp;[[#{lang.en}]]</a>
 						<a th:case="false" class="dropdown-item" href="/home?lang=en"><img src="/us.png"/>&nbsp;[[#{lang.en}]]</a>
@@ -48,11 +48,20 @@
 				<button type="button" class="btn btn-secondary ml-2"
 					onClick="location.href='/login'" th:text="#{button.login}">LOGIN</button>
 			</span>
-			<span th:if="${#authorization.expression('isAuthenticated()')}">
-				<span style="color: grey" th:inline="text"><i class="fa-solid fa-circle-user"></i>&nbsp;[[${#authentication.name}]]</span>
-				<button type="button" class="btn btn-outline-secondary ml-2"
-					onClick="location.href='/logout'" th:text="#{button.logout}">LOGOUT</button>
-			</span>
+			<th:block th:if="${#authorization.expression('isAuthenticated()')}">
+				<ul class="navbar-nav mr-2">
+					<li class="nav-item dropdown dropdown-menu-right"><a
+						class="nav-link dropdown-toggle" href="#" data-toggle="dropdown"
+						aria-expanded="false" th:inline="text"><i
+							class="fa-solid fa-circle-user"></i>&nbsp;[[${#authentication.name}]]</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="#" th:text="#{button.settings}">SETTINGS</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="/logout"
+								th:text="#{button.logout}">LOGOUT</a>
+						</div></li>
+				</ul>
+			</th:block>
 		</div>
 	</nav>
 </body>
