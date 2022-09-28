@@ -14,21 +14,36 @@
 				</span>
 			</h5>
 			<div class="card-body">
-				<ul class="nav nav-tabs" id="aclTab" role="tablist">
-					<li class="nav-item"><a class="nav-link active" id="info-tab"
-						data-toggle="tab" href="#info" role="tab" aria-controls="info"
-						aria-selected="true" th:text="#{tab.info}">INFO</a></li>
-					<li class="nav-item"><a class="nav-link" id="accessors-tab"
-						data-toggle="tab" href="#tabAccessors" role="tab"
-						aria-controls="tabAccessors" aria-selected="false"
-						th:text="#{tab.accessors}">ACCESSORS</a></li>
+				<ul class="nav nav-tabs" id="aclTab" role="tablist" th:switch="${tab == 'tabAccessors'}">
+					<th:block th:case="true">
+						<li class="nav-item"><a class="nav-link" id="info-tab"
+							data-toggle="tab" href="#tabInfo" role="tab" aria-controls="tabInfo"
+							aria-selected="false" th:text="#{tab.info}">INFO</a></li>
+						<li class="nav-item"><a class="nav-link active"
+							id="accessors-tab" data-toggle="tab" href="#tabAccessors"
+							role="tab" aria-controls="tabAccessors" aria-selected="true"
+							th:text="#{tab.accessors}">ACCESSORS</a></li>
+					</th:block>
+					<th:block th:case="false">
+						<li class="nav-item"><a class="nav-link active" id="info-tab"
+							data-toggle="tab" href="#tabInfo" role="tab" aria-controls="tabInfo"
+							aria-selected="true" th:text="#{tab.info}">INFO</a></li>
+						<li class="nav-item"><a class="nav-link"
+							id="accessors-tab" data-toggle="tab" href="#tabAccessors"
+							role="tab" aria-controls="tabAccessors" aria-selected="false"
+							th:text="#{tab.accessors}">ACCESSORS</a></li>
+					</th:block>
 				</ul>
 				<div class="tab-content" id="aclTabContent">
-					<div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
-						<form id="editACL" method="post" th:action="@{/acls}" th:object="${acl}">
+					<div
+						th:class="${tab != 'tabAccessors' ? 'tab-pane fade show active' : 'tab-pane fade'}"
+						id="tabInfo" role="tabpanel" aria-labelledby="info-tab">
+						<form id="editACL" method="post" th:action="@{/acls}"
+							th:object="${acl}">
 							<input type="hidden" id="_method" name="_method" form="editACL"
 								th:value="${httpMethod!=null and #strings.length(httpMethod)>0? httpMethod : 'patch'}" />
-								<input type="hidden" id="addAccessor" name="addAccessor" form="editACL" value="false">
+							<input type="hidden" id="addAccessor" name="addAccessor"
+								form="editACL" value="false">
 							<div class="form-group row"></div>
 							<!--
 							<div class="form-group row">
@@ -47,15 +62,18 @@
 							</div> -->
 							<div class="form-group row">
 								<label for="name" class="col-sm-2 col-form-label font-weight"
-									th:inline="text"><b style="color:red;">*</b>[[#{label.name}]]</label>
+									th:inline="text"><b style="color: red;">*</b>[[#{label.name}]]</label>
 								<div class="col-sm-4">
-									<input type="text" th:placeholder="#{placeholder.name}" th:field="*{name}"
-										th:class="${'form-control'}" th:errorclass="${'form-control is-invalid'}"/>
-									<span class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+									<input type="text" th:placeholder="#{placeholder.name}"
+										th:field="*{name}" th:class="${'form-control'}"
+										th:errorclass="${'form-control is-invalid'}" /> <span
+										class="invalid-feedback" th:if="${#fields.hasErrors('name')}"
+										th:errors="*{name}"></span>
 								</div>
 							</div>
 							<div class="form-group row">
-								<label for="description" class="col-sm-2 col-form-label font-weight"
+								<label for="description"
+									class="col-sm-2 col-form-label font-weight"
 									th:text="#{label.description}">DESCRIPTION</label>
 								<div class="col-sm-4">
 									<input type="text" th:placeholder="#{placeholder.description}"
@@ -67,12 +85,16 @@
 								</div>
 							</div>
 							<div class="form-group row">
-								<label for="objTypes" class="col-sm-2 col-form-label font-weight"
+								<label for="objTypes"
+									class="col-sm-2 col-form-label font-weight"
 									th:text="#{label.objtypes}">OBJTYPES</label>
 								<div class="col-sm-4">
 									<th:block th:switch="${dictObjTypes.empty}">
-										<input th:case="true" type="text" readonly class="form-control-plaintext" th:value="#{label.notavailable}">
-										<select th:case="false" class="selectpicker" id="objTypes" name="objTypes" multiple>
+										<input th:case="true" type="text" readonly
+											class="form-control-plaintext"
+											th:value="#{label.notavailable}">
+										<select th:case="false" class="selectpicker" id="objTypes"
+											name="objTypes" multiple>
 											<option th:each="dictEntry : ${dictObjTypes}"
 												th:value="${dictEntry.key}" th:text="${dictEntry.value}"
 												th:selected="${#lists.contains(acl.objTypes,dictEntry.key)}"></option>
@@ -81,12 +103,16 @@
 								</div>
 							</div>
 							<div class="form-group row">
-								<label for="statuses" class="col-sm-2 col-form-label font-weight"
+								<label for="statuses"
+									class="col-sm-2 col-form-label font-weight"
 									th:text="#{label.statuses}">STATUSES</label>
 								<div class="col-sm-4">
 									<th:block th:switch="${dictStatuses.empty}">
-										<input th:case="true" type="text" readonly class="form-control-plaintext" th:value="#{label.notavailable}">
-										<select th:case="false" class="selectpicker" id="statuses" name="statuses" multiple>
+										<input th:case="true" type="text" readonly
+											class="form-control-plaintext"
+											th:value="#{label.notavailable}">
+										<select th:case="false" class="selectpicker" id="statuses"
+											name="statuses" multiple>
 											<option th:each="dictEntry : ${dictStatuses}"
 												th:value="${dictEntry.key}" th:text="${dictEntry.value}"
 												th:selected="${#lists.contains(acl.statuses,dictEntry.key)}"></option>
@@ -96,7 +122,9 @@
 							</div>
 						</form>
 					</div>
-					<div class="tab-pane fade" id="tabAccessors" role="tabpanel" aria-labelledby="accessors-tab">
+					<div
+						th:class="${tab == 'tabAccessors' ? 'tab-pane fade show active' : 'tab-pane fade'}"
+						id="tabAccessors" role="tabpanel" aria-labelledby="accessors-tab">
 						<div th:replace="/fragments/accessors :: accessor-list">&nbsp;</div>
 						<div class="form-group row">
 							<div class="col-sm-10">
@@ -107,9 +135,12 @@
 										document.getElementById("editACL").submit();
 									}
 								</script>
-								<button class="btn btn-secondary btn-sm" type="button" th:title="#{tooltip.newaccessor}"
-									th:onclick="onAddAccessor()">
-									<nobr><i class="fas fa-plus"></i>&nbsp;<span th:text="#{button.add}"></span></nobr></button>
+								<button class="btn btn-secondary btn-sm" type="button"
+									th:title="#{tooltip.newaccessor}" th:onclick="onAddAccessor()">
+									<nobr>
+										<i class="fas fa-plus"></i>&nbsp;<span th:text="#{button.add}"></span>
+									</nobr>
+								</button>
 							</div>
 						</div>
 					</div>
