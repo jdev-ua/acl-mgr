@@ -1,7 +1,6 @@
 package ua.pp.jdev.permits.data;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -71,25 +70,7 @@ public interface DataAccessObject<T> {
 		if (pageSize < 1) {
 			throw new IllegalArgumentException("Page size must be greater than 0");
 		}
-
-		Collection<T> all = readAll();
-		List<T> pageContent = all.stream().skip(pageNo * pageSize).limit(pageSize).toList();
-
-		return new Page<T>() {
-			@Override
-			public int getPageCount() {
-				return pageSize == 0 ? 1 : (int) Math.ceil((double) all.size() / (double) pageSize);
-			}
-
-			@Override
-			public long getItemCount() {
-				return all.size();
-			}
-
-			@Override
-			public Collection<T> getContent() {
-				return pageContent;
-			}
-		};
+		
+		return Page.of(readAll(), pageNo, pageSize);
 	}
 }
