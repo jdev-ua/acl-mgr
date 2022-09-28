@@ -15,6 +15,39 @@
 		</script>
 		<form id="accessors" th:object="${acl}" method="post" th:action="@{/acls/{id}?accessorName=(id=${acl.id})}">
 			<input type="hidden" id="_method" name="_method" th:value="delete"  form="accessors" />
+			<div class="d-flex p-2" th:if="${#bools.isTrue(pageable)}">
+				<div>&nbsp;</div>
+				<div class="ml-auto">
+					<nav>
+						<ul class="pagination pagination-sm">
+							<th:block th:switch="${currentPage > 1}">
+								<li th:case="true" class="page-item"><a class="page-link"
+									th:href="@{${href} + '&pageNo=' + ${currentPage - 1}}"> <span
+										aria-hidden="true">[[#{button.previous}]]</span>
+								</a></li>
+								<li th:case="false" class="page-item disabled"><a
+									class="page-link" href="#"> <span aria-hidden="true">[[#{button.previous}]]</span></a></li>
+							</th:block>
+							<th:block th:each="i: ${#numbers.sequence(1, totalPages)}">
+								<th:block th:switch="${i == currentPage}">
+									<li th:case="true" class="page-item active" aria-current="page"><a
+										class="page-link" th:href="@{${href} + '&pageNo=' + ${i}}">[[${i}]]</a></li>
+									<li th:case="false" class="page-item"><a class="page-link"
+										th:href="@{${href} + '&pageNo=' + ${i}}">[[${i}]]</a></li>
+								</th:block>
+							</th:block>
+							<th:block th:switch="${currentPage < totalPages}">
+								<li th:case="true" class="page-item"><a class="page-link"
+									th:href="@{${href} + '&pageNo=' + ${currentPage + 1}}"> <span
+										aria-hidden="true">[[#{button.next}]]</span>
+								</a></li>
+								<li th:case="false" class="page-item disabled"><a
+									class="page-link" href="#"><span aria-hidden="true">[[#{button.next}]]</span></a></li>
+							</th:block>
+						</ul>
+					</nav>
+				</div>
+			</div>
 			<table class="table table-sm table-striped">
 				<thead>
 					<tr>
@@ -32,13 +65,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:if="${acl.accessors.empty}">
-						<td colspan="7"><p th:text="#{list.empty}">EMPTY</p></td>
+					<tr th:if="${#bools.isTrue(pageable) ? (accessors == null or accessors.empty) : acl.accessors.empty}">
+						<td colspan="8"><p th:text="#{list.empty}">EMPTY</p></td>
 					</tr>
-					<tr th:each="accessor : ${acl.accessors}">
-						<!-- 
-						<td th:text="${accessor.id}">ACCESSOR.ID</td>
-						-->
+					<tr th:each="accessor : ${#bools.isTrue(pageable) ? accessors : acl.accessors}">
 						<td width="1%">
 							<div th:switch="${accessor.state.toString()}">
 								<span th:case="${T(ua.pp.jdev.permits.enums.State).NEW.toString()}">
@@ -100,6 +130,9 @@
 					</tr>
 				</tbody>
 			</table>
+			<th:block th:if="${#bools.isTrue(pageable)}">
+				<div class="p-2">[[#{label.total} + ': ' + ${totalItems}]]</div>
+			</th:block>
 		</form>
 	</div>
 </body>
