@@ -23,6 +23,8 @@ public class AclWebApplication {
 	@Bean
 	public CommandLineRunner dataLoader(AccessControlListDAO dao) {
 		return args -> {
+			if(dao.readAll().size() > 0) return;
+			
 			Accessor scaner = new Accessor(State.NEW);
 			scaner.setName("bnk-scaner");
 			scaner.setPermit(3);
