@@ -152,7 +152,7 @@
             <div class="p-2">
                 <a class="btn btn-secondary" type="button"
                    th:title="#{button.cancel}"
-                   th:href="@{/acls/{id}/edit(id=${acl.id})}"
+                   th:href="@{/acls/{id}/edit?tab=tabAccessors(id=${acl.id})}"
                    th:text="#{button.cancel}">CANCEL</a>
             </div>
         </div>
