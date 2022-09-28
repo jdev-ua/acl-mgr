@@ -44,9 +44,10 @@ import ua.pp.jdev.permits.service.DictionaryService;
 public class AccessControlListController {
 	private AccessControlListDAO aclDAO;
 	private DictionaryService dictService;
-	
+
 	// TODO Make it configurable
 	private final static int DEFAULT_PAGE_SIZE = 5;
+	private final static int DEFAULT_PAGE_NO = 1;
 
 	@Autowired
 	private void setAccessControlListDAO(AccessControlListDAO aclDAO) {
@@ -88,31 +89,21 @@ public class AccessControlListController {
 		return new TreeMap<>(aliases.entrySet().stream().filter(t -> !acl.hasAccessor(t.getKey()))
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
 	}
-	
+
 	private Map<String, OrgLevel> getDictOrgLevels() {
 		return Arrays.asList(OrgLevel.values()).stream()
 				.collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
 
 	@GetMapping
-	public String viewAllForm(@RequestParam(required = false) Integer pageNo, Model model, SessionStatus sessionStatus) {
-		if (aclDAO.pageable()) {
-			if (pageNo == null) {
-				pageNo = 1;
-			}
-			
-			Page<AccessControlList> page = aclDAO.readPage(pageNo - 1, DEFAULT_PAGE_SIZE);
-			
-			model.addAttribute("pageable", true);
-			model.addAttribute("currentPage", pageNo);
-		    model.addAttribute("totalPages", page.getPageCount());
-		    model.addAttribute("totalItems", page.getItemCount());
-		    model.addAttribute("acls", page.getContent());
-			
-		} else {
-			model.addAttribute("pageable", false);
-			model.addAttribute("acls", aclDAO.readAll());
-		}
+	public String viewAllForm(@RequestParam(defaultValue = "1") Integer pageNo, Model model, SessionStatus sessionStatus) {
+		Page<AccessControlList> page = aclDAO.readPage(pageNo - 1, DEFAULT_PAGE_SIZE);
+
+		model.addAttribute("pageable", true);
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", page.getPageCount());
+		model.addAttribute("totalItems", page.getItemCount());
+		model.addAttribute("acls", page.getContent());
 
 		// Clear previous session data
 		sessionStatus.setComplete();
@@ -130,11 +121,23 @@ public class AccessControlListController {
 	public String newForm(@ModelAttribute("acl") AccessControlList acl, Model model) {
 		model.addAttribute("httpMethod", "post");
 		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
+		putAccessorsPageToModel(acl.getAccessors(), DEFAULT_PAGE_NO, model);
+		
 		return "editACL";
+	}
+	
+	private void putAccessorsPageToModel(Collection<Accessor> accessors, int pageNo, Model model) {
+		Page<Accessor> page = Page.of(accessors, pageNo - 1, DEFAULT_PAGE_SIZE);
+
+		model.addAttribute("currentPage", pageNo);
+		model.addAttribute("totalPages", page.getPageCount());
+		model.addAttribute("totalItems", page.getItemCount());
+		model.addAttribute("accessors", page.getContent());
 	}
 
 	@GetMapping("/{id}")
-	public String viewForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName, Model model) {
+	public String viewForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
+			Model model) {
 		log.debug("Starting get ACL with ID={} for view", id);
 
 		AccessControlList acl = readACL(id);
@@ -175,7 +178,8 @@ public class AccessControlListController {
 
 	@GetMapping("/{id}/edit")
 	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
-			@RequestParam(required = false) boolean addAccessor, Model model) {
+			@RequestParam(required = false) boolean addAccessor, @RequestParam(required = false) Integer pageNo,
+			@RequestParam(defaultValue = "tabInfo") String tab, Model model) {
 		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
 		if (!acl.getId().equalsIgnoreCase(id)) {
 			acl = readACL(id);
@@ -211,6 +215,8 @@ public class AccessControlListController {
 		log.debug("Starting prepare edit form for ACL {}", acl);
 
 		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
+		model.addAttribute("tab", tab);
+		putAccessorsPageToModel(acl.getAccessors(), (pageNo == null) ? DEFAULT_PAGE_NO : pageNo, model);
 
 		if (acl.getId() == null || acl.getId().length() == 0) {
 			model.addAttribute("httpMethod", "post");
@@ -221,7 +227,8 @@ public class AccessControlListController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") String id, @RequestParam(required = false) String accessorName, Model model) {
+	public String delete(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
+			Model model) {
 		if (accessorName != null && accessorName.length() > 0) {
 			log.debug("Starting delete accessor '{}' from ACL with ID={}", accessorName, id);
 
@@ -257,27 +264,31 @@ public class AccessControlListController {
 		if (addAccessor) {
 			Accessor newAccessor = new Accessor(State.NEW);
 			model.addAttribute("accessor", newAccessor);
-			
-			model.addAttribute("dictAccessorNames", getAvailableAliases(newAccessor.isAlias(), newAccessor.isSvc(), acl));
+
+			model.addAttribute("dictAccessorNames",
+					getAvailableAliases(newAccessor.isAlias(), newAccessor.isSvc(), acl));
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			return "editAccessor";
 		}
 
 		log.debug("Starting create new ACL " + acl);
-		
+
 		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
-		
+
 		// Check whether another ACL with the same name is already existed
 		// and register corresponding validation error if it's true
 		Optional<AccessControlList> optACL = aclDAO.readByName(acl.getName());
-		if(optACL.isPresent()) {
-			errors.addError(new FieldError("acl", "name", acl.getName(), false, null, null, "ACL name must be unique!"));
+		if (optACL.isPresent()) {
+			errors.addError(
+					new FieldError("acl", "name", acl.getName(), false, null, null, "ACL name must be unique!"));
 		}
 
 		if (errors.hasErrors()) {
 			log.debug("Failed to create new ACL " + acl + " due to validation errors " + errors.toString());
 			model.addAttribute("httpMethod", "post");
+			putAccessorsPageToModel(acl.getAccessors(), DEFAULT_PAGE_NO, model);
+			
 			return "editACL";
 		}
 
@@ -290,17 +301,19 @@ public class AccessControlListController {
 	@PatchMapping
 	public String updateACL(@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors, Model model) {
 		log.debug("Starting update ACL " + acl);
-		
-		// Check whether another ACL with the same name is already existed 
+
+		// Check whether another ACL with the same name is already existed
 		// and register corresponding validation error if it's true
 		Optional<AccessControlList> optACL = aclDAO.readByName(acl.getName());
-		if(optACL.isPresent() && !optACL.get().getId().equalsIgnoreCase(acl.getId())) {
-			errors.addError(new FieldError("acl", "name", acl.getName(), false, null, null, "ACL name must be unique!"));
+		if (optACL.isPresent() && !optACL.get().getId().equalsIgnoreCase(acl.getId())) {
+			errors.addError(
+					new FieldError("acl", "name", acl.getName(), false, null, null, "ACL name must be unique!"));
 		}
 
 		if (errors.hasErrors()) {
 			log.debug("Failed to update ACL " + acl + " due to validation errors " + errors.toString());
 			
+			putAccessorsPageToModel(acl.getAccessors(), DEFAULT_PAGE_NO, model);
 			model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
 			return "editACL";
 		}
@@ -315,9 +328,9 @@ public class AccessControlListController {
 	public String updateAccessor(@RequestParam boolean refresh, @RequestParam String accessorName,
 			@Valid @ModelAttribute("accessor") Accessor accessor, BindingResult errors, Model model) {
 		log.debug("Starting update Accessor {}", accessor);
-		
+
 		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
-		
+
 		if (errors.hasErrors() || refresh) {
 			if (errors.hasErrors()) {
 				log.debug("Failed to update Accessor {} due to validation errors {}", accessor, errors.toString());
@@ -333,10 +346,9 @@ public class AccessControlListController {
 			accessor.setState(State.DIRTY);
 		}
 
-		
 		acl.addAccessor(accessor);
 		log.info("Updated Accessor: {}", accessor);
 
-		return String.format("redirect:/acls/%s/edit", acl.getId());
+		return String.format("redirect:/acls/%s/edit?tab=tabAccessors", acl.getId());
 	}
 }
