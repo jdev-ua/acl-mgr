@@ -10,41 +10,37 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
-import ua.pp.jdev.permits.data.AccessControlList;
-import ua.pp.jdev.permits.data.AccessControlListDAO;
+import ua.pp.jdev.permits.data.Acl;
+import ua.pp.jdev.permits.data.AclDAO;
 
-@Slf4j
 @Component
-public class CassandraAclDAO implements AccessControlListDAO {
+public class CassandraAclDAO implements AclDAO {
 	private CassandraAclRepository repository;
 
 	public CassandraAclDAO(CassandraAclRepository repository) {
-		log.info("Initializing ACL datasource persisting data in Apache Cassandra database by Spring Data");
-
 		this.repository = repository;
 	}
 
 	@Override
-	public Collection<AccessControlList> readAll() {
-		return Lists.newArrayList(repository.findAll()).stream().map(CassandraACL::toAccessControlList)
-				.sorted(Comparator.comparing(AccessControlList::getName)).collect(Collectors.toList());
+	public Collection<Acl> readAll() {
+		return Lists.newArrayList(repository.findAll()).stream().map(CassandraACL::toAcl)
+				.sorted(Comparator.comparing(Acl::getName)).collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<AccessControlList> read(String id) {
+	public Optional<Acl> read(String id) {
 		Optional<CassandraACL> result = repository.findById(UUID.fromString(id));
-		return result.isPresent() ? Optional.of(CassandraACL.toAccessControlList(result.get())) : Optional.empty();
+		return result.isPresent() ? Optional.of(result.get().toAcl()) : Optional.empty();
 	}
 
 	@Override
-	public void create(AccessControlList acl) {
-		repository.save(CassandraACL.fromAccessControlList(acl));
+	public Acl create(Acl acl) {
+		return repository.save(CassandraACL.of(acl)).toAcl();
 	}
 
 	@Override
-	public void update(AccessControlList acl) {
-		repository.save(CassandraACL.fromAccessControlList(acl));
+	public Acl update(Acl acl) {
+		return repository.save(CassandraACL.of(acl)).toAcl();
 	}
 
 	@Override
@@ -54,8 +50,8 @@ public class CassandraAclDAO implements AccessControlListDAO {
 	}
 
 	@Override
-	public Optional<AccessControlList> readByName(String name) {
+	public Optional<Acl> readByName(String name) {
 		Optional<CassandraACL> result = repository.findByName(name).stream().findFirst();
-		return result.isPresent() ? Optional.of(CassandraACL.toAccessControlList(result.get())) : Optional.empty();
+		return result.isPresent() ? Optional.of(result.get().toAcl()) : Optional.empty();
 	}
 }
