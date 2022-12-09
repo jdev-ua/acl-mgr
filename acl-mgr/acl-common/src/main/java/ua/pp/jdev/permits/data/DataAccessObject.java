@@ -31,19 +31,21 @@ public interface DataAccessObject<T> {
 	 * Creates a new entity.
 	 * 
 	 * @param entity must not be {@literal null}.
+	 * @return a new entity.
 	 * @throws IllegalArgumentException in case the given {@literal entity} is
 	 *                                  {@literal null}.
 	 */
-	void create(T t);
+	T create(T t);
 
 	/**
 	 * Updates a given entity.
 	 * 
 	 * @param entity must not be {@literal null}.
+	 * @return updated entity.
 	 * @throws IllegalArgumentException in case the given {@literal entity} is
 	 *                                  {@literal null}.
 	 */
-	void update(T t);
+	T update(T t);
 
 	/**
 	 * Deletes the entity with the given id.
