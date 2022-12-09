@@ -9,41 +9,37 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
-import ua.pp.jdev.permits.data.AccessControlList;
-import ua.pp.jdev.permits.data.AccessControlListDAO;
+import ua.pp.jdev.permits.data.Acl;
+import ua.pp.jdev.permits.data.AclDAO;
 
-@Slf4j
 @Component
-public class MongoAclDAO implements AccessControlListDAO {
+public class MongoAclDAO implements AclDAO {
 	private MongoAclRepository repository;
 
 	public MongoAclDAO(MongoAclRepository repository) {
-		log.info("Initializing ACL datasource persisting data in MongoDB database by Spring Data");
-
 		this.repository = repository;
 	}
 
 	@Override
-	public Collection<AccessControlList> readAll() {
-		return Lists.newArrayList(repository.findAll()).stream().map(MongoACL::toAccessControlList)
-				.sorted(Comparator.comparing(AccessControlList::getName)).collect(Collectors.toList());
+	public Collection<Acl> readAll() {
+		return Lists.newArrayList(repository.findAll()).stream().map(MongoACL::toAcl)
+				.sorted(Comparator.comparing(Acl::getName)).collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<AccessControlList> read(String id) {
+	public Optional<Acl> read(String id) {
 		Optional<MongoACL> result = repository.findById(id);
-		return result.isPresent() ? Optional.of(MongoACL.toAccessControlList(result.get())) : Optional.empty();
+		return result.isPresent() ? Optional.of(result.get().toAcl()) : Optional.empty();
 	}
 
 	@Override
-	public void create(AccessControlList acl) {
-		repository.save(MongoACL.fromAccessControlList(acl));
+	public Acl create(Acl acl) {
+		return repository.save(MongoACL.of(acl)).toAcl();
 	}
 
 	@Override
-	public void update(AccessControlList acl) {
-		repository.save(MongoACL.fromAccessControlList(acl));
+	public Acl update(Acl acl) {
+		return repository.save(MongoACL.of(acl)).toAcl();
 	}
 
 	@Override
@@ -53,8 +49,8 @@ public class MongoAclDAO implements AccessControlListDAO {
 	}
 
 	@Override
-	public Optional<AccessControlList> readByName(String name) {
+	public Optional<Acl> readByName(String name) {
 		Optional<MongoACL> result = repository.findByName(name).stream().findFirst();
-		return result.isPresent() ? Optional.of(MongoACL.toAccessControlList(result.get())) : Optional.empty();
+		return result.isPresent() ? Optional.of(result.get().toAcl()) : Optional.empty();
 	}
 }
