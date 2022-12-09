@@ -63,13 +63,15 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void create(User user) {
-		repository.save(fromUser(user));
+	public User create(User user) {
+		UserDetailsImpl result = repository.save(fromUser(user));
+		return toUser(result);
 	}
 
 	@Override
-	public void update(User user) {
-		repository.save(fromUser(user));
+	public User update(User user) {
+		UserDetailsImpl result = repository.save(fromUser(user));
+		return toUser(result);
 	}
 
 	@Override
