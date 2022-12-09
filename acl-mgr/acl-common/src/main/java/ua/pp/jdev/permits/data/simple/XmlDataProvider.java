@@ -34,7 +34,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 
-import ua.pp.jdev.permits.data.AccessControlList;
+import ua.pp.jdev.permits.data.Acl;
+import ua.pp.jdev.permits.data.Acl.AclBuilder;
 import ua.pp.jdev.permits.data.Accessor;
 
 class XmlDataProvider {
@@ -66,7 +67,7 @@ class XmlDataProvider {
 		file = ResourceUtils.getFile(dataSource);
 	}
 
-	public void write(Collection<AccessControlList> acls) throws XmlDataException {
+	public void write(Collection<Acl> acls) throws XmlDataException {
 		try {
 			// Build backup-file name
 			String backupLocation = String.format(BACKUP_PREFIX_FORMAT_PATTERN, file.getParentFile(),
@@ -91,7 +92,7 @@ class XmlDataProvider {
 		}
 	}
 
-	private Document buildDocument(Collection<AccessControlList> acls) throws ParserConfigurationException {
+	private Document buildDocument(Collection<Acl> acls) throws ParserConfigurationException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.newDocument();
@@ -146,7 +147,7 @@ class XmlDataProvider {
 		return result;
 	}
 
-	public Collection<AccessControlList> read() throws XmlDataException {
+	public Collection<Acl> read() throws XmlDataException {
 		Document doc;
 
 		try {
@@ -160,8 +161,8 @@ class XmlDataProvider {
 		return parseDocument(doc);
 	}
 
-	private Collection<AccessControlList> parseDocument(Document doc) {
-		List<AccessControlList> result = new ArrayList<>();
+	private Collection<Acl> parseDocument(Document doc) {
+		List<Acl> result = new ArrayList<>();
 
 		doc.getDocumentElement().normalize();
 		Element rootElement = doc.getDocumentElement();
@@ -173,43 +174,47 @@ class XmlDataProvider {
 					NodeList childList = aclElement.getChildNodes();
 
 					// parse acl
-					AccessControlList acl = new AccessControlList();
+					AclBuilder builder = Acl.builder();
 					for (int j = 0; j < childList.getLength(); j++) {
 						Node child = childList.item(j);
 
 						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACL_NAME.equals(child.getNodeName())) {
 							String name = child.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
-							acl.setName(name);
+							builder.name(name);
 						}
+						
 						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACL_DESCRIPTION.equals(child.getNodeName())) {
 							String description = child.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
-							acl.setDescription(description);
+							builder.description(description);
 						}
+						
 						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACL_OBJ_TYPES.equals(child.getNodeName())) {
 							String objTypes = child.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
 							if (objTypes != null) {
-								acl.setObjTypes(Sets.newHashSet(
+								builder.objTypes(Sets.newHashSet(
 										Splitter.on(',').trimResults().omitEmptyStrings().splitToList(objTypes)));
 							}
 						}
+						
 						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACL_STATUSES.equals(child.getNodeName())) {
 							String statuses = child.getTextContent().replaceAll(REDUNDANT_XML_SYMBOLS, "").trim();
 							if (statuses != null) {
-								acl.setStatuses(Sets.newHashSet(
+								builder.statuses(Sets.newHashSet(
 										Splitter.on(',').trimResults().omitEmptyStrings().splitToList(statuses)));
 							}
 						}
+						
 						// parse acl.name
 						if (child.getNodeType() == Node.ELEMENT_NODE && ACCESSOR.equals(child.getNodeName())) {
-							acl.addAccessor(parseAccessor(child));
+							builder.accessor(parseAccessor(child));
 						}
 					}
 
-					result.add(acl);
+					result.add(builder.build());
 				}
 			}
 		}
