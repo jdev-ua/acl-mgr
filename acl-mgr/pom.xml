@@ -16,5 +16,6 @@
 		<module>acl-data-cassandra</module>
 		<module>acl-data-jdbc</module>
 		<module>acl-data-mongo</module>
+		<module>acl-security</module>
 	</modules>
 </project>
