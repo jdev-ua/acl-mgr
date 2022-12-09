@@ -9,11 +9,11 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import ua.pp.jdev.permits.data.AccessControlList;
-import ua.pp.jdev.permits.data.AccessControlListDAO;
+import ua.pp.jdev.permits.data.Acl;
+import ua.pp.jdev.permits.data.AclDAO;
 
 @Component
-public class XmlAclDAO implements AccessControlListDAO {
+public class XmlAclDAO implements AclDAO {
 	@Value("${data.src}")
 	private String dataSource;
 
@@ -29,7 +29,9 @@ public class XmlAclDAO implements AccessControlListDAO {
 		try {
 			provider = new XmlDataProvider(dataSource);
 			provider.read().forEach(acl -> {
-				dao.create(acl);
+				if (dao.readByName(acl.getName()).isEmpty()) {
+					dao.create(acl);
+				}
 			});
 		} catch (FileNotFoundException | XmlDataException e) {
 			throw new RuntimeException(e);
@@ -45,11 +47,13 @@ public class XmlAclDAO implements AccessControlListDAO {
 	}
 
 	@Override
-	public void create(AccessControlList acl) {
-		dao.create(acl);
+	public Acl create(Acl acl) {
+		Acl result = dao.create(acl);
 
 		// save changes to XML data source
 		saveToXml();
+		
+		return result;
 	}
 
 	@Override
@@ -65,25 +69,27 @@ public class XmlAclDAO implements AccessControlListDAO {
 	}
 
 	@Override
-	public void update(AccessControlList acl) {
-		dao.update(acl);
+	public Acl update(Acl acl) {
+		Acl result = dao.update(acl);
 
 		// save changes to XML data source
 		saveToXml();
+		
+		return result;
 	}
 
 	@Override
-	public Collection<AccessControlList> readAll() {
+	public Collection<Acl> readAll() {
 		return dao.readAll();
 	}
 
 	@Override
-	public Optional<AccessControlList> read(String id) {
+	public Optional<Acl> read(String id) {
 		return dao.read(id);
 	}
 
 	@Override
-	public Optional<AccessControlList> readByName(String name) {
+	public Optional<Acl> readByName(String name) {
 		return dao.readByName(name);
 	}
 }
