@@ -21,7 +21,7 @@ public class AccessControlListTest {
 		Accessor accessor = new Accessor();
 		accessor.setName("test");
 
-		AccessControlList acl = new AccessControlList();
+		Acl acl = Acl.builder().build();
 		acl.addAccessor(accessor);
 
 		Assertions.assertTrue(acl.hasAccessor("test"));
@@ -32,7 +32,7 @@ public class AccessControlListTest {
 		Accessor accessor = new Accessor();
 		accessor.setName("test");
 
-		AccessControlList acl = new AccessControlList();
+		Acl acl = Acl.builder().build();
 		acl.addAccessor(accessor);
 
 		Assertions.assertTrue(acl.getAccessor("test").isPresent());
@@ -44,7 +44,7 @@ public class AccessControlListTest {
 		Accessor accessor = new Accessor();
 		accessor.setName("test");
 
-		AccessControlList acl = new AccessControlList();
+		Acl acl = Acl.builder().build();
 		acl.addAccessor(accessor);
 		acl.removeAccessor("test");
 
@@ -53,7 +53,7 @@ public class AccessControlListTest {
 
 	@Test
 	public void testRemoveRequiredAccessors() {
-		AccessControlList acl = new AccessControlList();
+		Acl acl = Acl.builder().build();
 
 		acl.removeAccessor("dm_owner");
 		acl.removeAccessor("dm_world");
@@ -70,7 +70,7 @@ public class AccessControlListTest {
 			accessor.setName("accessor" + i);
 		}
 
-		AccessControlList acl = new AccessControlList();
+		Acl acl = Acl.builder().build();
 		acl.setAccessors(accessors);
 
 		// Test where ACL contains all Accessors added by 'setAccessors' method
@@ -84,8 +84,8 @@ public class AccessControlListTest {
 		Set<Accessor> accessors = createAccessors4Test(3);
 
 		for (State state : State.values()) {
-			AccessControlList origin = createAcl4Test(state, accessors);
-			AccessControlList copy = AccessControlList.softCopy(origin);
+			Acl origin = createAcl4Test(state, accessors);
+			Acl copy = Acl.softCopy(origin);
 
 			// Test 
 			Assertions.assertNotEquals(origin, copy);
@@ -125,8 +125,8 @@ public class AccessControlListTest {
 		Set<Accessor> accessors = createAccessors4Test(3);
 
 		for (State state : State.values()) {
-			AccessControlList origin = createAcl4Test(state, accessors);
-			AccessControlList clone = AccessControlList.deepCopy(origin);
+			Acl origin = createAcl4Test(state, accessors);
+			Acl clone = Acl.deepCopy(origin);
 
 			// Test whether origin and clone are identical
 			Assertions.assertEquals(origin, clone);
@@ -149,15 +149,15 @@ public class AccessControlListTest {
 		}
 	}
 
-	private AccessControlList createAcl4Test(State state, Set<Accessor> accessors) {
-		AccessControlList result = new AccessControlList(state);
-		result.setId(IDGenerator.genStringID());
-		result.setName("name");
-		result.setDescription("description");
-		result.setObjTypes(objTypes_2);
-		result.setStatuses(statuses_2);
-		result.setAccessors(accessors);
-		return result;
+	private Acl createAcl4Test(State state, Set<Accessor> accessors) {
+		return Acl.builder()
+				.id(IDGenerator.genStringID())
+				.name("name")
+				.description("description")
+				.objTypes(objTypes_2)
+				.statuses(statuses_2)
+				.accessors(accessors)
+				.build();
 	}
 
 	private Set<Accessor> createAccessors4Test(int num) {
