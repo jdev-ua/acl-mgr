@@ -17,11 +17,11 @@ public final class IDGenerator {
 	}
 	
 	/**
-	 * Checks whether specified string ID is "empty"
+	 * Checks whether specified string ID is valid
 	 * @param id a string with ID
 	 * @return {@code true} if specified ID has {@code null}, zero-length or {@code EMPTY_ID} value
 	 */
-	public static boolean isEmptyID(String id) {
+	public static boolean validateID(String id) {
 		return id == null || id.length() == 0 || EMPTY_ID.equals(id);
 	}
 }
