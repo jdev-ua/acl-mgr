@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.pp.jdev.permits.data.AccessControlListDAO;
+import ua.pp.jdev.permits.data.AclDAO;
 
 @Slf4j
 @Configuration
@@ -23,8 +23,8 @@ public class DataSourceConfig {
 
 	@Bean
 	@Primary
-	protected AccessControlListDAO aclDAO() {
-		AccessControlListDAO result;
+	protected AclDAO aclDAO() {
+		AclDAO result;
 		
 		String beanName = dataSourceBeanName;
 		// Use default default DAO bean if application context doesn't contain specified one
@@ -32,7 +32,7 @@ public class DataSourceConfig {
 			log.warn("Failed to get '{}' bean, default bean will be used instead", beanName);
 			beanName = DEFAULT_BEAN_NAME;
 		}
-		result = appContext.getBean(beanName, AccessControlListDAO.class);
+		result = appContext.getBean(beanName, AclDAO.class);
 		log.info("Initialized primary ACL DAO '{}': [{}]", beanName, result.getClass().getCanonicalName());
 
 		return result;
