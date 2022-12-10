@@ -7,23 +7,35 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 
-import ua.pp.jdev.permits.data.AccessControlList;
-import ua.pp.jdev.permits.data.AccessControlListDAO;
+import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.data.Accessor;
+import ua.pp.jdev.permits.data.Acl;
+import ua.pp.jdev.permits.data.AclDAO;
 import ua.pp.jdev.permits.enums.State;
 
+@Slf4j
 @SpringBootApplication
 public class AclWebApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AclWebApplication.class, args);
 	}
-
+	
 	@Bean
-	public CommandLineRunner dataLoader(AccessControlListDAO dao) {
+	@DependsOn("dataSourceConfig")
+	protected CommandLineRunner dataLoader(AclDAO dao) {
+		log.debug("Start initialize CommandLineRunner");
+		
 		return args -> {
-			if(dao.readAll().size() > 0) return;
+			long size = dao.readAll().size();
+			log.debug("Provided DAO ('{}') contains: {} items", dao.getClass().getCanonicalName(), size);
+			
+			if(size > 0) {
+				log.debug("Skip populating not empty DAO");
+				return;
+			}
 			
 			Accessor scaner = new Accessor(State.NEW);
 			scaner.setName("bnk-scaner");
@@ -76,39 +88,48 @@ public class AclWebApplication {
 			Set<Accessor> accessors = Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin);
 
 			// Client ACL
-			AccessControlList aclClient = new AccessControlList(State.NEW);
-			aclClient.setName("test_client_acl");
-			aclClient.setDescription("Client ACL");
-			aclClient.setObjTypes(Set.of("bnk_client", "bnk_not_client"));
-			aclClient.setAccessors(accessors);
-			dao.create(aclClient);
+			Acl aclClient = dao.create(
+					Acl.builder()
+					.name("test_client_acl")
+					.description("Client ACL")
+					.objTypes(Set.of("bnk_client", "bnk_not_client"))
+					.accessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()))
+					.build());
+			log.debug("New test ACL successfully created: {}", aclClient);
 
 			// Committee ACL
-			AccessControlList aclCommittee = new AccessControlList(State.NEW);
-			aclCommittee.setName("test_committee_acl");
-			aclCommittee.setDescription("Credit committee ACL");
-			aclCommittee.setObjTypes(Set.of("bnk_committee"));
-			aclCommittee.setAccessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()));
-			dao.create(aclCommittee);
+			Acl aclCommittee = dao.create(
+					Acl.builder()
+					.name("test_committee_acl")
+					.description("Credit committee ACL")
+					.objTypes(Set.of("bnk_committee"))
+					.accessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()))
+					.build());
+			log.debug("New test ACL successfully created: {}", aclCommittee);
 
 			// GRL ACL
-			AccessControlList aclGRC = new AccessControlList(State.NEW);
-			aclGRC.setName("test_grc_acl");
-			aclGRC.setDescription("Group of related companies ACL");
-			aclGRC.setObjTypes(Set.of("bnk_grc_acl"));
-			aclGRC.setAccessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()));
-			dao.create(aclGRC);
+			Acl aclGRC = dao.create(
+					Acl.builder()
+					.name("test_grc_acl")
+					.description("Group of related companies ACL")
+					.objTypes(Set.of("bnk_grc_acl"))
+					.accessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()))
+					.build());
+			log.debug("New test ACL successfully created: {}", aclGRC);
 
 			// PS Conclusion ACL
-			AccessControlList aclConclPS = new AccessControlList(State.NEW);
-			aclConclPS.setName("test_concl_ps_acl");
-			aclConclPS.setDescription("Pledge service conclusion ACL");
-			aclConclPS.setObjTypes(Set.of("bnk_conclusion"));
-			aclConclPS.setStatuses(Set.of("PS_S_CO_APPROVE", "PS_S_CO_ASSIGN", "PS_S_CO_CONCL", "PS_S_CO_DONE",
-					"PS_S_CO_REJECT", "PS_S_CO_REV", "PS_S_RD_APPROVE", "PS_S_RD_ASSIGN", "PS_S_RD_CONCL",
-					"PS_S_RD_DONE", "PS_S_RD_REJECT", "PS_S_RD_REV"));
-			aclConclPS.setAccessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()));
-			dao.create(aclConclPS);
+			Acl aclConclPS = dao.create(
+					Acl.builder()
+					.name("test_concl_ps_acl")
+					.description("Pledge service conclusion ACL")
+					.objTypes(Set.of("Pledge service conclusion ACL"))
+					.statuses(Set.of("PS_S_CO_APPROVE", "PS_S_CO_ASSIGN", "PS_S_CO_CONCL", "PS_S_CO_DONE",
+							"PS_S_CO_REJECT", "PS_S_CO_REV", "PS_S_RD_APPROVE", "PS_S_RD_ASSIGN", "PS_S_RD_CONCL",
+							"PS_S_RD_DONE", "PS_S_RD_REJECT", "PS_S_RD_REV"))
+					.accessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()))
+					.build());
+			log.debug("New test ACL successfully created: {}", aclConclPS);
+			log.debug("Finish initialize CommandLineRunner");
 		};
 	}
 }
