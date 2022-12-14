@@ -1,83 +1,96 @@
 package ua.pp.jdev.permits.data.simple;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import ua.pp.jdev.permits.data.AccessControlList;
-import ua.pp.jdev.permits.data.AccessControlListDAO;
-import ua.pp.jdev.permits.data.Accessor;
-import ua.pp.jdev.permits.enums.State;
+import ua.pp.jdev.permits.data.Acl;
+import ua.pp.jdev.permits.data.AclDAO;
 import ua.pp.jdev.permits.util.IDGenerator;
 
 @Component
-public class SimpleAclDAO implements AccessControlListDAO {
-	private Map<String, AccessControlList> storage = new HashMap<>();
+public class SimpleAclDAO implements AclDAO {
+	private Map<String, AclRecord> storage = new HashMap<>();
 
 	@Override
-	public Collection<AccessControlList> readAll() {
-		// Disable direct access to stored data by getting every single ACL by
-		// appropriate read method
-		return storage.values().stream().map(acl -> read(String.valueOf(acl.getId())).get())
-				.sorted(Comparator.comparing(AccessControlList::getName)).collect(Collectors.toList());
+	public Collection<Acl> readAll() {
+		return storage.values().stream()
+				.map(rec -> Converters.convert(rec))
+				.sorted((acl1, acl2) -> acl1.getName().compareToIgnoreCase(acl2.getName()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public Optional<AccessControlList> read(String id) {
-		Optional<AccessControlList> result;
+	public Optional<Acl> read(String id) {
+		Objects.requireNonNull(id);
+		
+		return storage.containsKey(id) ? Optional.of(Converters.convert(storage.get(id))) : Optional.empty();
+	}
 
-		// Create a clone of current ACL to avoid unwanted changes by consumer
-		AccessControlList acl = storage.get(id);
-		if (acl != null) {
-			result = Optional.of(AccessControlList.deepCopy(acl));
-		} else {
-			result = Optional.empty();
+	@Override
+	public Acl create(Acl data) {
+		Objects.requireNonNull(data);
+		
+		System.out.println("storage: " + storage);
+		if (storage.containsKey(data.getId())) {
+			// TODO Customize exception
+			throw new RuntimeException("Creation failed: ACL with ID '" + data.getId() + "' already exists");
 		}
-
-		return result;
+		
+		if (readByName(data.getName()).isPresent()) {
+			// TODO Customize exception
+			throw new RuntimeException("Creation failed: ACL with name '" + data.getId() + "' already exists");
+		}
+		
+		return save(data);
 	}
 
 	@Override
-	public void create(AccessControlList newAcl) {
-		if (newAcl != null) {
-			newAcl.setId(IDGenerator.genStringID());
-			newAcl.setAccessors(normilizeAccessors(newAcl.getAccessors()));
-			storage.put(newAcl.getId(), newAcl);
+	public Acl update(Acl data) {
+		Objects.requireNonNull(data);
+		
+		if(!IDGenerator.validateID(data.getId())) {
+			// TODO Customize exception
+			throw new RuntimeException("Update failed: ACL has invalid ID '" + data.getId() + "'");
 		}
-	}
-
-	@Override
-	public void update(AccessControlList data) {
-		if (data != null && storage.containsKey(data.getId())) {
-			AccessControlList acl = storage.get(data.getId());
-
-			acl.setName(data.getName());
-			acl.setDescription(data.getDescription());
-			acl.setStatuses(data.getStatuses());
-			acl.setObjTypes(data.getObjTypes());
-			acl.setAccessors(normilizeAccessors(data.getAccessors()));
+		
+		if (!storage.containsKey(data.getId())) {
+			// TODO Customize exception
+			throw new RuntimeException("Update failed: ACL with ID '" + data.getId() + "' doesn't exist");
 		}
+		
+		return save(data);
 	}
+	
+	private Acl save(Acl origin) {
+		AclRecord rec = Converters.convert(origin);
 
-	private Set<Accessor> normilizeAccessors(Collection<Accessor> source) {
-		// Purge Accessors in VOID state and setup others with PURE state
-		return source.stream().filter(accessor -> !State.VOID.equals(accessor.getState()))
-				.peek(accessor -> accessor.setState(State.PURE)).collect(Collectors.toSet());
+		storage.put(rec.id(), rec);
+
+		// TODO Customize exception
+		return read(rec.id())
+				.orElseThrow(() -> new RuntimeException("Failed to retrieve saved ACL '" + rec.id() + "' from storage"));
 	}
 
 	@Override
 	public boolean delete(String id) {
+		Objects.requireNonNull(id);
+		
 		return (storage.remove(id) != null);
 	}
 
 	@Override
-	public Optional<AccessControlList> readByName(String name) {
-		return storage.values().stream().filter(t -> t.getName().equalsIgnoreCase(name)).findFirst();
+	public Optional<Acl> readByName(String name) {
+		Objects.requireNonNull(name);
+		
+		return storage.values().stream()
+				.filter(rec -> rec.name().equalsIgnoreCase(name))
+				.map(rec -> Converters.convert(rec))
+				.findFirst();
 	}
 }
