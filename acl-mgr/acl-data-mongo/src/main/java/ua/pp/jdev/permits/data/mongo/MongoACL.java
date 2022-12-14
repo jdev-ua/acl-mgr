@@ -58,7 +58,7 @@ class MongoACL implements Serializable {
 
 		MongoACL result = new MongoACL();
 		// For newly created ACL skip ID setup to avoid possible errors
-		// while parsing a value generated outside Cassandra
+		// while parsing a value generated outside MongoDB
 		if (IDGenerator.validateID(origin.getId())) {
 			result.setId(origin.getId());
 		}
@@ -67,7 +67,7 @@ class MongoACL implements Serializable {
 		result.setStatuses(origin.getStatuses());
 		result.setObjTypes(origin.getObjTypes());
 		result.setAccessors(
-				origin.getAccessors().stream().map(MongoAccessor::fromAccessor).collect(Collectors.toSet()));
+				origin.getAccessors().stream().map(MongoAccessor::of).collect(Collectors.toSet()));
 
 		return result;
 	}
