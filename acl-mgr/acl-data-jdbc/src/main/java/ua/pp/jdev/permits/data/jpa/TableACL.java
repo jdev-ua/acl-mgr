@@ -58,7 +58,7 @@ class TableACL implements Serializable {
 	public static TableACL of(Acl origin) {
 		Objects.requireNonNull(origin);
 
-		Long id = !IDGenerator.validateID(origin.getId()) ? Long.parseLong(origin.getId()) : null;
+		Long id = IDGenerator.validateID(origin.getId()) ? Long.parseLong(origin.getId()) : null;
 
 		TableACL result = new TableACL(id, origin.getName(), origin.getDescription());
 		result.setObjTypes(origin.getObjTypes().stream().map(t -> new TableObjType(null, id, t)).collect(Collectors.toSet()));
