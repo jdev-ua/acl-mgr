@@ -106,6 +106,8 @@ public class JdbcAclDAO implements AclDAO {
 				jdbcOperations.update(deleteQuery, accessor.getId());
 				return;
 			}
+			
+			String id = accessor.getId();
 
 			// Use INSERT query for new accessor or UPDATE otherwise
 			if (State.NEW.equals(accessor.getState())) {
@@ -119,7 +121,8 @@ public class JdbcAclDAO implements AclDAO {
 						accessor.getPermit(), accessor.isAlias(), accessor.isSvc()));
 
 				jdbcOperations.update(psc, keyHolder);
-				accessor.setId(String.valueOf(keyHolder.getKey().longValue()));
+				// Get actual ID value
+				id = String.valueOf(keyHolder.getKey().longValue());
 			} else {
 				String updateQuery = "update accessor set name=?, permit=?, alias=?, svc=? where id=?";
 				jdbcOperations.update(updateQuery, accessor.getName(), accessor.getPermit(), accessor.isAlias(),
@@ -127,9 +130,9 @@ public class JdbcAclDAO implements AclDAO {
 			}
 
 			// Save accessor's org.levels
-			saveMultiValueField(accessor.getOrgLevels(), accessor.getId(), "org_level", "accessor_id", "org_level");
+			saveMultiValueField(accessor.getOrgLevels(), id, "org_level", "accessor_id", "org_level");
 			// Save accessor's xpermits
-			saveMultiValueField(accessor.getXPermits(), accessor.getId(), "xpermit", "accessor_id", "xpermit");
+			saveMultiValueField(accessor.getXPermits(), id, "xpermit", "accessor_id", "xpermit");
 		});
 	}
 
