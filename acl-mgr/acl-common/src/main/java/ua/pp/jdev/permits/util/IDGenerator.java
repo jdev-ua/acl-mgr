@@ -22,6 +22,6 @@ public final class IDGenerator {
 	 * @return {@code true} if specified ID has {@code null}, zero-length or {@code EMPTY_ID} value
 	 */
 	public static boolean validateID(String id) {
-		return id == null || id.length() == 0 || EMPTY_ID.equals(id);
+		return !(id == null || id.length() == 0 || EMPTY_ID.equals(id));
 	}
 }
