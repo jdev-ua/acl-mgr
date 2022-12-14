@@ -21,13 +21,13 @@ class AccessorRowMapper implements RowMapper<Accessor> {
 		if (cache.containsKey(id)) {
 			accessor = cache.get(id);
 		} else {
-			accessor = new Accessor();
-
-			accessor.setId(String.valueOf(id));
-			accessor.setName(rs.getString("name"));
-			accessor.setPermit(rs.getInt("permit"));
-			accessor.setAlias(rs.getBoolean("alias"));
-			accessor.setSvc(rs.getBoolean("svc"));
+			accessor = Accessor.builder()
+					.id(String.valueOf(id))
+					.name(rs.getString("name"))
+					.permit(rs.getInt("permit"))
+					.alias(rs.getBoolean("alias"))
+					.svc(rs.getBoolean("svc"))
+					.build();
 		}
 
 		String orgLevel = rs.getString("org_level");
