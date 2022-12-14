@@ -48,22 +48,20 @@ class TableAccessor implements Serializable {
 	}
 
 	public Accessor toAccessor() {
-		Accessor result = new Accessor();
-		result.setName(getName());
-		result.setPermit(getPermit());
-		result.setAlias(isAlias());
-		result.setSvc(isSvc());
-		result.setId(String.valueOf(getId()));
-		result.setOrgLevels(getOrgLevels().stream().map(TableOrgLevel::getOrgLevel).collect(Collectors.toSet()));
-		result.setXPermits(getXPermits().stream().map(TableXPermit::getXPermit).collect(Collectors.toSet()));
-
-		return result;
+		return Accessor.builder()
+				.name(getName())
+				.permit(getPermit())
+				.alias(isAlias()).svc(isSvc())
+				.id(String.valueOf(getId()))
+				.orgLevels(getOrgLevels().stream().map(TableOrgLevel::getOrgLevel).collect(Collectors.toSet()))
+				.xPermits(getXPermits().stream().map(TableXPermit::getXPermit).collect(Collectors.toSet()))
+				.build();
 	}
 
 	public static TableAccessor of(Accessor origin) {
 		Objects.requireNonNull(origin);
-
-		Long id = !IDGenerator.validateID(origin.getId()) ? Long.parseLong(origin.getId()) : null;
+		
+		Long id = IDGenerator.validateID(origin.getId()) ? Long.parseLong(origin.getId()) : null;
 
 		TableAccessor result = new TableAccessor();
 		result.setName(origin.getName());
@@ -71,10 +69,8 @@ class TableAccessor implements Serializable {
 		result.setAlias(origin.isAlias());
 		result.setSvc(origin.isSvc());
 		result.setId(id);
-		result.setOrgLevels(
-				origin.getOrgLevels().stream().map(t -> new TableOrgLevel(null, id, t)).collect(Collectors.toSet()));
-		result.setXPermits(
-				origin.getXPermits().stream().map(t -> new TableXPermit(null, id, t)).collect(Collectors.toSet()));
+		result.setOrgLevels(origin.getOrgLevels().stream().map(t -> new TableOrgLevel(null, id, t)).collect(Collectors.toSet()));
+		result.setXPermits(origin.getXPermits().stream().map(t -> new TableXPermit(null, id, t)).collect(Collectors.toSet()));
 
 		return result;
 	}
