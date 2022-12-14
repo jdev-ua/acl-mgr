@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import ua.pp.jdev.permits.data.Accessor;
 import ua.pp.jdev.permits.data.Acl;
 import ua.pp.jdev.permits.data.AclDAO;
-import ua.pp.jdev.permits.enums.State;
+import ua.pp.jdev.permits.enums.Permit;
 
 @Slf4j
 @SpringBootApplication
@@ -37,53 +37,59 @@ public class AclWebApplication {
 				return;
 			}
 			
-			Accessor scaner = new Accessor(State.NEW);
-			scaner.setName("bnk-scaner");
-			scaner.setPermit(3);
-			scaner.setAlias(true);
-			scaner.setSvc(false);
+			Accessor scaner = Accessor.builder()
+					.name("bnk-scaner")
+					.permit(Permit.READ.getValue())
+					.alias(true)
+					.svc(false)
+					.build();
 
-			Accessor bAdmin = new Accessor(State.NEW);
-			bAdmin.setName("bnk_business_admin");
-			bAdmin.setPermit(6);
-			bAdmin.setAlias(false);
-			bAdmin.setSvc(false);
-			bAdmin.setXPermits(Set.of("EXECUTE_PROC", "CHANGE_LOCATION"));
+			Accessor bAdmin = Accessor.builder()
+					.name("bnk_business_admin")
+					.permit(Permit.WRITE.getValue())
+					.alias(false)
+					.svc(false)
+					.xPermits(Set.of("EXECUTE_PROC", "CHANGE_LOCATION"))
+					.build();
 
-			Accessor tAdmin = new Accessor(State.NEW);
-			tAdmin.setName("bnk_tech_admin");
-			tAdmin.setPermit(7);
-			tAdmin.setAlias(false);
-			tAdmin.setSvc(false);
-			tAdmin.setXPermits(Set.of("EXECUTE_PROC", "CHANGE_LOCATION"));
+			Accessor tAdmin = Accessor.builder()
+					.name("bnk_tech_admin")
+					.permit(Permit.DELETE.getValue())
+					.alias(false).svc(false)
+					.xPermits(Set.of("EXECUTE_PROC", "CHANGE_LOCATION"))
+					.build();
 
-			Accessor pam1 = new Accessor(State.NEW);
-			pam1.setName("bnk_grc_pam1");
-			pam1.setPermit(3);
-			pam1.setAlias(true);
-			pam1.setSvc(false);
-			pam1.setXPermits(Set.of("EXECUTE_PROC"));
+			Accessor pam1 = Accessor.builder()
+					.name("bnk_grc_pam1")
+					.permit(Permit.READ.getValue())
+					.alias(true)
+					.svc(false)
+					.xPermits(Set.of("EXECUTE_PROC"))
+					.build();
 
-			Accessor pam2 = new Accessor(State.NEW);
-			pam2.setName("bnk_grc_pam2");
-			pam2.setPermit(3);
-			pam2.setAlias(true);
-			pam2.setSvc(false);
-			pam2.setXPermits(Set.of("EXECUTE_PROC"));
+			Accessor pam2 = Accessor.builder()
+					.name("bnk_grc_pam2")
+					.permit(Permit.READ.getValue())
+					.alias(true)
+					.svc(false)
+					.xPermits(Set.of("EXECUTE_PROC"))
+					.build();
 
-			Accessor legalPerf = new Accessor(State.NEW);
-			legalPerf.setName("bnk-ls-perf");
-			legalPerf.setPermit(3);
-			legalPerf.setAlias(true);
-			legalPerf.setSvc(true);
-			legalPerf.setOrgLevels(Set.of("CO", "VR", "MR", "RD"));
+			Accessor legalPerf = Accessor.builder()
+					.name("bnk-ls-perf")
+					.permit(Permit.READ.getValue())
+					.alias(true)
+					.svc(true)
+					.orgLevels(Set.of("CO", "VR", "MR", "RD"))
+					.build();
 
-			Accessor legalLM = new Accessor(State.NEW);
-			legalLM.setName("bnk-ls-lm");
-			legalLM.setPermit(3);
-			legalLM.setAlias(true);
-			legalLM.setSvc(true);
-			legalLM.setOrgLevels(Set.of("CO", "VR", "MR", "RD"));
+			Accessor legalLM = Accessor.builder()
+					.name("bnk-ls-lm")
+					.permit(Permit.READ.getValue())
+					.alias(true)
+					.svc(true)
+					.orgLevels(Set.of("CO", "VR", "MR", "RD"))
+					.build();
 
 			Set<Accessor> accessors = Set.of(scaner, legalPerf, legalLM, pam1, pam2, bAdmin, tAdmin);
 
@@ -93,7 +99,7 @@ public class AclWebApplication {
 					.name("test_client_acl")
 					.description("Client ACL")
 					.objTypes(Set.of("bnk_client", "bnk_not_client"))
-					.accessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()))
+					.accessors(accessors.stream().map(t -> t.toBuilder().build()).collect(Collectors.toSet()))
 					.build());
 			log.debug("New test ACL successfully created: {}", aclClient);
 
@@ -103,7 +109,7 @@ public class AclWebApplication {
 					.name("test_committee_acl")
 					.description("Credit committee ACL")
 					.objTypes(Set.of("bnk_committee"))
-					.accessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()))
+					.accessors(accessors.stream().map(t -> t.toBuilder().build()).collect(Collectors.toSet()))
 					.build());
 			log.debug("New test ACL successfully created: {}", aclCommittee);
 
@@ -113,7 +119,7 @@ public class AclWebApplication {
 					.name("test_grc_acl")
 					.description("Group of related companies ACL")
 					.objTypes(Set.of("bnk_grc_acl"))
-					.accessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()))
+					.accessors(accessors.stream().map(t -> t.toBuilder().build()).collect(Collectors.toSet()))
 					.build());
 			log.debug("New test ACL successfully created: {}", aclGRC);
 
@@ -126,7 +132,7 @@ public class AclWebApplication {
 					.statuses(Set.of("PS_S_CO_APPROVE", "PS_S_CO_ASSIGN", "PS_S_CO_CONCL", "PS_S_CO_DONE",
 							"PS_S_CO_REJECT", "PS_S_CO_REV", "PS_S_RD_APPROVE", "PS_S_RD_ASSIGN", "PS_S_RD_CONCL",
 							"PS_S_RD_DONE", "PS_S_RD_REJECT", "PS_S_RD_REV"))
-					.accessors(accessors.stream().map(Accessor::softCopy).collect(Collectors.toSet()))
+					.accessors(accessors.stream().map(t -> t.toBuilder().build()).collect(Collectors.toSet()))
 					.build());
 			log.debug("New test ACL successfully created: {}", aclConclPS);
 			log.debug("Finish initialize CommandLineRunner");
