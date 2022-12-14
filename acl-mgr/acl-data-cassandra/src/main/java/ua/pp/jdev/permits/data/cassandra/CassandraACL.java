@@ -91,7 +91,7 @@ class CassandraACL {
 		result.setDescription(origin.getDescription());
 		result.setStatuses(origin.getStatuses().stream().map(t -> new StatusUDT(t)).collect(Collectors.toSet()));
 		result.setObjTypes(origin.getObjTypes().stream().map(t -> new ObjTypeUDT(t)).collect(Collectors.toSet()));
-		result.setAccessors(origin.getAccessors().stream().map(AccessorUDT::fromAccessor).collect(Collectors.toSet()));
+		result.setAccessors(origin.getAccessors().stream().map(AccessorUDT::of).collect(Collectors.toSet()));
 
 		return result;
 	}
