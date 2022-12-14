@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import ua.pp.jdev.permits.data.Accessor;
 
 @Data
-//@AllArgsConstructor
+@AllArgsConstructor
 @RequiredArgsConstructor
 @UserDefinedType("accessor")
 class AccessorUDT {
