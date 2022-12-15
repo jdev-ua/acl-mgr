@@ -56,10 +56,10 @@
 						<div class="col-sm-4">
 							<select th:class="selectpicker" th:errorclass="'selectpicker is-invalid'"
 								th:id="name" th:name="name" th:title="#{placeholder.accessor}">
-								<option value=""></option>
-								<option th:each="dictEntry : ${dictAccessorNames}"
+									<option th:if="${#strings.length(accessor.name) == 0}" value=""></option>
+									<option th:each="dictEntry : ${dictAccessorNames}"
 									th:value="${dictEntry.key}" th:text="${dictEntry.value}"
-									th:selected="${#maps.containsKey(dictAccessorNames, #strings.toString(accessor.name))}"></option>
+									th:selected="${#strings.equals(dictEntry.key, accessor.name)}"></option>
 							</select>
 							<span class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
 						</div>
