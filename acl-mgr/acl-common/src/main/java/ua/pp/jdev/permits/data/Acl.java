@@ -3,13 +3,11 @@ package ua.pp.jdev.permits.data;
 import static ua.pp.jdev.permits.data.Accessor.DM_OWNER;
 import static ua.pp.jdev.permits.data.Accessor.DM_WORLD;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -20,12 +18,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import lombok.Singular;
 import ua.pp.jdev.permits.enums.Permit;
 import ua.pp.jdev.permits.enums.State;
 import ua.pp.jdev.permits.util.IDGenerator;;
@@ -37,6 +33,8 @@ import ua.pp.jdev.permits.util.IDGenerator;;
  *
  */
 @Data
+@Builder(toBuilder = true)
+@JsonPOJOBuilder(withPrefix = "")
 @JsonDeserialize(builder = Acl.AclBuilder.class)
 @EqualsAndHashCode(of = {"name"})
 public class Acl {
@@ -45,32 +43,48 @@ public class Acl {
 	@NotBlank(message = "{validation.notblank.name}")
 	@Length(max = 32, message = "{validation.length.name}")
 	@Pattern(regexp = "^[a-zA-Z0-9-_]*$", message = "{validation.pattern.name}")
-	private String name = "";
+	private String name;
 
 	@Length(max = 128, message = "{validation.length.description}")
-	private String description = "";
+	private String description;
 
 	@JsonIgnore
 	private State state;
 
-	private Set<String> objTypes = new HashSet<>();
-	private Set<String> statuses = new HashSet<>();
-	@Setter(AccessLevel.NONE)
-	@Getter(AccessLevel.NONE)
-	//private Map<String, Accessor> accessors = new HashMap<>();
-	private Map<String, Accessor> accessors = new TreeMap<>();
+	@Singular
+	private Set<String> objTypes;
+	@Singular
+	private Set<String> statuses;
+	@Singular
+	private Set<Accessor> accessors;
+	
+	public Acl() {
+		id = IDGenerator.EMPTY_ID;
+		name = "";
+		description = "";
+		state = State.NEW;
+		objTypes = new HashSet<>();
+		statuses = new HashSet<>();
+		accessors = new TreeSet<>();
+		
+		addAccessor(Accessor.builder().name(DM_OWNER).permit(Permit.DELETE.getValue()).build());
+		addAccessor(Accessor.builder().name(DM_WORLD).permit(Permit.READ.getValue()).build());
+	}
 
-	protected Acl(State state) {
-		setState(state);
-		
-		/*
-		Accessor.AccessorBuilder accessorBuilder = Accessor.builder();
-		
-		// Add dm_owner with default setting
-		addAccessor(accessorBuilder.name(DM_OWNER).permit(Permit.DELETE.getValue()).build());
-		// Add dm_world with default setting
-		addAccessor(accessorBuilder.name(DM_WORLD).permit(Permit.READ.getValue()).build());
-		*/
+	private Acl(String id, String name, String description, State state, Set<String> objTypes, Set<String> statuses, Set<Accessor> accessors) {
+		this();
+		if (name != null) {
+			setName(name);
+		}
+		if (state != null) {
+			setState(state);
+		}
+		if(IDGenerator.validateID(id)) {
+			setId(id);
+		}
+		setObjTypes(objTypes);
+		setStatuses(statuses);
+		setAccessors(accessors);
 	}
 
 	/**
@@ -81,20 +95,8 @@ public class Acl {
 	public void addAccessor(Accessor accessor) {
 		Objects.requireNonNull(accessor);
 		
-		//if (accessor != null) {
-		/*if (hasAccessor(accessor.getName())) {
-			// Remove previous version of Accessor from ACL
-			removeAccessor(accessor.getName());
-
-			//accessor.setState(State.DIRTY);
-		} else {
-
-		}	*/		
-			
-			
 		// Add new Accessor to ACL
-		accessors.put(accessor.getName(), accessor);
-		//}
+		accessors.add(accessor);
 	}
 
 	/**
@@ -104,8 +106,7 @@ public class Acl {
 	 * @return {@code true} if this ACL contains an {@code Accessor} with given name
 	 */
 	public boolean hasAccessor(String accessorName) {
-		return accessors.containsKey(accessorName);
-		// return getAccessor(accessorName).isPresent();
+		return accessors.stream().anyMatch(t -> t.getName().equalsIgnoreCase(accessorName));
 	}
 
 	/**
@@ -116,9 +117,7 @@ public class Acl {
 	 * @return an {@code Optional} with {@code Accessor} or empty {@code Optional}
 	 */
 	public Optional<Accessor> getAccessor(String accessorName) {
-		// return accessors.stream().filter(t ->
-		// t.getName().equalsIgnoreCase(accessorName)).findFirst();
-		return hasAccessor(accessorName) ? Optional.of(accessors.get(accessorName)) : Optional.empty();
+		return accessors.stream().filter(t -> t.getName().equalsIgnoreCase(accessorName)).findAny();
 	}
 
 	/**
@@ -128,22 +127,8 @@ public class Acl {
 	 */
 	public void removeAccessor(String accessorName) {
 		if (!DM_WORLD.equalsIgnoreCase(accessorName) && !DM_OWNER.equalsIgnoreCase(accessorName)) {
-			/*Optional<Accessor> optional = getAccessor(accessorName);
-			if (optional.isPresent()) {
-				accessors.remove(optional.get().getName());
-			}*/
-			accessors.remove(accessorName);
+			accessors.removeIf(t -> t.getName().equalsIgnoreCase(accessorName));
 		}
-	}
-
-	/**
-	 * Returns a {@code Collection} of contained {@code Accessor} ordered by name
-	 * 
-	 * @return a {@code Collection} of contained {@code Accessor}
-	 */
-	public Collection<Accessor> getAccessors() {
-		//return accessors.values().stream().sorted(Comparator.comparing(Accessor::getName)).collect(Collectors.toSet());
-		return accessors.values();
 	}
 
 	/**
@@ -155,130 +140,50 @@ public class Acl {
 	public void setAccessors(Set<Accessor> newAccessors) {
 		Objects.requireNonNull(newAccessors);
 		
-		//System.out.println("newAccessors[B-" + newAccessors.size() + "]: " + newAccessors);
-
-		// if (newAccessors != null) {
-		if (newAccessors.isEmpty() || newAccessors.stream().filter(t1 -> /*{
-			System.out.println("t1: " + t1);
-			return */DM_OWNER.equalsIgnoreCase(t1.getName())/*;}*/).findAny().isEmpty()) {
-			/*Accessor owner = accessors.get(DM_OWNER);
-			System.out.println("owner: " + owner);
-			if(owner != null)
-			newAccessors.add(owner);*/
-			
-			if(hasAccessor(DM_OWNER)) newAccessors.add(accessors.get(DM_OWNER));
+		Accessor owner = null;
+		// Backup actual 'dm_owner' if set of new Accessors doesn't contain such one
+		if (newAccessors.isEmpty() || !newAccessors.stream().anyMatch(t -> DM_OWNER.equalsIgnoreCase(t.getName()))) {
+			Optional<Accessor> optOwner = getAccessor(DM_OWNER);
+			if(optOwner.isPresent()) owner = optOwner.get();
 		}
-		if (newAccessors.isEmpty() || newAccessors.stream().filter(t2 -> /*{
-			System.out.println("t2: " + t2);
-			return */DM_WORLD.equalsIgnoreCase(t2.getName())/*;}*/).findAny().isEmpty()) {
-			/*Accessor world = accessors.get(DM_WORLD);
-			System.out.println("world: " + world);
-			if(world != null)
-			newAccessors.add(world);*/
-			if(hasAccessor(DM_WORLD)) newAccessors.add(accessors.get(DM_WORLD));
+		
+		Accessor world = null;
+		// Backup actual 'dm_world' if set of new Accessors doesn't contain such one
+		if (newAccessors.isEmpty() || !newAccessors.stream().anyMatch(t -> DM_WORLD.equalsIgnoreCase(t.getName()))) {
+			Optional<Accessor> optWorld = getAccessor(DM_WORLD);
+			if(optWorld.isPresent()) world = optWorld.get();
 		}
-		//System.out.println("newAccessors[A-" + newAccessors.size() + "]: " + newAccessors);
-
+		
 		// Remove all previous version of Accessors from ACL
 		accessors.clear();
+		
 		// Add new Accessors to ACL
 		newAccessors.forEach(this::addAccessor);
-		// }
+		
+		// Restore 'dm_owner' if it is necessary
+		if(owner != null) {
+			addAccessor(owner);
+		}
+		
+		// Restore 'dm_world' if it is necessary
+		if(world != null) {
+			addAccessor(world);
+		}
 	}
 	
-	public static Acl of(Acl origin) {
-		Objects.requireNonNull(origin);
+	public void setStatuses(Set<String> statuses) {
+		this.statuses.clear();
 		
-		return builder()
-				.id(origin.getId())
-				.name(origin.getName())
-				.description(origin.getDescription())
-				.statuses(origin.getStatuses())
-				.objTypes(origin.getObjTypes())
-				.accessors(Set.copyOf(origin.getAccessors()))
-				.build();
+		if(statuses != null) {
+			this.statuses.addAll(statuses);
+		}
 	}
-
-	/**
-	 * Provides a builder object for {@code AccessControlList} construction
-	 * @return a builder object
-	 */
-	public static AclBuilder builder() {
-		return new AclBuilder();
-	}
-
-	@Data
-	@Getter(AccessLevel.NONE)
-	@Accessors(fluent = true)
-	@JsonPOJOBuilder(withPrefix = "")
-	public static class AclBuilder {
-		private String id;
-		private State state;
-		private String name;
-		private String description;
-		private Set<String> objTypes;
-		private Set<String> statuses;
-		private Set<Accessor> accessors = new HashSet<>();
+	
+	public void setObjTypes(Set<String> objTypes) {
+		this.objTypes.clear();
 		
-		public void reset() {
-			id = null;
-			name = null;
-			description = null;
-			objTypes = null;
-			statuses = null;
-			accessors.clear();
-		}
-		
-		public AclBuilder accessors(Set<Accessor> accessors) {
-			this.accessors.addAll(accessors);
-			return this;
-		}
-		
-		public AclBuilder accessor(Accessor accessor) {
-			accessors.add(accessor);
-			return this;
-		}
-
-		public Acl build() {
-			Acl acl;
-
-			if (!IDGenerator.validateID2(id)) {
-				acl = new Acl(State.NEW);
-				acl.setId(IDGenerator.EMPTY_ID);
-			} else {
-				acl = new Acl(State.PURE);
-				acl.setId(id);
-			}
-
-			if (name != null) {
-				acl.setName(name);
-			}
-
-			if (description != null) {
-				acl.setDescription(description);
-			}
-
-			if (objTypes != null) {
-				acl.setObjTypes(objTypes);
-			}
-
-			if (statuses != null) {
-				acl.setStatuses(statuses);
-			}
-
-			if (accessors != null) {
-				acl.setAccessors(accessors);
-			}
-			
-			if(!acl.hasAccessor(DM_OWNER)) {
-				acl.addAccessor(Accessor.builder().name(DM_OWNER).permit(Permit.DELETE.getValue()).build());
-			}
-			
-			if(!acl.hasAccessor(DM_WORLD)) {
-				acl.addAccessor(Accessor.builder().name(DM_WORLD).permit(Permit.READ.getValue()).build());
-			}
-
-			return acl;
+		if(objTypes != null) {
+			this.objTypes.addAll(objTypes);
 		}
 	}
 }
