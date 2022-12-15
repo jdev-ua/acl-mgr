@@ -14,6 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ua.pp.jdev.permits.data.Accessor;
+import ua.pp.jdev.permits.enums.State;
 import ua.pp.jdev.permits.util.IDGenerator;
 
 @Data
@@ -49,10 +50,12 @@ class TableAccessor implements Serializable {
 
 	public Accessor toAccessor() {
 		return Accessor.builder()
-				.name(getName())
-				.permit(getPermit())
-				.alias(isAlias()).svc(isSvc())
 				.id(String.valueOf(getId()))
+				.name(getName())
+				.state(State.PURE)
+				.permit(getPermit())
+				.alias(isAlias())
+				.svc(isSvc())
 				.orgLevels(getOrgLevels().stream().map(TableOrgLevel::getOrgLevel).collect(Collectors.toSet()))
 				.xPermits(getXPermits().stream().map(TableXPermit::getXPermit).collect(Collectors.toSet()))
 				.build();

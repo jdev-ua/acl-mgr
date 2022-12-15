@@ -49,6 +49,7 @@ class TableACL implements Serializable {
 				.id(getId().toString())
 				.name(getName())
 				.description(getDescription())
+				.state(State.PURE)
 				.statuses(getStatuses().stream().map(TableStatus::getStatus).collect(Collectors.toSet()))
 				.objTypes(getObjTypes().stream().map(TableObjType::getObjType).collect(Collectors.toSet()))
 				.accessors(getAccessors().stream().map(TableAccessor::toAccessor).collect(Collectors.toSet()))
