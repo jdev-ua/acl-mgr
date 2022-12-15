@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.Singular;
 import ua.pp.jdev.permits.enums.State;
 import ua.pp.jdev.permits.util.IDGenerator;
 
@@ -29,7 +30,7 @@ import ua.pp.jdev.permits.util.IDGenerator;
 @JsonPOJOBuilder(withPrefix = "")
 @JsonDeserialize(builder = Accessor.AccessorBuilder.class)
 @EqualsAndHashCode(of = {"name"})
-public class Accessor {
+public class Accessor implements Comparable<Accessor> {
 	public final static String DM_OWNER = "dm_owner";
 	public final static String DM_WORLD = "dm_world";
 	
@@ -47,8 +48,9 @@ public class Accessor {
 	@JsonIgnore
 	@NonNull
 	private State state;
-	
+	@Singular
 	private Set<String> xPermits;
+	@Singular
 	private Set<String> orgLevels;
 	
 	public Accessor() {
@@ -67,7 +69,9 @@ public class Accessor {
 		if (state != null) {
 			setState(state);
 		}
-		setId(id);
+		if(IDGenerator.validateID(id)) {
+			setId(id);
+		}
 		setAlias(alias);
 		setSvc(svc);
 		setPermit(permit);
@@ -89,5 +93,10 @@ public class Accessor {
 		if(orgLevels != null) {
 			this.orgLevels.addAll(orgLevels);
 		}
+	}
+
+	@Override
+	public int compareTo(Accessor o) {
+		return getName().compareToIgnoreCase(o.getName());
 	}
 }
