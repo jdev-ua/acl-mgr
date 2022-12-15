@@ -36,7 +36,6 @@ public class SimpleAclDAO implements AclDAO {
 	public Acl create(Acl data) {
 		Objects.requireNonNull(data);
 		
-		System.out.println("storage: " + storage);
 		if (storage.containsKey(data.getId())) {
 			// TODO Customize exception
 			throw new RuntimeException("Creation failed: ACL with ID '" + data.getId() + "' already exists");
