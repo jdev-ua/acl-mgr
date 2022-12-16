@@ -50,12 +50,12 @@ public class AclController {
 	private final static int DEFAULT_PAGE_NO = 1;
 
 	@Autowired
-	private void setAccessControlListDAO(AclDAO aclDAO) {
+	private void setAclDAO(AclDAO aclDAO) {
 		this.aclDAO = aclDAO;
 	}
 
 	@Autowired
-	private void setDictionaryServiceControlListDAO(DictionaryService dictService) {
+	private void setDictionaryService(DictionaryService dictService) {
 		this.dictService = dictService;
 	}
 
