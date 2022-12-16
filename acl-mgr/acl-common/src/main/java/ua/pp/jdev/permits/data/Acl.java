@@ -95,6 +95,9 @@ public class Acl {
 	public void addAccessor(Accessor accessor) {
 		Objects.requireNonNull(accessor);
 		
+		// Remove previous version
+		removeAccessor(accessor.getName());
+		
 		// Add new Accessor to ACL
 		accessors.add(accessor);
 	}
