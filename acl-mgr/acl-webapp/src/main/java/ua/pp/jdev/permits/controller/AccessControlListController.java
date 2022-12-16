@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import lombok.extern.slf4j.Slf4j;
-import ua.pp.jdev.permits.data.AccessControlList;
-import ua.pp.jdev.permits.data.AccessControlListDAO;
 import ua.pp.jdev.permits.data.Accessor;
+import ua.pp.jdev.permits.data.Acl;
+import ua.pp.jdev.permits.data.AclDAO;
 import ua.pp.jdev.permits.data.Page;
 import ua.pp.jdev.permits.enums.OrgLevel;
 import ua.pp.jdev.permits.enums.Permit;
@@ -42,7 +42,7 @@ import ua.pp.jdev.permits.service.DictionaryService;
 @SessionAttributes("acl")
 @RequestMapping("/acls")
 public class AccessControlListController {
-	private AccessControlListDAO aclDAO;
+	private AclDAO aclDAO;
 	private DictionaryService dictService;
 
 	// TODO Make it configurable
@@ -50,7 +50,7 @@ public class AccessControlListController {
 	private final static int DEFAULT_PAGE_NO = 1;
 
 	@Autowired
-	private void setAccessControlListDAO(AccessControlListDAO aclDAO) {
+	private void setAccessControlListDAO(AclDAO aclDAO) {
 		this.aclDAO = aclDAO;
 	}
 
@@ -60,8 +60,8 @@ public class AccessControlListController {
 	}
 
 	@ModelAttribute("acl")
-	private AccessControlList putNewAclToModel() {
-		return new AccessControlList(State.NEW);
+	private Acl putNewAclToModel() {
+		return new Acl();
 	}
 
 	@ModelAttribute("dictObjTypes")
@@ -84,9 +84,10 @@ public class AccessControlListController {
 				.collect(Collectors.toMap(t -> String.valueOf(t.getValue()), Function.identity()));
 	}
 
-	private Map<String, String> getAvailableAliases(boolean alias, boolean svc, AccessControlList acl) {
+	private Map<String, String> getAvailableAliases(boolean alias, boolean svc, Acl acl, String current) {
 		Map<String, String> aliases = dictService.getAliases(alias, svc);
-		return new TreeMap<>(aliases.entrySet().stream().filter(t -> !acl.hasAccessor(t.getKey()))
+		return new TreeMap<>(aliases.entrySet().stream()
+				.filter(t -> t.getKey().equals(current) || !acl.hasAccessor(t.getKey()))
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())));
 	}
 
@@ -97,7 +98,7 @@ public class AccessControlListController {
 
 	@GetMapping
 	public String viewAllForm(@RequestParam(defaultValue = "1") Integer pageNo, Model model, SessionStatus sessionStatus) {
-		Page<AccessControlList> page = aclDAO.readPage(pageNo - 1, DEFAULT_PAGE_SIZE);
+		Page<Acl> page = aclDAO.readPage(pageNo - 1, DEFAULT_PAGE_SIZE);
 
 		model.addAttribute("pageable", true);
 		model.addAttribute("currentPage", pageNo);
@@ -118,7 +119,7 @@ public class AccessControlListController {
 	}
 
 	@GetMapping("/new")
-	public String newForm(@ModelAttribute("acl") AccessControlList acl, Model model) {
+	public String newForm(@ModelAttribute("acl") Acl acl, Model model) {
 		model.addAttribute("httpMethod", "post");
 		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
 		putAccessorsPageToModel(acl.getAccessors(), DEFAULT_PAGE_NO, model);
@@ -140,7 +141,7 @@ public class AccessControlListController {
 			Model model) {
 		log.debug("Starting get ACL with ID={} for view", id);
 
-		AccessControlList acl = readACL(id);
+		Acl acl = readACL(id);
 		model.addAttribute("acl", acl);
 		model.addAttribute("dictStatuses", getDictStatuses(acl.getObjTypes()));
 
@@ -166,8 +167,8 @@ public class AccessControlListController {
 		return "viewACL";
 	}
 
-	protected AccessControlList readACL(String id) {
-		Optional<AccessControlList> optionalAcl = aclDAO.read(id);
+	protected Acl readACL(String id) {
+		Optional<Acl> optionalAcl = aclDAO.read(id);
 		if (optionalAcl.isEmpty()) {
 			// TODO Implement it!
 			throw new RuntimeException();
@@ -180,8 +181,9 @@ public class AccessControlListController {
 	public String editForm(@PathVariable("id") String id, @RequestParam(required = false) String accessorName,
 			@RequestParam(required = false) boolean addAccessor, @RequestParam(required = false) Integer pageNo,
 			@RequestParam(defaultValue = "tabInfo") String tab, Model model) {
-		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
-		if (!acl.getId().equalsIgnoreCase(id)) {
+		
+		Acl acl = (Acl) model.getAttribute("acl");
+		if (id != null && !id.equalsIgnoreCase(acl.getId())) {
 			acl = readACL(id);
 			model.addAttribute("acl", acl);
 		}
@@ -197,15 +199,12 @@ public class AccessControlListController {
 					throw new RuntimeException();
 				}
 				accessor = optAccessor.get();
-
-				model.addAttribute("accessor", accessor);
 			} else {
-				accessor = new Accessor(State.NEW);
-				accessor.setName("");
-				model.addAttribute("accessor", accessor);
+				accessor = new Accessor();
 			}
+			model.addAttribute("accessor", accessor);
 
-			model.addAttribute("dictAccessorNames", getAvailableAliases(accessor.isAlias(), accessor.isSvc(), acl));
+			model.addAttribute("dictAccessorNames", getAvailableAliases(accessor.isAlias(), accessor.isSvc(), acl, accessor.getName()));
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			log.debug("Return edit form for Accessor {}: ", accessor);
@@ -232,7 +231,7 @@ public class AccessControlListController {
 		if (accessorName != null && accessorName.length() > 0) {
 			log.debug("Starting delete accessor '{}' from ACL with ID={}", accessorName, id);
 
-			AccessControlList acl = (AccessControlList) model.getAttribute("acl");
+			Acl acl = (Acl) model.getAttribute("acl");
 			Optional<Accessor> optAccessor = acl.getAccessor(accessorName);
 			if (optAccessor.isPresent()) {
 				Accessor accessor = optAccessor.get();
@@ -260,13 +259,13 @@ public class AccessControlListController {
 
 	@PostMapping()
 	public String create(@RequestParam(required = false) boolean addAccessor,
-			@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors, Model model) {
+			@Valid @ModelAttribute("acl") Acl acl, BindingResult errors, Model model) {
 		if (addAccessor) {
-			Accessor newAccessor = new Accessor(State.NEW);
+			Accessor newAccessor = new Accessor();
 			model.addAttribute("accessor", newAccessor);
 
 			model.addAttribute("dictAccessorNames",
-					getAvailableAliases(newAccessor.isAlias(), newAccessor.isSvc(), acl));
+					getAvailableAliases(newAccessor.isAlias(), newAccessor.isSvc(), acl, newAccessor.getName()));
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			return "editAccessor";
@@ -278,7 +277,7 @@ public class AccessControlListController {
 
 		// Check whether another ACL with the same name is already existed
 		// and register corresponding validation error if it's true
-		Optional<AccessControlList> optACL = aclDAO.readByName(acl.getName());
+		Optional<Acl> optACL = aclDAO.readByName(acl.getName());
 		if (optACL.isPresent()) {
 			errors.addError(
 					new FieldError("acl", "name", acl.getName(), false, null, null, "ACL name must be unique!"));
@@ -299,12 +298,12 @@ public class AccessControlListController {
 	}
 
 	@PatchMapping
-	public String updateACL(@Valid @ModelAttribute("acl") AccessControlList acl, BindingResult errors, Model model) {
+	public String updateACL(@Valid @ModelAttribute("acl") Acl acl, BindingResult errors, Model model) {
 		log.debug("Starting update ACL " + acl);
 
 		// Check whether another ACL with the same name is already existed
 		// and register corresponding validation error if it's true
-		Optional<AccessControlList> optACL = aclDAO.readByName(acl.getName());
+		Optional<Acl> optACL = aclDAO.readByName(acl.getName());
 		if (optACL.isPresent() && !optACL.get().getId().equalsIgnoreCase(acl.getId())) {
 			errors.addError(
 					new FieldError("acl", "name", acl.getName(), false, null, null, "ACL name must be unique!"));
@@ -329,19 +328,20 @@ public class AccessControlListController {
 			@Valid @ModelAttribute("accessor") Accessor accessor, BindingResult errors, Model model) {
 		log.debug("Starting update Accessor {}", accessor);
 
-		AccessControlList acl = (AccessControlList) model.getAttribute("acl");
+		Acl acl = (Acl) model.getAttribute("acl");
 
 		if (errors.hasErrors() || refresh) {
 			if (errors.hasErrors()) {
 				log.debug("Failed to update Accessor {} due to validation errors {}", accessor, errors.toString());
 			}
-
-			model.addAttribute("dictAccessorNames", getAvailableAliases(accessor.isAlias(), accessor.isSvc(), acl));
+			
+			model.addAttribute("dictAccessorNames", getAvailableAliases(accessor.isAlias(), accessor.isSvc(), acl, accessor.getName()));
 			model.addAttribute("dictXPermits", getDictXPermits());
 			model.addAttribute("dictOrgLevels", getDictOrgLevels());
 			return "editAccessor";
 		}
 
+		// TODO Move it directly into Accessor!
 		if (State.PURE.equals(accessor.getState())) {
 			accessor.setState(State.DIRTY);
 		}
