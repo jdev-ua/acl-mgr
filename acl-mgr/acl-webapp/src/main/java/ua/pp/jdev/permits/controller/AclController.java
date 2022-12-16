@@ -41,7 +41,7 @@ import ua.pp.jdev.permits.service.DictionaryService;
 @Slf4j
 @SessionAttributes("acl")
 @RequestMapping("/acls")
-public class AccessControlListController {
+public class AclController {
 	private AclDAO aclDAO;
 	private DictionaryService dictService;
 
