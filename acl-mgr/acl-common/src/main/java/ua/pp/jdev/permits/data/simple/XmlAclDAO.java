@@ -7,11 +7,13 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import ua.pp.jdev.permits.data.Acl;
 import ua.pp.jdev.permits.data.AclDAO;
 
+@Lazy
 @Component
 public class XmlAclDAO implements AclDAO {
 	@Value("${data.src}")

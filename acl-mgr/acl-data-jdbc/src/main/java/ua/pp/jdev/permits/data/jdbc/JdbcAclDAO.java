@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
@@ -19,6 +20,7 @@ import ua.pp.jdev.permits.data.Acl;
 import ua.pp.jdev.permits.data.AclDAO;
 import ua.pp.jdev.permits.enums.State;
 
+@Lazy
 @Component
 public class JdbcAclDAO implements AclDAO {
 	private JdbcOperations jdbcOperations;

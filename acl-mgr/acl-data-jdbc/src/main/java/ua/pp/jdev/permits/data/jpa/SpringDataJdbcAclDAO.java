@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import com.google.common.collect.Lists;
 import ua.pp.jdev.permits.data.Acl;
 import ua.pp.jdev.permits.data.AclDAO;
 
+@Lazy
 @Component
 public class SpringDataJdbcAclDAO implements AclDAO {
 	private AclRepository repository;

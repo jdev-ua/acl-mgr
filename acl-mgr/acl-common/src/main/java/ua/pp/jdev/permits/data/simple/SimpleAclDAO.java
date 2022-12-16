@@ -7,16 +7,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import ua.pp.jdev.permits.data.Acl;
 import ua.pp.jdev.permits.data.AclDAO;
 import ua.pp.jdev.permits.util.IDGenerator;
 
+@Lazy
 @Component
 public class SimpleAclDAO implements AclDAO {
 	private Map<String, AclRecord> storage = new HashMap<>();
-
+	
 	@Override
 	public Collection<Acl> readAll() {
 		return storage.values().stream()
