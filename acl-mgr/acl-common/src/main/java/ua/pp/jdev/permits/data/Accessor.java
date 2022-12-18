@@ -8,8 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Builder;
 import lombok.Data;
@@ -27,9 +26,8 @@ import ua.pp.jdev.permits.util.IDGenerator;
  */
 @Data
 @Builder(toBuilder = true)
-@JsonPOJOBuilder(withPrefix = "")
-@JsonDeserialize(builder = Accessor.AccessorBuilder.class)
 @EqualsAndHashCode(of = {"name"})
+@JsonPropertyOrder({ "id", "name", "permit", "alias", "svc", "xPermits", "orgLevels" })
 public class Accessor implements Comparable<Accessor> {
 	public final static String DM_OWNER = "dm_owner";
 	public final static String DM_WORLD = "dm_world";
