@@ -15,8 +15,7 @@ import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.Builder;
 import lombok.Data;
@@ -34,9 +33,8 @@ import ua.pp.jdev.permits.util.IDGenerator;;
  */
 @Data
 @Builder(toBuilder = true)
-@JsonPOJOBuilder(withPrefix = "")
-@JsonDeserialize(builder = Acl.AclBuilder.class)
 @EqualsAndHashCode(of = {"name"})
+@JsonPropertyOrder({ "id", "name", "description", "objTypes", "statuses", "accessors" })
 public class Acl {
 	private String id;
 
@@ -82,6 +80,7 @@ public class Acl {
 		if(IDGenerator.validateID(id)) {
 			setId(id);
 		}
+		setDescription(description);
 		setObjTypes(objTypes);
 		setStatuses(statuses);
 		setAccessors(accessors);
