@@ -1,5 +1,7 @@
 package ua.pp.jdev.permits.data.jpa;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.BeansException;
@@ -75,17 +77,41 @@ class CallbackConfig implements ApplicationContextAware {
 	@Bean
 	protected AfterSaveCallback<TableAccessor> accessorAfterSaveCallback() {
 		return (accessor) -> {
-			// Setup contained XPermits with ID of current Accessor than save them
-			accessor.getXPermits().forEach(xPermit -> {
-				xPermit.setAccessorId(accessor.getId());
-				getXPermitRepository().save(xPermit);
-			});
+			List<TableXPermit> xPermitsToDelete = new ArrayList<>();
+			// Read from repository all XPermits associated with current Accessor
+			// and place them into list of candidates to be deleted
+			getXPermitRepository().findAllByAccessorId(accessor.getId()).forEach(xPermitsToDelete::add);
 			
-			// Setup contained Org.Levels with ID of current Accessor than save them
-			accessor.getOrgLevels().forEach(orgLevel -> {
-				orgLevel.setAccessorId(accessor.getId());
-				getOrgLevelRepository().save(orgLevel);
+			// Save XPermits that is not currently in repository
+			accessor.getXPermits().forEach(xPermit -> {
+				// Remove XPermit that still in use from deletion list and skip saving it again into repository
+				boolean skip = xPermitsToDelete.removeIf(t -> t.getXPermit().equalsIgnoreCase(xPermit.getXPermit()));
+				if(!skip) {
+					// Setup new XPermits with ID of current Accessor than save them
+					xPermit.setAccessorId(accessor.getId());
+					getXPermitRepository().save(xPermit);
+				}
 			});
+			// Remove all unused XPermits from repository
+			getXPermitRepository().deleteAll(xPermitsToDelete);
+			
+			List<TableOrgLevel> orgLevelsToDelete = new ArrayList<>();
+			// Read from repository all Org.Levels associated with current Accessor
+			// and place them into list of candidates to be deleted
+			getOrgLevelRepository().findAllByAccessorId(accessor.getId()).forEach(orgLevelsToDelete::add);
+			
+			// Save Org.Levels that is not currently in repository
+			accessor.getOrgLevels().forEach(orgLevel -> {
+				// Remove Org.Level that still in use from deletion list and skip saving it again into repository
+				boolean skip = orgLevelsToDelete.removeIf(t -> t.getOrgLevel().equalsIgnoreCase(orgLevel.getOrgLevel()));
+				if (!skip) {
+					// Setup new Org.Level with ID of current Accessor than save them
+					orgLevel.setAccessorId(accessor.getId());
+					getOrgLevelRepository().save(orgLevel);
+				}
+			});
+			// Remove all unused Org.Levels from repository
+			getOrgLevelRepository().deleteAll(orgLevelsToDelete);			
 			
 			return accessor;
 		};
