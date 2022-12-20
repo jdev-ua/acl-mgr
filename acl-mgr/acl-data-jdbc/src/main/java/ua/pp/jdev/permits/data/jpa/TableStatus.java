@@ -7,10 +7,12 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @AllArgsConstructor
 @Table("STATUS")
+@EqualsAndHashCode(of = {"status"})
 class TableStatus implements Serializable {
 	private static final long serialVersionUID = 8071180708610099408L;
 

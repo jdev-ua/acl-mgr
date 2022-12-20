@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ua.pp.jdev.permits.data.Accessor;
 import ua.pp.jdev.permits.enums.State;
@@ -20,6 +21,7 @@ import ua.pp.jdev.permits.util.IDGenerator;
 @Data
 @Table("ACCESSOR")
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"name"})
 class TableAccessor implements Serializable {
 	private static final long serialVersionUID = -2252261108300139174L;
 
