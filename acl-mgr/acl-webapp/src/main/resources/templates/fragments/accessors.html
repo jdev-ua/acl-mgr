@@ -69,6 +69,7 @@
 						<td colspan="8"><p th:text="#{list.empty}">EMPTY</p></td>
 					</tr>
 					<tr th:each="accessor : ${#bools.isTrue(pageable) ? accessors : acl.accessors}">
+						<!--<td th:text="${accessor.id}">ACCESSOR.ID</td> -->
 						<td width="1%">
 							<div th:switch="${accessor.state.toString()}">
 								<span th:case="${T(ua.pp.jdev.permits.enums.State).NEW.toString()}">
