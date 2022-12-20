@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -29,8 +30,9 @@ import ua.pp.jdev.permits.data.AclDAO;
 
 @Slf4j
 @RestController
+@Api(tags = {"acls"})
 @RequestMapping(path = "/api/v1/acls", produces = { "application/json" })
-public class AclRestController {
+public class AclRestControllerV1 {
 	private AclDAO aclDAO;
 
 	@Autowired
