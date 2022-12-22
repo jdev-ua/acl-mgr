@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.jpa;
+package ua.pp.jdev.permits.data.jdbc;
 
 import java.util.Collection;
 import java.util.Comparator;
