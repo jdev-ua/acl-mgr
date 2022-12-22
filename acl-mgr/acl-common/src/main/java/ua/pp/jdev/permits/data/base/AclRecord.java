@@ -1,4 +1,4 @@
-package ua.pp.jdev.permits.data.simple;
+package ua.pp.jdev.permits.data.base;
 
 import java.util.Set;
 
