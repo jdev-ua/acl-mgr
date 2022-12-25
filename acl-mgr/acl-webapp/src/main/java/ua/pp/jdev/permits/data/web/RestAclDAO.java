@@ -35,27 +35,19 @@ public class RestAclDAO implements AclDAO {
 
 	@Override
 	public Collection<Acl> readAll() {
+		// For "v1" version of API use List as a result container
 		if(apiVersion.equalsIgnoreCase("v1")) {
-			System.out.println("[readAll]: Use v1 version");
 			ResponseEntity<List<Acl>> result = restTemplate.exchange(baseUri, HttpMethod.GET, null,
-					new ParameterizedTypeReference<List<Acl>>() {
-					});
+					new ParameterizedTypeReference<List<Acl>>() {});
 
 			return result.getBody();
 		}
 		
-		System.out.println("[readAll]: Use v1.1 version");
-		
+		// For other versions of API use Page as a result container
 		ResponseEntity<PageWrapper<Acl>> result = restTemplate.exchange(baseUri, HttpMethod.GET, null,
-				new ParameterizedTypeReference<PageWrapper<Acl>>() {
-				});
+				new ParameterizedTypeReference<PageWrapper<Acl>>() {});
 
 		return result.getBody().page().getContent();
-		/*ResponseEntity<List<Acl>> result = restTemplate.exchange(baseUri, HttpMethod.GET, null,
-				new ParameterizedTypeReference<List<Acl>>() {
-				});
-
-		return result.getBody();*/
 	}
 
 	public Optional<Acl> read(URI url) {
@@ -136,12 +128,10 @@ public class RestAclDAO implements AclDAO {
 
 	@Override
 	public Page<Acl> readPage(int pageNo, int pageSize) {
+		// For "v1" version of API use default implementation 
 		if(apiVersion.equalsIgnoreCase("v1")) {
-			System.out.println("[readPage]: Use v1 version");
 			return AclDAO.super.readPage(pageNo, pageSize);
 		}
-		
-		System.out.println("[readPage]: Use v1.1 version");
 		
 		URI url = UriComponentsBuilder
 				.fromHttpUrl(baseUri)
@@ -156,6 +146,9 @@ public class RestAclDAO implements AclDAO {
 		return result.getBody().page();
 	}
 	
+	/**
+	 * Wrapper class for Page to provide it with JSON deserialization
+	 */
 	private static class PageWrapper<T> {
 		Page<T> page;
 
