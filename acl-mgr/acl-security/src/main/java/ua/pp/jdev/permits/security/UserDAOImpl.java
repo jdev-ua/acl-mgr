@@ -53,6 +53,16 @@ public class UserDAOImpl implements UserDAO {
 			public Collection<User> getContent() {
 				return page.map(UserDAOImpl.this::toUser).getContent();
 			}
+
+			@Override
+			public int getNumber() {
+				return page.getNumber();
+			}
+
+			@Override
+			public int getSize() {
+				return page.getSize();
+			}
 		};
 	}
 
