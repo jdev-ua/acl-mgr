@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -57,12 +58,13 @@ public class AclRestControllerV1_1 {
 			@ApiResponse(code = 404, message = "ACL not found")
 	})
 	@GetMapping("/{aclId}")
-	public ResponseEntity<Acl> getAcl(@PathVariable("aclId") String aclId) {
-		log.debug("Start getting ACL with ID '{}'", aclId);
+	public ResponseEntity<Acl> getAcl(@PathVariable("aclId") String aclId,
+			@RequestParam(defaultValue = "false") boolean byName) {
+		log.debug("Start getting ACL with {} '{}'", byName ? "name" : "ID", aclId);
 
-		Optional<Acl> optAcl = aclDAO.read(aclId);
+		Optional<Acl> optAcl = byName ? aclDAO.readByName(aclId) : aclDAO.read(aclId);
 		
-		log.debug("Result of getting ACL with ID '{}': {}", aclId, optAcl.orElse(null));
+		log.debug("Result of getting ACL with {} '{}': {}", byName ? "name" : "ID", aclId, optAcl.orElse(null));
 		
 		return (optAcl.isPresent())
 				? new ResponseEntity<>(optAcl.get(), HttpStatus.OK)
