@@ -51,6 +51,16 @@ public class SpringDataJdbcAclDAO implements AclDAO {
 			public Collection<Acl> getContent() {
 				return page.map(TableACL::toAcl).getContent();
 			}
+
+			@Override
+			public int getNumber() {
+				return page.getNumber();
+			}
+
+			@Override
+			public int getSize() {
+				return page.getSize();
+			}
 		};
 	}
 	
