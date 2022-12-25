@@ -72,8 +72,14 @@ public class SpringDataJdbcAclDAO implements AclDAO {
 
 	@Override
 	public boolean delete(String id) {
-		repository.deleteById(Long.parseLong(id));
-		return true;
+		var ID = Long.parseLong(id);
+		
+		if(repository.existsById(ID)) {
+			repository.deleteById(ID);
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
