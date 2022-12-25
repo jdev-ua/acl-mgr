@@ -44,9 +44,13 @@ public class AclRestControllerV1 {
 	@ApiOperation(response = Acl.class, value = "Retrieves all ACLs", responseContainer = "List")
 	@GetMapping
 	public ResponseEntity<List<Acl>> getAll() {
-		log.debug("Starting get list of all ACLs");
+		log.debug("Get all ACL");
+		
+		List<Acl> acls = List.copyOf(aclDAO.readAll());
+		
+		log.debug("Total: {}", acls.size());
 
-		return new ResponseEntity<List<Acl>>(List.copyOf(aclDAO.readAll()), HttpStatus.OK);
+		return new ResponseEntity<List<Acl>>(acls, HttpStatus.OK);
 	}
 
 	@ApiOperation(response = Acl.class, value = "Retrieves an ACL")
@@ -55,11 +59,11 @@ public class AclRestControllerV1 {
 	@GetMapping("/{aclId}")
 	public ResponseEntity<Acl> getAcl(@PathVariable("aclId") String aclId,
 			@RequestParam(defaultValue = "false") boolean byName) {
-		log.debug("Start getting ACL with {} '{}'", byName ? "name" : "ID", aclId);
+		log.debug("Get ACL: {}='{}'", byName ? "name" : "id", aclId);
 
 		Optional<Acl> optAcl = byName ? aclDAO.readByName(aclId) : aclDAO.read(aclId);
 
-		log.debug("Result of getting ACL with {} '{}': {}", byName ? "name" : "ID", aclId, optAcl.orElse(null));
+		log.debug("ACL: {}", optAcl.orElse(null));
 
 		return (optAcl.isPresent()) ? new ResponseEntity<Acl>(optAcl.get(), HttpStatus.OK)
 				: new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -68,7 +72,7 @@ public class AclRestControllerV1 {
 	@ApiOperation(response = String.class, value = "Creates new ACL")
 	@PostMapping(consumes = { "application/json" })
 	public ResponseEntity<String> createAcl(@Valid @RequestBody Acl acl) {
-		log.debug("Start creating new ACL: {}", acl);
+		log.debug("Create ACL: {}", acl);
 
 		if (aclDAO.readByName(acl.getName()).isPresent()) {
 			throw new RuntimeException("ACL with name '" + acl.getName() + "' already exists!");
@@ -76,7 +80,7 @@ public class AclRestControllerV1 {
 
 		acl = aclDAO.create(acl);
 
-		log.debug("New ACL sucessfully created: {}", acl);
+		log.debug("ACL created sucessfully: {}", acl);
 
 		HttpHeaders responseHeaders = new HttpHeaders();
 		URI newAclURI = ServletUriComponentsBuilder
@@ -92,15 +96,15 @@ public class AclRestControllerV1 {
 	@ApiOperation(response = Void.class, value = "Updates an ACL")
 	@PutMapping(value = "/{aclId}", consumes = { "application/json" })
 	public ResponseEntity<?> updateAcl(@PathVariable String aclId, @Valid @RequestBody Acl acl) {
-		log.debug("Start updating ACL: {} ", acl);
+		log.debug("Update ACL: {} ", acl);
 
 		if (aclDAO.read(acl.getId()).isEmpty()) {
-			throw new RuntimeException("ACL with ID '" + acl.getId() + "' doesn't exist!");
+			throw new RuntimeException("ACL with id '" + acl.getId() + "' doesn't exist!");
 		}
 
 		Acl result = aclDAO.update(acl);
 
-		log.debug("ACL sucessfully updated: {}", result);
+		log.debug("ACL updated sucessfully: {}", result);
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -108,11 +112,13 @@ public class AclRestControllerV1 {
 	@ApiOperation(response = Void.class, value = "Deletes an ACL")
 	@DeleteMapping("/{aclId}")
 	public ResponseEntity<?> deleteAcl(@PathVariable String aclId) {
-		log.debug("Start deleting ACL with ID '{}'", aclId);
+		log.debug("Delete ACL: id='{}'", aclId);
 
-		boolean result = aclDAO.delete(aclId);
-
-		log.debug("Result of deleting ACL with ID '{}': {}", aclId, result);
+		if (aclDAO.delete(aclId)) {
+			log.debug("ACL deleted sucessfully: id='{}'", aclId);
+		} else {
+			log.debug("ACL doesn't exist: id='{}'", aclId);
+		}
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
